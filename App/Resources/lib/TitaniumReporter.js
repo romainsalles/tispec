@@ -33,6 +33,35 @@ TitaniumReporter.prototype = {
     var results = suite.results();
 
     this.log('<b>[' + suite.description + '] ' + results.passedCount + ' of ' + results.totalCount + ' assertions passed.</b><br><br>');
+  },
+  /**
+   * Filters
+   * Specify the specs you want to run.
+   *
+   * Use :
+   * var titaniumReporter = new TitaniumReporter;
+   * jasmine.getEnv().addReporter(titaniumReporter);
+   * jasmine.getEnv().specFilter = function(spec) {
+   *   return titaniumReporter.specFilter(spec);
+   * };
+   */
+  /**
+   * Specs will not use the filter anymore.
+   */
+  removeSpecFilter:     function() { this.setSpecFilter(null); },
+  /**
+   * Add a spec filter on the given string.
+   *
+   * @focusedSpecName {String} only the specs containing this string will be run
+   */
+  setSpecFilter:        function(focusedSpecName) { this.focusedSpecName = focusedSpecName; },
+  /**
+   * Function used by Jasmine to determine if a spec should be lunch or not.
+   *
+   * @spec {Object} Jasmine spec
+   */
+  specFilter:           function(spec) {
+    return !this.focusedSpecName || spec.getFullName().indexOf(this.focusedSpecName) !== -1;
   }
 };
 
@@ -93,8 +122,10 @@ function formatErrorDetails(spec) {
  */
 function formatSpecResultsMessage(spec) {
   var color  = OK_COLOR,
+      total  = spec.results().totalCount,
       passed = spec.results().passed(),
       result = ' (' + spec.results().passedCount + ' pass';
+  if (total === 0) { return ''; }
 
   if (!passed) {
     color  = ERROR_COLOR;

@@ -9,7 +9,13 @@ exports.start = function(specs) {
   Ti.include('lib/jasmine.js');
   _.each(specs, function(spec) { Ti.include(spec); });
 
-  var TitaniumReporter = require('lib/TitaniumReporter').TitaniumReporter;
-  jasmine.getEnv().addReporter(new TitaniumReporter());
-  jasmine.getEnv().execute();
+  var TitaniumReporter = require('lib/TitaniumReporter').TitaniumReporter,
+      titaniumReporter = new TitaniumReporter(),
+      env = jasmine.getEnv();
+
+  env.addReporter(titaniumReporter);
+  env.specFilter = function(spec) {
+    return titaniumReporter.specFilter(spec);
+  };
+  env.execute();
 };
