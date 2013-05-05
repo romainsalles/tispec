@@ -26,13 +26,17 @@ var TispecReporter = function(now, connection) {
 
     now.onSuiteResult(suite.description, results.totalCount, results.passedCount, results.failedCount);
   };
+
+  this.endSpecs = function() {
+    now.endSpecs();
+  };
 };
 
 TispecReporter.prototype = {
-  reportRunnerResults:  function(runner) {},
-  reportRunnerStarting: function(runner) {},
+  reportRunnerResults:  function(runner) { this.endSpecs(); },
+  reportRunnerStarting: function(runner) { Ti.API.error('reportRunnerStarting'); },
   reportSpecResults:    function(spec)   { this.updateSpecs(spec); },
-  reportSpecStarting:   function(spec)   {},
+  reportSpecStarting:   function(spec)   { Ti.API.error('reportSpecStarting'); },
   reportSuiteResults:   function(suite)  { this.updateSuites(suite); },
   /**
    * Filters

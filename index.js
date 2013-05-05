@@ -15,12 +15,20 @@ var http = require('http'),
 // -----------------------------------------------------------------------------
 
 function executeSpecs(request, response) {
+  var onNewSpec = function(description, totalCount, passedCount, failedCount, passed) {
+    response.write('SPEC : ' + JSON.stringify([description, totalCount, passedCount, failedCount, passed]) + '<br/>');
+  };
+  var onNewSuite = function(description, totalCount, passedCount, failedCount) {
+    response.write('SUITE : ' + JSON.stringify([description, totalCount, passedCount, failedCount]) + '<br/>');
+  };
+  var onEndSpecs = function(description, totalCount, passedCount, failedCount) {
+    response.end();
+  };
   // execute specs
-  broadcastServer.runSpecs(['specs/example_specs.js']);
+  broadcastServer.runSpecs(['specs/example_specs.js'], onNewSpec, onNewSuite, onEndSpecs);
 
   // write response
   response.writeHead(200, {'Content-Type': 'text/html; charset=utf-8'});
-  response.end();
 }
 
 function render404(request, response) {
