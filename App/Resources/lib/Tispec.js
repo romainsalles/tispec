@@ -1,21 +1,37 @@
 var _ = require('lib/underscore')._;
 
-/**
- * Run the given jasmine specs
- *
- * @param specs {Array<String>} paths of the specs
- */
-exports.start = function(specs) {
-  Ti.include('lib/jasmine.js');
-  _.each(specs, function(spec) { Ti.include(spec); });
+var initialized = false;
 
-  var TitaniumReporter = require('lib/TitaniumReporter').TitaniumReporter,
-      titaniumReporter = new TitaniumReporter(),
-      env = jasmine.getEnv();
+Ti.include('lib/jasmine.js');
 
-  env.addReporter(titaniumReporter);
+function initializeJasmine(now) {
+
+  var TispecReporter = require('lib/TispecReporter').TispecReporter,
+      tispecReporter = new TispecReporter(now),
+      env            = jasmine.getEnv();
+
+  env.addReporter(tispecReporter);
   env.specFilter = function(spec) {
-    return titaniumReporter.specFilter(spec);
+    return tispecReporter.specFilter(spec);
   };
-  env.execute();
+
+  return env;
+}
+
+exports.initialize = function(host, port) {
+  if (initialized) { return; }
+
+  var nowjs = require('/lib/now'),
+  now = nowjs.nowInitialize('//' + host + ':' + port, {});
+
+  now.ready(function () {
+    var jasmineEnv = initializeJasmine(now);
+
+    now.execute = function (specs) {
+      _.each(specs, function(spec) { Ti.include(spec); });
+      jasmineEnv.execute();
+    };
+  });
+
+  initialized = true;
 };

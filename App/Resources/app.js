@@ -5,9 +5,6 @@ Ti.UI.createTabGroup().addTab(Ti.UI.createTab({
     window: Ti.UI.createWindow()
 }));
 
-// Code used to launch the specs
+// Connect the app to the tispec server
 // -----------------------------------------------------------------------------
-var Connection = require('lib/Connection').Connection,
-    connection = new Connection();
-
-connection.bind('localhost', 8128).connect();
+require('lib/Tispec').initialize('localhost', 8128);
