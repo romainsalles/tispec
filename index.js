@@ -2,7 +2,10 @@
 // =============================================================================
 
 var BroadcastServer = require('./lib/BroadcastServer').BroadcastServer;
-var broadcastServer = new BroadcastServer(8128);
+
+// defined as a global variable
+// [TODO] find how we could do differently
+broadcastServer = new BroadcastServer(8128);
 
 
 // Web server

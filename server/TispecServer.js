@@ -4,6 +4,7 @@
  */
 
 var express = require('express'),
+    specs   = require('./routes/specs'),
     http    = require('http'),
     path    = require('path');
 
@@ -26,6 +27,9 @@ function TispecServer() {
   if ('development' == app.get('env')) {
     app.use(express.errorHandler());
   }
+
+  app.get('/',      specs.list);
+  app.get('/specs', specs.list);
 
   http.createServer(app).listen(app.get('port'), function(){
     console.log('Server listening on port ' + app.get('port'));
