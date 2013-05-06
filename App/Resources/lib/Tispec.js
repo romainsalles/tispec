@@ -4,15 +4,12 @@ var initialized = false;
 
 Ti.include('lib/jasmine.js');
 
-function initializeJasmine(now) {
+function initializeJasmine(reporter) {
+  var env = jasmine.getEnv();
 
-  var TispecReporter = require('lib/TispecReporter').TispecReporter,
-      tispecReporter = new TispecReporter(now),
-      env            = jasmine.getEnv();
-
-  env.addReporter(tispecReporter);
+  env.addReporter(reporter);
   env.specFilter = function(spec) {
-    return tispecReporter.specFilter(spec);
+    return reporter.specFilter(spec);
   };
 
   return env;
@@ -25,10 +22,16 @@ exports.initialize = function(host, port) {
   now = nowjs.nowInitialize('//' + host + ':' + port, {});
 
   now.ready(function () {
-    var jasmineEnv = initializeJasmine(now);
+    var TispecReporter = require('lib/TispecReporter').TispecReporter,
+        tispecReporter = new TispecReporter(now),
+        jasmineEnv     = initializeJasmine(tispecReporter);
 
-    now.execute = function (specs) {
+    now.execute = function (specs, filter) {
       _.each(specs, function(spec) { Ti.include(spec); });
+
+      if (filter) { tispecReporter.setSpecFilter(filter); }
+      else        { tispecReporter.removeSpecFilter();    }
+
       jasmineEnv.execute();
     };
   });
