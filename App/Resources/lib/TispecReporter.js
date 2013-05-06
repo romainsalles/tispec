@@ -13,6 +13,8 @@ var TispecReporter = function(now, connection) {
    */
   this.updateSpecs = function(spec) {
     var results = spec.results();
+    if (results.totalCount === 0) { return; }
+
     now.onSpecResult(spec.description, results.totalCount, results.passedCount, results.failedCount, results.passed()/*, results.items_*/);
   };
 
