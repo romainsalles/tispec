@@ -43,7 +43,7 @@
                     <td><%= spec.passedCount + '/' + spec.totalCount + ' passed' %></td>
                     <td>
                       <a href="#" class="btn btn-small btn-info">Results</a>
-                      <a href="#" class="btn btn-small btn-inverse">Retry</a>
+                      <a href="/specs?filter=<%= encodeURIComponent(spec.description) %>" class="btn btn-small btn-inverse">Retry</a>
                     </td>
                   </tr>
                 <% } %>

@@ -2,7 +2,8 @@
  * GET home page.
  */
 exports.list = function(request, response) {
-  var specs = [];
+  var specs  = [],
+      filter = request.query['filter'];
 
   var onNewSpec = function(description, totalCount, passedCount, failedCount, passed) {
     specs.push({
@@ -23,5 +24,5 @@ exports.list = function(request, response) {
   };
 
   // execute specs
-  broadcastServer.runSpecs(['specs/example_specs.js'], onNewSpec, onNewSuite, onEndSpecs);
+  broadcastServer.runSpecs(['specs/example_specs.js'], onNewSpec, onNewSuite, onEndSpecs, filter);
 };
