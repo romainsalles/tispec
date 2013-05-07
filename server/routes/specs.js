@@ -24,5 +24,5 @@ exports.list = function(request, response) {
   };
 
   // execute specs
-  broadcastServer.runSpecs(['specs/example_specs.js'], onNewSpec, onNewSuite, onEndSpecs, filter);
+  global.broadcastServer.runSpecs(['specs/example_specs.js'], onNewSpec, onNewSuite, onEndSpecs, filter);
 };
