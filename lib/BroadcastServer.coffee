@@ -23,6 +23,9 @@ class BroadcastServer
   # @specs {Array} path of the different specs
   #
   runSpecs: (specs, @onNewSpec, @onNewSuite, @onEndSpecs, filter) ->
-    @everyone.now.execute(specs, filter)
+    if @everyone.now.execute
+      @everyone.now.execute(specs, filter)
+    else
+      @onEndSpecs()
 
 exports.BroadcastServer = BroadcastServer
