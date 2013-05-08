@@ -11,11 +11,11 @@ var TispecReporter = function(now, connection) {
    *
    * @spec {Object} jasmine spec result
    */
-  this.updateSpecs = function(spec) {
+  this.onSpecEnd = function(spec) {
     var results = spec.results();
     if (results.totalCount === 0) { return; }
 
-    now.onSpecResult(spec.description, results.totalCount, results.passedCount, results.failedCount, results.passed()/*, results.items_*/);
+    now.onSpecEnd(spec.description, results.totalCount, results.passedCount, results.failedCount, results.passed()/*, results.items_*/);
   };
 
   /**
@@ -23,10 +23,10 @@ var TispecReporter = function(now, connection) {
    *
    * @suite {Object} jasmine suite result
    */
-  this.updateSuites = function(suite) {
+  this.onSuiteEnd = function(suite) {
     var results = suite.results();
 
-    now.onSuiteResult(suite.description, results.totalCount, results.passedCount, results.failedCount);
+    now.onSuiteEnd(suite.description, results.totalCount, results.passedCount, results.failedCount);
   };
 
   this.endSpecs = function() {
@@ -37,9 +37,9 @@ var TispecReporter = function(now, connection) {
 TispecReporter.prototype = {
   reportRunnerResults:  function(runner) { this.endSpecs(); },
   reportRunnerStarting: function(runner) { Ti.API.error('reportRunnerStarting'); },
-  reportSpecResults:    function(spec)   { this.updateSpecs(spec); },
+  reportSpecResults:    function(spec)   { this.onSpecEnd(spec); },
   reportSpecStarting:   function(spec)   { Ti.API.error('reportSpecStarting'); },
-  reportSuiteResults:   function(suite)  { this.updateSuites(suite); },
+  reportSuiteResults:   function(suite)  { this.onSuiteEnd(suite); },
   /**
    * Filters
    * Specify the specs you want to run.
