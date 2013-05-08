@@ -7,7 +7,14 @@
  */
 var TispecReporter = function(now, connection) {
   /**
-   * Send the spec results to the tispec server.
+   * When spec start, send informations on it to the tispec server.
+   */
+  this.onSpecStart = function(spec) {
+    now.onSpecStart(spec.suite.getFullName() ,spec.description);
+  };
+
+  /**
+   * When spec end, send results to the tispec server.
    *
    * @spec {Object} jasmine spec result
    */
@@ -19,7 +26,7 @@ var TispecReporter = function(now, connection) {
   };
 
   /**
-   * Send the spec results to the server.
+   * When suite end, send results to the tispec server.
    *
    * @suite {Object} jasmine suite result
    */
@@ -39,7 +46,7 @@ TispecReporter.prototype = {
   reportRunnerResults:  function(runner) { this.endSpecs(); },
   reportRunnerStarting: function(runner) { Ti.API.error('reportRunnerStarting'); },
   reportSpecResults:    function(spec)   { this.onSpecEnd(spec); },
-  reportSpecStarting:   function(spec)   { Ti.API.error('reportSpecStarting'); },
+  reportSpecStarting:   function(spec)   { this.onSpecStart(spec); },
   reportSuiteResults:   function(suite)  { this.onSuiteEnd(suite); },
   /**
    * Filters

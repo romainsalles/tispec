@@ -5,6 +5,12 @@ fs  = require('fs')
 list = (request, response) ->
   filter = request.query['filter']
 
+  onSpecStart = (suiteName, description) ->
+    response.write('<script type="text/javascript">updateDescription(' +
+                    JSON.stringify(
+                      suiteName: suiteName
+                      description: description) +
+                    ');</script>')
   onSpecEnd = (suiteName, description, totalCount, passedCount, failedCount, passed) ->
     response.write('<script type="text/javascript">appendSpecResult(' +
                     JSON.stringify(
@@ -33,6 +39,6 @@ list = (request, response) ->
   response.write(ejs.render(file, locals: {filter: filter, specs: []}))
 
 
-  global.broadcastServer.runSpecs(['specs/example_specs.js'], onSpecEnd, onSuiteEnd, onEndSpecs, filter)
+  global.broadcastServer.runSpecs(['specs/example_specs.js'], onSpecStart, onSpecEnd, onSuiteEnd, onEndSpecs, filter)
 
 exports.list = list

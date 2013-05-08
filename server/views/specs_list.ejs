@@ -14,14 +14,21 @@
     <script type="text/javascript" src="lib/bootstrap/js/bootstrap.min.js"></script>
     <script type="text/javascript" src="javascripts/jquery-2.0.0.min.js"></script>
     <script type="text/javascript">
+      var specs = [];
+
       function updateDescription(spec) {
-        $('#spec_description').text(spec.description);
+        $('#spec_description').text(spec.suiteName + ' ' + spec.description);
+      }
+      function updateDescriptionById(id) {
+        var spec = specs[id];
+        console.log('spec[' + id + '] : ' + JSON.stringify(spec));
+        updateDescription(spec);
       }
 
       function appendSpecResult(spec) {
-        var row = '<tr class="' + (spec.passed ? 'success' : 'error') + '"><td>' + spec.suiteName + ' ' + spec.description + '</td><td>' + spec.passedCount + '/' + spec.totalCount + ' passed</td><td><a href="#" class="btn btn-small btn-info">Results</a></td></tr>';
+        var row = '<tr class="spec_row ' + (spec.passed ? 'success' : 'error') + '"><td>' + spec.suiteName + ' ' + spec.description + '</td><td>' + spec.passedCount + '/' + spec.totalCount + ' passed</td><td><a href="#" class="btn btn-small btn-info" onclick="updateDescriptionById(' + (specs.length + 0) + '); return false;">Results</a></td></tr>';
         $('#specs_results > tbody:last').append(row);
-        updateDescription(spec);
+        specs.push(spec);
       }
 
       function appendSuiteStart(suite) {
