@@ -12,6 +12,23 @@
     <link href="stylesheets/tispec.css" rel="stylesheet">
 
     <script type="text/javascript" src="lib/bootstrap/js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="javascripts/jquery-2.0.0.min.js"></script>
+    <script type="text/javascript">
+      function updateDescription(spec) {
+        $('#spec_description').text(spec.description);
+      }
+
+      function appendSpecResult(spec) {
+        var row = '<tr class="' + (spec.passed ? 'success' : 'error') + '"><td>' + spec.description + '</td><td>' + spec.passedCount + '/' + spec.totalCount + ' passed</td><td><a href="#" class="btn btn-small btn-info">Results</a></td></tr>';
+        $('#specs_results > tbody:last').append(row);
+        updateDescription(spec);
+      }
+
+      function appendSuiteStart(suite) {
+        $('#specs_results > tbody:last').append('<tr><td colspan="3">' + suite.description + '</td></tr>');
+      }
+
+    </script>
   </head>
 
   <body data-spy="scroll" data-target=".bs-docs-sidebar">
@@ -29,13 +46,13 @@
           <div>
             <form class="form-inline" method="GET" action="/specs">
               <div class="input-append">
-                <input type="text" name="filter" class="input-xlarge" placeholder="Filter">
+                <input type="text" name="filter" class="input-xlarge" placeholder="Filter" value="<%= filter || '' %>">
                 <button type="submit" class="btn">Execute</button>
               </div>
             </form>
           </div>
           <div>
-            <table class="table table-hover table-condensed">
+            <table class="table table-hover table-condensed" id="specs_results">
               <thead>
                 <tr>
                   <th>Name</th>
@@ -44,16 +61,6 @@
                 </tr>
               </thead>
               <tbody>
-                <% for(var i=0; i<specs.length; i++) { %>
-                  <% spec = specs[i]; %>
-                  <tr class="<%= spec.passed ? 'success' : 'error' %>">
-                    <td><%= spec.description %></td>
-                    <td><%= spec.passedCount + '/' + spec.totalCount + ' passed' %></td>
-                    <td>
-                      <a href="#" class="btn btn-small btn-info">Results</a>
-                    </td>
-                  </tr>
-                <% } %>
               </tbody>
             </table>
           </div>
@@ -61,14 +68,13 @@
 
         <!-- Right Part
         ================================================== -->
-        <% if (specs.length > 0) { %>
         <div class="span5" id="right_body">
-          <h2><%= specs[0].description %></h2>
+          <h2 id="spec_description"></h2>
 
           <h3>Description</h3>
           <div>
             <form class="form-horizontal">
-              <span class="input-block-level uneditable-input">When true is compared to true, it should return true</span>
+              <span id="requirements" class="input-block-level uneditable-input"></span>
             </form>
           </div>
 
@@ -82,9 +88,5 @@
             </form>
           </div>
         </div> <!-- Right Part -->
-        <% } %>
 
       </div>
-
-  </body>
-</html>

@@ -1,23 +1,37 @@
+ejs = require 'ejs'
+fs  = require('fs')
+
 # GET home page
 list = (request, response) ->
-  specs = []
   filter = request.query['filter']
 
   onNewSpec = (description, totalCount, passedCount, failedCount, passed) ->
-    specs.push
-      description: description
-      totalCount:  totalCount
-      passedCount: passedCount
-      failedCount: failedCount
-      passed:      passed
+    response.write('<script type="text/javascript">appendSpecResult(' +
+                    JSON.stringify(
+                      description: description
+                      totalCount:  totalCount
+                      passedCount: passedCount
+                      failedCount: failedCount
+                      passed:      passed) +
+                    ');</script>')
 
   onNewSuite = (description, totalCount, passedCount, failedCount) ->
-    console.log('SUITE : ' + JSON.stringify([description, totalCount, passedCount, failedCount]) + '<br/>')
+    response.write('<script type="text/javascript">appendSuiteStart(' +
+                  JSON.stringify(
+                    description: description
+                    totalCount:  totalCount
+                    passedCount: passedCount
+                    failedCount: failedCount) +
+                  ');</script>')
 
   onEndSpecs = (description, totalCount, passedCount, failedCount) ->
-    response.render('specs_list', { specs: specs });
+    response.end('</body></html>')
 
   # execute specs
+  file = fs.readFileSync('server/views/specs_list.ejs', 'ascii')
+  response.write(ejs.render(file, locals: {filter: filter, specs: []}))
+
+
   global.broadcastServer.runSpecs(['specs/example_specs.js'], onNewSpec, onNewSuite, onEndSpecs, filter)
 
 exports.list = list
