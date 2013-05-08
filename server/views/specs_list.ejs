@@ -19,13 +19,13 @@
       }
 
       function appendSpecResult(spec) {
-        var row = '<tr class="' + (spec.passed ? 'success' : 'error') + '"><td>' + spec.description + '</td><td>' + spec.passedCount + '/' + spec.totalCount + ' passed</td><td><a href="#" class="btn btn-small btn-info">Results</a></td></tr>';
+        var row = '<tr class="' + (spec.passed ? 'success' : 'error') + '"><td>' + spec.suiteName + ' ' + spec.description + '</td><td>' + spec.passedCount + '/' + spec.totalCount + ' passed</td><td><a href="#" class="btn btn-small btn-info">Results</a></td></tr>';
         $('#specs_results > tbody:last').append(row);
         updateDescription(spec);
       }
 
       function appendSuiteStart(suite) {
-        $('#specs_results > tbody:last').append('<tr><td colspan="3">' + suite.description + '</td></tr>');
+        $('#specs_results > tbody:last').append('<tr><td>' + suite.description + '</td><td colspan="2">' + suite.passedCount + '/' + suite.totalCount + ' passed</td></tr>');
       }
 
     </script>

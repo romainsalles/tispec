@@ -15,7 +15,7 @@ var TispecReporter = function(now, connection) {
     var results = spec.results();
     if (results.totalCount === 0) { return; }
 
-    now.onSpecEnd(spec.description, results.totalCount, results.passedCount, results.failedCount, results.passed()/*, results.items_*/);
+    now.onSpecEnd(spec.suite.getFullName() ,spec.description, results.totalCount, results.passedCount, results.failedCount, results.passed()/*, results.items_*/);
   };
 
   /**
@@ -25,6 +25,7 @@ var TispecReporter = function(now, connection) {
    */
   this.onSuiteEnd = function(suite) {
     var results = suite.results();
+    if (results.totalCount === 0) { return; }
 
     now.onSuiteEnd(suite.description, results.totalCount, results.passedCount, results.failedCount);
   };

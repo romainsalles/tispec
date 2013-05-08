@@ -11,7 +11,7 @@ class BroadcastServer
 
     @everyone = nowjs.initialize server
 
-    @everyone.now.onSpecEnd = (description, totalCount, passedCount, failedCount, passed) => @onSpecEnd(description, totalCount, passedCount, failedCount, passed)
+    @everyone.now.onSpecEnd = (suiteName, description, totalCount, passedCount, failedCount, passed) => @onSpecEnd(suiteName, description, totalCount, passedCount, failedCount, passed)
     @everyone.now.onSuiteEnd = (description, totalCount, passedCount, failedCount) =>
       @onSuiteEnd(description, totalCount, passedCount, failedCount)
     @everyone.now.endSpecs = => @onEndSpecs()

@@ -5,9 +5,10 @@ fs  = require('fs')
 list = (request, response) ->
   filter = request.query['filter']
 
-  onSpecEnd = (description, totalCount, passedCount, failedCount, passed) ->
+  onSpecEnd = (suiteName, description, totalCount, passedCount, failedCount, passed) ->
     response.write('<script type="text/javascript">appendSpecResult(' +
                     JSON.stringify(
+                      suiteName: suiteName
                       description: description
                       totalCount:  totalCount
                       passedCount: passedCount
