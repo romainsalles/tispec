@@ -6,41 +6,14 @@
  * For more info, @see  https://github.com/romainsalles/tispec
  */
 
-
-var queue = [];
-
-function sendRequest(actionName, data) {
-  queue.push({
-    actionName: actionName,
-    data: data
-  });
-}
-
-/**
- * Force the order of the requests.
- * Only one request can be sent at the same time, and in the order they are
- * pushed in the stack (FIFO)
- */
-(function sendRequests() {
-  if (queue[0]) {
-    var currentRequest = queue.shift();
-    var url = "http://localhost:8666/specs/" + currentRequest.actionName;
-    var client = Ti.Network.createHTTPClient({
-      onload: sendRequests
-    });
-    client.open("POST", url);
-    client.send(currentRequest.data);
-  } else {
-    setTimeout(sendRequests, 1000);
-  }
-})();
+var RequestManager = require('./RequestManager');
 
 var TispecReporter = function(now) {
   /**
    * When spec start, send informations on it to the tispec server.
    */
   this.onSpecStart = function(spec) {
-    sendRequest('specStart', {
+    RequestManager.sendRequest('specStart', {
       spec: JSON.stringify({
         suiteName:   spec.suite.getFullName(),
         description: spec.description
@@ -57,7 +30,7 @@ var TispecReporter = function(now) {
     var results = spec.results();
     if (results.totalCount === 0) { return; }
 
-    sendRequest('specEnd', {
+    RequestManager.sendRequest('specEnd', {
       spec: JSON.stringify({
         suiteName:   spec.suite.getFullName(),
         description: spec.description,
@@ -79,7 +52,7 @@ var TispecReporter = function(now) {
     var results = suite.results();
     if (results.totalCount === 0) { return; }
 
-    sendRequest('suiteEnd', {
+    RequestManager.sendRequest('suiteEnd', {
       suite: JSON.stringify({
         description: suite.description,
         totalCount:  results.totalCount,
@@ -90,7 +63,7 @@ var TispecReporter = function(now) {
   };
 
   this.endSpecs = function() {
-    sendRequest('end');
+    RequestManager.sendRequest('end');
   };
 };
 
