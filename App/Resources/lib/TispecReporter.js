@@ -65,7 +65,7 @@ var TispecReporter = function(now) {
         passedCount: results.passedCount,
         failedCount: results.failedCount,
         passed:      results.passed(),
-        items:       results.items_
+        subSpecs:    results.items_
       })
     });
   };

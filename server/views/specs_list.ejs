@@ -18,16 +18,26 @@
 
       function updateDescription(spec) {
         $('#spec_description').text(spec.suiteName + ' ' + spec.description);
+        $('#sub_specs_results').find("tr:gt(0)").remove();
+
+        var subSpecs = spec.subSpecs || [];
+        for (var i = 0, l = subSpecs.length; i < l; i += 1) {
+          var subSpec = subSpecs[i];
+          if (!subSpec.passed_) {
+            var row = '<tr><td>' + (i+1) + '</td><td>' + subSpec.expected + '</td><td>' + subSpec.actual + '</td></tr>';
+            $('#sub_specs_results > tbody:last').append(row);
+          }
+        }
       }
       function updateDescriptionById(id) {
         var spec = specs[id];
-        console.log('spec[' + id + '] : ' + JSON.stringify(spec));
         updateDescription(spec);
       }
 
       function appendSpecResult(spec) {
         var row = '<tr class="spec_row ' + (spec.passed ? 'success' : 'error') + '"><td>' + spec.suiteName + ' ' + spec.description + '</td><td>' + spec.passedCount + '/' + spec.totalCount + ' passed</td><td><a href="#" class="btn btn-small btn-info" onclick="updateDescriptionById(' + (specs.length + 0) + '); return false;">Results</a></td></tr>';
         $('#specs_results > tbody:last').append(row);
+        updateDescription(spec);
         specs.push(spec);
       }
 
@@ -78,21 +88,19 @@
         <div class="span5" id="right_body">
           <h2 id="spec_description"></h2>
 
-          <h3>Description</h3>
+          <h3>Errors</h3>
           <div>
-            <form class="form-horizontal">
-              <span id="requirements" class="input-block-level uneditable-input"></span>
-            </form>
-          </div>
-
-          <h3>Validation</h3>
-          <div>
-            <form class="form-horizontal">
-              <textarea rows="3" class="input-block-level" placeholder="Description of the error"></textarea>
-              <button class="btn btn-large btn-success" type="button">OK</button>
-              <button class="btn btn-large btn-danger" type="button">NOK</button>
-              </div>
-            </form>
+            <table class="table table-hover table-condensed" id="sub_specs_results">
+              <thead>
+                <tr>
+                  <th>Id</th>
+                  <th>Expected</th>
+                  <th>Got</th>
+                </tr>
+              </thead>
+              <tbody>
+              </tbody>
+            </table>
           </div>
         </div> <!-- Right Part -->
 
