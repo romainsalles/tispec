@@ -1,30 +1,6 @@
 // @see https://github.com/pivotal/jasmine/wiki
+
 (function(){
-  var RequestManager = require('/lib/RequestManager');
-
-  function askConfirmation(description) {
-    var confirmation = null;
-
-    RequestManager.sendRequest('askConfirmation', {
-      expectedBehavior: JSON.stringify({
-        description: description
-      })
-    }, function(e) {
-      confirmation = e.json.confirmation;
-    });
-
-    waitsFor(function() {
-      if (confirmation !== null) {
-        expect(confirmation).toEqual(true);
-      }
-
-      return confirmation !== null;
-    }, "confirmation received", 60000);
-
-    return confirmation;
-  }
-
-
   function isNumber(o) {
     return ! isNaN (o-0) && o !== null && o !== "" && o !== false && o !== true;
   }

@@ -27,6 +27,8 @@ exports.initialize = function(host, port) {
         jasmineEnv = initializeJasmine(reporter);
 
     now.execute = function (specs, filter) {
+      Ti.include('/lib/TispecHelper.js');
+
       _.each(specs, function(spec) { Ti.include(spec); });
 
       if (filter) { reporter.setSpecFilter(filter); }
