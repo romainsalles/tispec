@@ -1,7 +1,5 @@
 http  = require 'http'
-net   = require 'net'
 nowjs = require 'now'
-_     = require '../App/Resources/lib/underscore'
 
 class BroadcastServer
 
