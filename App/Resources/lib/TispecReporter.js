@@ -5,12 +5,47 @@
  *
  * For more info, @see  https://github.com/romainsalles/tispec
  */
-var TispecReporter = function(now, connection) {
+
+
+var queue = [];
+
+function sendRequest(actionName, data) {
+  queue.push({
+    actionName: actionName,
+    data: data
+  });
+}
+
+/**
+ * Force the order of the requests.
+ * Only one request can be sent at the same time, and in the order they are
+ * pushed in the stack (FIFO)
+ */
+(function sendRequests() {
+  if (queue[0]) {
+    var currentRequest = queue.shift();
+    var url = "http://localhost:8666/specs/" + currentRequest.actionName;
+    var client = Ti.Network.createHTTPClient({
+      onload: sendRequests
+    });
+    client.open("POST", url);
+    client.send(currentRequest.data);
+  } else {
+    setTimeout(sendRequests, 1000);
+  }
+})();
+
+var TispecReporter = function(now) {
   /**
    * When spec start, send informations on it to the tispec server.
    */
   this.onSpecStart = function(spec) {
-    now.onSpecStart(spec.suite.getFullName() ,spec.description);
+    sendRequest('specStart', {
+      spec: JSON.stringify({
+        suiteName:   spec.suite.getFullName(),
+        description: spec.description
+      })
+    });
   };
 
   /**
@@ -22,7 +57,17 @@ var TispecReporter = function(now, connection) {
     var results = spec.results();
     if (results.totalCount === 0) { return; }
 
-    now.onSpecEnd(spec.suite.getFullName() ,spec.description, results.totalCount, results.passedCount, results.failedCount, results.passed()/*, results.items_*/);
+    sendRequest('specEnd', {
+      spec: JSON.stringify({
+        suiteName:   spec.suite.getFullName(),
+        description: spec.description,
+        totalCount:  results.totalCount,
+        passedCount: results.passedCount,
+        failedCount: results.failedCount,
+        passed:      results.passed(),
+        items:       results.items_
+      })
+    });
   };
 
   /**
@@ -34,11 +79,18 @@ var TispecReporter = function(now, connection) {
     var results = suite.results();
     if (results.totalCount === 0) { return; }
 
-    now.onSuiteEnd(suite.description, results.totalCount, results.passedCount, results.failedCount);
+    sendRequest('suiteEnd', {
+      suite: JSON.stringify({
+        description: suite.description,
+        totalCount:  results.totalCount,
+        passedCount: results.passedCount,
+        failedCount: results.failedCount
+      })
+    });
   };
 
   this.endSpecs = function() {
-    now.endSpecs();
+    sendRequest('end');
   };
 };
 

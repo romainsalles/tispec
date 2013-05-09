@@ -10,23 +10,16 @@ class BroadcastServer
     server.listen port
 
     @everyone = nowjs.initialize server
-
-    @everyone.now.onSpecStart = (suiteName, description, totalCount, passedCount, failedCount, passed) => @onSpecStart(suiteName, description, totalCount, passedCount, failedCount, passed)
-    @everyone.now.onSpecEnd = (suiteName, description, totalCount, passedCount, failedCount, passed) => @onSpecEnd(suiteName, description, totalCount, passedCount, failedCount, passed)
-    @everyone.now.onSuiteEnd = (description, totalCount, passedCount, failedCount) =>
-      @onSuiteEnd(description, totalCount, passedCount, failedCount)
-    @everyone.now.endSpecs = => @onEndSpecs()
-
     console.log('Server created and listening on port ' + port)
 
   # Dispatch specs to the different apps
   #
   # @specs {Array} path of the different specs
   #
-  runSpecs: (specs, @onSpecStart, @onSpecEnd, @onSuiteEnd, @onEndSpecs, filter) ->
+  runSpecs: (specs, filter, onEndSpecs) ->
     if @everyone.now.execute
       @everyone.now.execute(specs, filter)
     else
-      @onEndSpecs()
+      onEndSpecs()
 
 exports.BroadcastServer = BroadcastServer
