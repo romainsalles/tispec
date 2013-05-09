@@ -82,10 +82,10 @@
 
     var socket = io.connect('http://localhost');
 
-    /*socket.on('confirmSpec', function (expectedBehavior) {
+    socket.on('confirmSpec', function (expectedBehavior) {
       var confirmation = confirm(expectedBehavior.description);
       socket.emit('confirmSpecResult', { confirmation: confirmation });
-    });*/
+    });
 
     socket.on('specStart', function(spec) {
       updateDescription(spec);
@@ -100,7 +100,7 @@
     });
 
     socket.on('end', function() {
-      alert('Specs execution finished');
+      alert('Spec execution finished');
     });
 
 
