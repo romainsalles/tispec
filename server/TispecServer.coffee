@@ -28,8 +28,10 @@ class TispecServer
     app.post '/specs/suiteEnd',  specs.suiteEnd
     app.post '/specs/end',       specs.specsEnd
 
-    http.createServer(app).listen(app.get('port'), ->
+    server = http.createServer(app).listen(app.get('port'), ->
       console.log('Server listening on port ' + app.get('port'))
     )
+    require('./SpecsSocketManager').get server
+
 
 exports.TispecServer = TispecServer

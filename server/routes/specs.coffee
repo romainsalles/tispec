@@ -1,57 +1,45 @@
 ejs = require 'ejs'
-fs  = require('fs')
+fs  = require 'fs'
 
-currentResponse =  null
-onSpecStart = (spec) ->
-  currentResponse.write('<script type="text/javascript">updateDescription(' + spec + ');</script>')
-onSpecEnd = (spec) ->
-  currentResponse.write('<script type="text/javascript">appendSpecResult(' + spec + ');</script>')
-
-onSuiteEnd = (suite) ->
-  currentResponse.write('<script type="text/javascript">appendSuiteStart(' + suite + ');</script>')
-
-onEndSpecs = () ->
-  currentResponse.end('</body></html>')
-
+currentResponse = null
 
 # GET home page
 list = (request, response) ->
-  filter = request.query['filter']
-
-  if currentResponse
-    currentResponse.end()
-
+  currentResponse.end() if currentResponse
   currentResponse = response
 
-  # execute specs
-  file = fs.readFileSync('server/views/specs_list.ejs', 'ascii')
-  response.write(ejs.render(file, locals: {filter: filter, specs: []}))
+  filter = request.query['filter']
+  file   = fs.readFileSync 'server/views/specs_list.ejs', 'ascii'
+  response.end(ejs.render(file, locals: {filter: filter}))
 
-  global.broadcastServer.runSpecs(['specs/example_specs.js'], filter, onEndSpecs)
+  # execute specs
+  global.broadcastServer.runSpecs(['specs/example_specs.js'], filter)
 
 exports.list = list
 
-
 specStart = (request, response) ->
-  onSpecStart request.body.spec
+  spec = JSON.parse(request.body.spec)
+  require('../SpecsSocketManager').onSpecStart spec
   response.end()
 
 exports.specStart = specStart
 
 specEnd = (request, response) ->
-  onSpecEnd request.body.spec
+  spec = JSON.parse(request.body.spec)
+  require('../SpecsSocketManager').onSpecEnd spec
   response.end()
 
 exports.specEnd = specEnd
 
 suiteEnd = (request, response) ->
-  onSuiteEnd request.body.suite
+  suite = JSON.parse(request.body.suite)
+  require('../SpecsSocketManager').onSuiteEnd suite
   response.end()
 
 exports.suiteEnd = suiteEnd
 
 specsEnd = (request, response) ->
-  onEndSpecs()
+  require('../SpecsSocketManager').onEnd()
   response.end()
 
 exports.specsEnd = specsEnd
