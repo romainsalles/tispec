@@ -20,13 +20,17 @@
         $('#spec_description').text(spec.suiteName + ' ' + spec.description);
         $('#sub_specs_results').find("tr:gt(0)").remove();
 
-        var subSpecs = spec.subSpecs || [];
-        for (var i = 0, l = subSpecs.length; i < l; i += 1) {
-          var subSpec = subSpecs[i];
-          if (!subSpec.passed_) {
-            var row = '<tr><td>' + (i+1) + '</td><td>' + subSpec.expected + '</td><td>' + subSpec.actual + '</td></tr>';
-            $('#sub_specs_results > tbody:last').append(row);
+        if (!spec.passed) {
+          var subSpecs = spec.subSpecs || [];
+          for (var i = 0, l = subSpecs.length; i < l; i += 1) {
+            var subSpec = subSpecs[i];
+            if (!subSpec.passed_) {
+              var row = '<tr><td>' + (i+1) + '</td><td>' + subSpec.expected + '</td><td>' + subSpec.actual + '</td></tr>';
+              $('#sub_specs_results > tbody:last').append(row);
+            }
           }
+        } else {
+          $('#sub_specs_results > tbody:last').append('<tr><td colspan="3"></td></tr>');
         }
       }
       function updateDescriptionById(id) {
@@ -59,7 +63,6 @@
         <!-- Left Part
         ================================================== -->
         <div class="span6" id="left_body">
-          <h2>Specs List</h2>
           <div>
             <form class="form-inline" method="GET" action="/specs">
               <div class="input-append">
@@ -85,7 +88,7 @@
 
         <!-- Right Part
         ================================================== -->
-        <div class="span5" id="right_body">
+        <div class="span5 offset7" id="right_body" style="position: fixed;">
           <h2 id="spec_description"></h2>
 
           <h3>Errors</h3>
@@ -104,4 +107,5 @@
           </div>
         </div> <!-- Right Part -->
 
-      </div>
+      </div> <!-- row -->
+    </div> <!-- container -->
