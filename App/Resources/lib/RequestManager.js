@@ -44,6 +44,6 @@ function parseResponse(e) {
     client.open("POST", url);
     client.send(currentRequest.data);
   } else {
-    setTimeout(sendRequests, 1000);
+    setTimeout(sendRequests, 200);
   }
 })();
