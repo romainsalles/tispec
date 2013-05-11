@@ -31,7 +31,7 @@ exports.initialize = function(host, port) {
 
       _.each(specs, function(spec) { Ti.include(spec); });
 
-      if (filter) { reporter.setSpecFilter(filter); }
+      if (filter && filter !== '') { reporter.setSpecFilter(filter); }
       else        { reporter.removeSpecFilter();    }
 
       jasmineEnv.execute();
