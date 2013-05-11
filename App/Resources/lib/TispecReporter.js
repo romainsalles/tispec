@@ -9,6 +9,11 @@
 var RequestManager = require('./RequestManager');
 
 var TispecReporter = function(now) {
+
+  this.startSpecs = function(runner) {
+    RequestManager.sendRequest('startSpecs');
+  };
+
   /**
    * When spec start, send informations on it to the tispec server.
    */
@@ -69,7 +74,7 @@ var TispecReporter = function(now) {
 
 TispecReporter.prototype = {
   reportRunnerResults:  function(runner) { this.endSpecs(); },
-  reportRunnerStarting: function(runner) { Ti.API.error('reportRunnerStarting'); },
+  reportRunnerStarting: function(runner) { this.startSpecs(); },
   reportSpecResults:    function(spec)   { this.onSpecEnd(spec); },
   reportSpecStarting:   function(spec)   { this.onSpecStart(spec); },
   reportSuiteResults:   function(suite)  { this.onSuiteEnd(suite); },

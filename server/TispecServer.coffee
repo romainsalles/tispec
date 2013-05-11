@@ -23,6 +23,7 @@ class TispecServer
 
     app.get  '/',                      specs.list
     app.get  '/specs',                 specs.list
+    app.post '/specs/startSpecs',      specs.startSpecs
     app.post '/specs/specStart',       specs.specStart
     app.post '/specs/specEnd',         specs.specEnd
     app.post '/specs/suiteEnd',        specs.suiteEnd

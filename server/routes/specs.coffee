@@ -19,6 +19,12 @@ askConfirmation = (request, response) ->
 
 exports.askConfirmation = askConfirmation
 
+startSpecs = (request, response) ->
+  require('../SpecsSocketManager').onStartSpecs()
+  endResponse(response)
+
+exports.startSpecs = startSpecs
+
 specStart = (request, response) ->
   spec = JSON.parse(request.body.spec)
   require('../SpecsSocketManager').onSpecStart spec

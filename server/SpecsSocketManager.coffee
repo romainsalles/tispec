@@ -10,6 +10,9 @@ class SpecsSocketManager
       io.sockets.on 'connection', (socket) =>
         currentSocket = socket
 
+        socket.on 'runSpecs', (filter) =>
+          global.broadcastServer.runSpecs ['specs/example_specs.js'], filter
+
         socket.on 'confirmSpecResult', (result) =>
           onConfirmSpecResult result.confirmation
 
@@ -20,6 +23,7 @@ class SpecsSocketManager
       onConfirmSpecResult = _onConfirmSpecResult
 
   @get:         (server)   -> instance ?= new SpecsSocketManagerSingleton(server)
+  @onStartSpecs:           -> instance.emit 'start',     {}
   @onSpecStart: (spec)     -> instance.emit 'specStart', spec
   @onSpecEnd:   (spec)     -> instance.emit 'specEnd',   spec
   @onSuiteEnd:  (suite)    -> instance.emit 'suiteEnd',  suite
@@ -30,6 +34,7 @@ class SpecsSocketManager
     instance.emit 'confirmSpec', behavior
 
 exports.get           = SpecsSocketManager.get
+exports.onStartSpecs  = SpecsSocketManager.onStartSpecs
 exports.onSpecStart   = SpecsSocketManager.onSpecStart
 exports.onSpecEnd     = SpecsSocketManager.onSpecEnd
 exports.onSuiteEnd    = SpecsSocketManager.onSuiteEnd
