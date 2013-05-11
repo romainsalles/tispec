@@ -11,7 +11,14 @@ var RequestManager = require('./RequestManager');
 var TispecReporter = function(now) {
 
   this.startSpecs = function(runner) {
-    RequestManager.sendRequest('startSpecs');
+    RequestManager.sendRequest('startSpecs', {
+      specsSuite: JSON.stringify({
+        deviceName: Ti.Platform.username,
+        appName:    Titanium.App.name,
+        version:    Titanium.App.version,
+        totalCount: runner.specs().length
+      })
+    });
   };
 
   /**
@@ -74,7 +81,7 @@ var TispecReporter = function(now) {
 
 TispecReporter.prototype = {
   reportRunnerResults:  function(runner) { this.endSpecs(); },
-  reportRunnerStarting: function(runner) { this.startSpecs(); },
+  reportRunnerStarting: function(runner) { this.startSpecs(runner); },
   reportSpecResults:    function(spec)   { this.onSpecEnd(spec); },
   reportSpecStarting:   function(spec)   { this.onSpecStart(spec); },
   reportSuiteResults:   function(suite)  { this.onSuiteEnd(suite); },

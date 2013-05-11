@@ -5,21 +5,19 @@ var SpecsSuite = (function() {
 
   suites = [];
 
-  SpecsSuite.prototype.totalCount = 0;
-
   SpecsSuite.prototype.passedCount = 0;
 
   SpecsSuite.prototype.errorCount = 0;
 
-  function SpecsSuite(appName, deviceName) {
+  function SpecsSuite(appName, deviceName, totalCount) {
     this.appName = appName;
     this.deviceName = deviceName;
+    this.totalCount = totalCount;
     this.id = 1;
   }
 
   SpecsSuite.prototype.addSpec = function(spec) {
     specs.push(spec);
-    this.totalCount += 1;
     if (spec.passed) {
       this.passedCount += 1;
     } else {
@@ -36,3 +34,4 @@ var SpecsSuite = (function() {
   return SpecsSuite;
 
 })();
+

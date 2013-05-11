@@ -22,12 +22,12 @@ class SpecsSocketManager
     setConfirmSpecCallback: (_onConfirmSpecResult) ->
       onConfirmSpecResult = _onConfirmSpecResult
 
-  @get:         (server)   -> instance ?= new SpecsSocketManagerSingleton(server)
-  @onStartSpecs:           -> instance.emit 'start',     {}
-  @onSpecStart: (spec)     -> instance.emit 'specStart', spec
-  @onSpecEnd:   (spec)     -> instance.emit 'specEnd',   spec
-  @onSuiteEnd:  (suite)    -> instance.emit 'suiteEnd',  suite
-  @onEnd:                  -> instance.emit 'end'
+  @get:         (server)      -> instance ?= new SpecsSocketManagerSingleton(server)
+  @onStartSpecs: (specsSuite) -> instance.emit 'start',     specsSuite
+  @onSpecStart: (spec)        -> instance.emit 'specStart', spec
+  @onSpecEnd:   (spec)        -> instance.emit 'specEnd',   spec
+  @onSuiteEnd:  (suite)       -> instance.emit 'suiteEnd',  suite
+  @onEnd:                     -> instance.emit 'end'
 
   @onConfirmSpec: (behavior, onConfirmSpecResult) ->
     instance.setConfirmSpecCallback onConfirmSpecResult

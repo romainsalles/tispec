@@ -40,7 +40,7 @@
               <table style="width: 100%;">
                 <tr>
                   <td rowspan="2" style="width: 70px;">
-                    <input type="text" value="75" class="dial" style="webkit-box-shadow:none; box-shadow: none;">
+                    <input type="text" value="0" id="specs_suite_avancement_1" class="dial" style="webkit-box-shadow:none; box-shadow: none;">
                   </td>
                   <td>
                     <div id="specs_suite_avancement_success_1" class="progress progress-success progress-striped" style="margin-top: 10px; margin-bottom: 10px;">
@@ -124,8 +124,8 @@
       socket.emit('confirmSpecResult', { confirmation: confirmation });
     });
 
-    socket.on('start', function(data) {
-      specsSuite = new SpecsSuite('Testapp', 'Simulator');
+    socket.on('start', function(_specsSuite) {
+      specsSuite = new SpecsSuite(_specsSuite.appName, _specsSuite.deviceName, _specsSuite.totalCount);
     });
 
     socket.on('specStart', function(spec) {
@@ -155,9 +155,15 @@
     var specsSuite;
 
     function updateAvancement(specsSuite) {
-      var avancement = (specsSuite.passedCount / specsSuite.totalCount) * 100;
-      $('#specs_suite_avancement_success_1 > .bar').css( "width", avancement + "%" );
-      $('#specs_suite_avancement_error_1 > .bar').css( "width", (100 - avancement) + "%" );
+      var passed           = specsSuite.passedCount,
+          error            = specsSuite.errorCount,
+          total            = passed + error,
+          advancement      = (passed+error)/specsSuite.totalCount * 100,
+          passedPercentage = (passed / total) * 100;
+
+      $('#specs_suite_avancement_success_1 > .bar').css( "width", passedPercentage + "%" );
+      $('#specs_suite_avancement_error_1 > .bar').css( "width", (100 - passedPercentage) + "%" );
+      $('#specs_suite_avancement_1').val( advancement ).trigger('change');
     }
 
     function appendSpecResult(spec) {
