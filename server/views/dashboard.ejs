@@ -58,28 +58,16 @@
               </table>
             </div>
             <div class="span7"> <!-- alerts -->
-              <div class="alert">
-                <p>
-                  <button type="button" class="close" data-dismiss="alert">&times;</button>
-                  <strong>Warning!</strong> Best check yo self, you're not looking too good. A little code session could help... or maybe a little walk in the sun, who knows ?
-                </p>
-                <p>
-                  <button class="btn btn-small btn-block btn-success" type="button">OK</button>
-                  <button class="btn btn-small btn-block btn-danger" type="button">NOK</button>
-                </p>
-              </div>
-            </div>
-          </div>
-
-          <div style="span12"> <!-- Results -->
-            <div style="span12">
-              <form id="monid" class="span6" method="GET" action="#" onsubmit="return runSpecs(this);">
-                <div class="input-append span12">
+              <form id="monid" class="span10" method="GET" action="#" onsubmit="return runSpecs(this);">
+                <div class="input-append span12" style="margin-top: 20px;">
                   <input type="text" class="span11" name="filter" placeholder="Filter">
                   <button type="submit" class="btn">Run</button>
                 </div>
               </form>
             </div>
+          </div>
+
+          <div style="span12"> <!-- Results -->
 
             <div class="span12" style="height: 300px; overflow-y: scroll;">
               <table class="table table-hover table-condensed" id="specs_results">
