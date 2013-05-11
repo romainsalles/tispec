@@ -75,7 +75,7 @@
             <div style="span12">
               <form class="span6" method="GET" action="/specs">
                 <div class="input-append span12">
-                  <input type="text" class="span11" name="filter" placeholder="Filter" value="<%= filter %>">
+                  <input type="text" class="span11" name="filter" placeholder="Filter" value="<%= filter || '' %>">
                   <button type="submit" class="btn">Run</button>
                 </div>
               </form>
