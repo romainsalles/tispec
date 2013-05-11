@@ -9,18 +9,6 @@ endResponse = (response) ->
   response.end()
 
 
-# GET home page
-list = (request, response) ->
-  filter = request.query['filter']
-  file   = fs.readFileSync 'server/views/specs_list.ejs', 'ascii'
-  response.end(ejs.render(file, locals: {filter: filter}))
-
-  # execute specs
-  global.broadcastServer.runSpecs(['specs/example_specs.js'], filter)
-
-exports.list = list
-
-
 askConfirmation = (request, response) ->
   currentResponse.end() if currentResponse
   currentResponse = response
@@ -57,3 +45,10 @@ specsEnd = (request, response) ->
   endResponse(response)
 
 exports.specsEnd = specsEnd
+
+dashboard = (request, response) ->
+  filter = request.query['filter'] || null
+  file   = fs.readFileSync 'server/views/dashboard.ejs', 'ascii'
+  response.end(ejs.render(file, locals: {filter: filter}))
+
+exports.dashboard = dashboard

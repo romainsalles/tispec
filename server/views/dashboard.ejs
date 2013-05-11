@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>TiSpec</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+    <link href="/lib/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+    <link href="/lib/bootstrap/css/bootstrap-responsive.min.css" rel="stylesheet">
+    <link href="/stylesheets/tispec.css" rel="stylesheet">
+
+    <script type="text/javascript" src="/javascripts/SpecsSuite.js"></script>
+
+    <script type="text/javascript" src="/lib/bootstrap/js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="/javascripts/jquery-2.0.0.min.js"></script>
+    <script type="text/javascript" src="/javascripts/bootstrap-tooltip.js"></script>
+    <script type="text/javascript" src="/javascripts/bootstrap-popover.js"></script>
+    <script type="text/javascript" src="/javascripts/jquery.knob.js"></script>
+    <script type="text/javascript" src="/socket.io/socket.io.js"></script>
+  </head>
+
+  <body data-spy="scroll" data-target=".bs-docs-sidebar">
+
+      <div class="row-fluid">
+        <div class="page-header" style="margin-top: 0px;">
+          <h1>Tispec <small>The ultimate Titanium test engine</small></h1>
+        </div>
+      </div>
+
+      <div class="row-fluid">
+        <div class="span6 specs_container" id="specs_suite_1"> <!-- Spec Container -->
+          <div class="span12"> <!-- App / Device -->
+            <h3 style="line-height: 20px; padding-left: 20px;">Shopmium - Simulator</h3>
+          </div>
+
+          <div class="span12"> <!-- Statistics (header) -->
+            <div class="span5" style="">
+              <table style="width: 100%;">
+                <tr>
+                  <td rowspan="2" style="width: 70px;">
+                    <input type="text" value="75" class="dial" style="webkit-box-shadow:none; box-shadow: none;">
+                  </td>
+                  <td>
+                    <div id="specs_suite_avancement_success_1" class="progress progress-success progress-striped" style="margin-top: 10px; margin-bottom: 10px;">
+                      <div class="bar" style="width: 90%"></div>
+                    </div>
+                  </td>
+                </tr>
+                <tr>
+                  <td>
+                    <div id="specs_suite_avancement_error_1" lass="progress progress-danger progress-striped">
+                      <div class="bar" style="width: 10%"></div>
+                    </div>
+                  </td>
+                </tr>
+              </table>
+            </div>
+            <div class="span7"> <!-- alerts -->
+              <div class="alert">
+                <p>
+                  <button type="button" class="close" data-dismiss="alert">&times;</button>
+                  <strong>Warning!</strong> Best check yo self, you're not looking too good. A little code session could help... or maybe a little walk in the sun, who knows ?
+                </p>
+                <p>
+                  <button class="btn btn-small btn-block btn-success" type="button">OK</button>
+                  <button class="btn btn-small btn-block btn-danger" type="button">NOK</button>
+                </p>
+              </div>
+            </div>
+          </div>
+
+          <div style="span12"> <!-- Results -->
+            <div style="span12">
+              <form class="span6" method="GET" action="/specs">
+                <div class="input-append span12">
+                  <input type="text" class="span11" name="filter" placeholder="Filter" value="<%= filter %>">
+                  <button type="submit" class="btn">Run</button>
+                </div>
+              </form>
+            </div>
+
+            <div class="span12" style="height: 300px; overflow-y: scroll;">
+              <table class="table table-hover table-condensed" id="specs_results">
+                <thead>
+                  <tr>
+                    <th>Name</th>
+                    <th>Status</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr><td colspan="3"></td></tr>
+                </tbody>
+              </table>
+            </div>
+
+          </div>
+        </div>
+
+      </div>
+
+    </div>
+  </body>
+
+  <script type="text/javascript">
+    $(function() {
+        $(".dial").knob({
+          width:    60,
+          height:   60,
+          readOnly: true
+        });
+    });
+
+    // Socket
+    // =========================================================================
+
+    var socket = io.connect('http://localhost');
+
+    socket.emit('runSpecs', {filter: null});
+
+    socket.on('confirmSpec', function (expectedBehavior) {
+      var confirmation = confirm(expectedBehavior.description);
+      socket.emit('confirmSpecResult', { confirmation: confirmation });
+    });
+
+    socket.on('start', function(data) {
+      specsSuite = new SpecsSuite('Testapp', 'Simulator');
+    });
+
+    socket.on('specStart', function(spec) {
+      // [TODO] add row in the specs table
+    });
+
+    socket.on('specEnd', function(spec) {
+      // [TODO] complete spec row with the results
+      appendSpecResult(spec);
+    });
+
+    socket.on('suiteEnd', function(suite) {
+      appendSuiteEnd(suite);
+    });
+
+    socket.on('end', function() {
+      $('.spec_row').each(function() {
+        // Add a popover displaying the results of the specs
+        $(this).popover('hide');
+      });
+    });
+
+
+    // Specs
+    // =========================================================================
+
+    var specsSuite;
+
+    function updateAvancement(specsSuite) {
+      var avancement = (specsSuite.passedCount / specsSuite.totalCount) * 100;
+      $('#specs_suite_avancement_success_1 > .bar').css( "width", avancement + "%" );
+      $('#specs_suite_avancement_error_1 > .bar').css( "width", (100 - avancement) + "%" );
+    }
+
+    function appendSpecResult(spec) {
+      var row = '<tr class="spec_row ' + (spec.passed ? 'success' : 'error') + '" data-title="' + spec.description + '" data-content="coucou" data-placement="top"><td>' + spec.suiteName + ' ' + spec.description + '</td><td>' + spec.passedCount + '/' + spec.totalCount + '</td></tr>';
+      $('#specs_results > tbody > tr:first').before(row);
+      specsSuite.addSpec(spec);
+      updateAvancement(specsSuite);
+    }
+
+    function appendSuiteEnd(suite) {
+      $('#specs_results > tbody > tr:first').before('<tr><td>' + suite.description + '</td><td colspan="2">' + suite.passedCount + '/' + suite.totalCount + '</td></tr>');
+      specsSuite.addSuite(suite);
+    }
+
+  </script>
+
+</html>

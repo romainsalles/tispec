@@ -28,6 +28,7 @@ class TispecServer
     app.post '/specs/suiteEnd',        specs.suiteEnd
     app.post '/specs/end',             specs.specsEnd
     app.post '/specs/askConfirmation', specs.askConfirmation
+    app.get  '/specs/dashboard',       specs.dashboard
 
     server = http.createServer(app).listen(app.get('port'), ->
       console.log('Server listening on port ' + app.get('port'))
