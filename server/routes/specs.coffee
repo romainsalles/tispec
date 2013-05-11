@@ -54,8 +54,7 @@ specsEnd = (request, response) ->
 exports.specsEnd = specsEnd
 
 dashboard = (request, response) ->
-  filter = request.query['filter'] || null
   file   = fs.readFileSync 'server/views/dashboard.ejs', 'ascii'
-  response.end(ejs.render(file, locals: {filter: filter}))
+  response.end(ejs.render(file))
 
 exports.dashboard = dashboard

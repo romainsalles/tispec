@@ -73,9 +73,9 @@
 
           <div style="span12"> <!-- Results -->
             <div style="span12">
-              <form class="span6" method="GET" action="/">
+              <form id="monid" class="span6" method="GET" action="#" onsubmit="return runSpecs(this);">
                 <div class="input-append span12">
-                  <input type="text" class="span11" name="filter" placeholder="Filter" value="<%= filter || '' %>">
+                  <input type="text" class="span11" name="filter" placeholder="Filter">
                   <button type="submit" class="btn">Run</button>
                 </div>
               </form>
@@ -117,8 +117,6 @@
 
     var socket = io.connect('http://localhost');
 
-    socket.emit('runSpecs', {filter: '<%= filter || '' %>'});
-
     socket.on('confirmSpec', function (expectedBehavior) {
       var confirmation = confirm(expectedBehavior.description);
       socket.emit('confirmSpecResult', { confirmation: confirmation });
@@ -149,11 +147,24 @@
       });
     });
 
+    function runSpecs(form) {
+      initializeView();
+      var filter = $(form).find(':input').first().val();
+      socket.emit('runSpecs', {filter: filter});
+      return false;
+    }
 
     // Specs
     // =========================================================================
 
     var specsSuite;
+
+    function initializeView() {
+      $('#specs_results').find("tr:gt(0)").remove();
+      $('#specs_suite_avancement_success_1 > .bar').css("width", "0%");
+      $('#specs_suite_avancement_error_1 > .bar').css("width", "0%");
+      $('#specs_suite_avancement_1').val(0).trigger('change');
+    }
 
     function updateAvancement(specsSuite) {
       var passed           = specsSuite.passedCount,
@@ -169,7 +180,8 @@
 
     function appendSpecResult(spec) {
       var row = '<tr class="spec_row ' + (spec.passed ? 'success' : 'error') + '" data-title="' + spec.description + '" data-content="coucou" data-placement="top"><td>' + spec.suiteName + ' ' + spec.description + '</td><td>' + spec.passedCount + '/' + spec.totalCount + '</td></tr>';
-      $('#specs_results > tbody > tr:first').before(row);
+      $(row).prependTo('#specs_results');
+
       specsSuite.addSpec(spec);
       updateAvancement(specsSuite);
     }
