@@ -11,12 +11,20 @@ var RequestManager = require('./RequestManager');
 var TispecReporter = function(now) {
 
   this.startSpecs = function(runner) {
+    var specs      = runner.specs(),
+        totalCount = 0;
+    for (var i = 0, l = specs.length; i < l; i += 1) {
+      if (this.specFilter(specs[i])) {
+        totalCount += 1;
+      }
+    }
+
     RequestManager.sendRequest('startSpecs', {
       specsSuite: JSON.stringify({
         deviceName: Ti.Platform.username,
         appName:    Titanium.App.name,
         version:    Titanium.App.version,
-        totalCount: runner.specs().length
+        totalCount: totalCount
       })
     });
   };
