@@ -2,6 +2,24 @@ var initialized = false;
 
 Ti.include('/lib/tispec/lib/jasmine.js');
 
+function retrieveSpecs(folder) {
+  folder = folder || Ti.Filesystem.getResourcesDirectory() + 'specs';
+
+  var specs   = [];
+  var file    = Titanium.Filesystem.getFile(folder);
+  var listing = file.getDirectoryListing();
+
+  for (var i=0, l=listing.length; i<l; i += 1) {
+    var splitPath = listing[i].split('.'),
+        isFile    = splitPath.length > 1 && splitPath[splitPath.length - 1] === 'js';
+
+    if (isFile) { specs.push(folder + '/' + listing[i]); }
+    else        { specs = specs.concat(retrieveSpecs(folder + '/' + listing[i])); }
+  }
+
+  return specs;
+}
+
 function initializeJasmine(reporter) {
   // [Hack] force a new env.
   // Avoid multiple execution of the same spec if the specs are run
@@ -31,7 +49,7 @@ exports.initialize = function(host, nowPort, serverPort) {
 
     var Reporter       = require('/lib/tispec/TispecReporter').TispecReporter;
 
-    now.execute = function (specs, options) {
+    now.execute = function (options) {
       (function() {
         if (options.specsSuiteId != specsSuiteId) { return; }
 
@@ -40,6 +58,7 @@ exports.initialize = function(host, nowPort, serverPort) {
 
         Ti.include('/lib/tispec/TispecHelper.js');
 
+        var specs = retrieveSpecs();
         for (var i=0, l=specs.length; i < l; i += 1) {
           Ti.include(specs[i]);
         }
