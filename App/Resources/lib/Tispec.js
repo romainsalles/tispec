@@ -1,8 +1,8 @@
-var _ = require('lib/underscore')._;
+var _ = require('/lib/underscore')._;
 
 var initialized = false;
 
-Ti.include('lib/jasmine.js');
+Ti.include('/lib/jasmine.js');
 
 function initializeJasmine(reporter) {
   // [Hack] force a new env.
@@ -29,7 +29,7 @@ exports.initialize = function(host, port) {
   now.ready(function () {
     now.hello(Titanium.App.name, Titanium.App.version, Ti.Platform.username);
 
-    var Reporter   = require('lib/TispecReporter').TispecReporter;
+    var Reporter   = require('/lib/TispecReporter').TispecReporter;
 
     now.execute = function (specs, conf) {
       (function() {

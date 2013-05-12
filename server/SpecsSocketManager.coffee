@@ -11,7 +11,7 @@ class SpecsSocketManager
         currentSocket = socket
 
         socket.on 'runSpecs', (filter) =>
-          global.broadcastServer.runSpecs ['specs/example_specs.js'], filter
+          global.broadcastServer.runSpecs ['/specs/example_specs.js'], filter
 
         socket.on 'confirmSpecResult', (result) =>
           onConfirmSpecResult result.confirmation
