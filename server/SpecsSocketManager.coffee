@@ -22,11 +22,13 @@ class SpecsSocketManager
     setConfirmSpecCallback: (_onConfirmSpecResult) ->
       onConfirmSpecResult = _onConfirmSpecResult
 
-  @get:         (server)      -> instance ?= new SpecsSocketManagerSingleton(server)
+  @get:          (server)     -> instance ?= new SpecsSocketManagerSingleton(server)
+  @onHello:      (appName, appVersion, deviceName) ->
+    instance.emit 'hello', appName: appName, appVersion: appVersion, deviceName: deviceName
   @onStartSpecs: (specsSuite) -> instance.emit 'start',     specsSuite
-  @onSpecStart: (spec)        -> instance.emit 'specStart', spec
-  @onSpecEnd:   (spec)        -> instance.emit 'specEnd',   spec
-  @onSuiteEnd:  (suite)       -> instance.emit 'suiteEnd',  suite
+  @onSpecStart:  (spec)       -> instance.emit 'specStart', spec
+  @onSpecEnd:    (spec)       -> instance.emit 'specEnd',   spec
+  @onSuiteEnd:   (suite)      -> instance.emit 'suiteEnd',  suite
   @onEnd:                     -> instance.emit 'end'
 
   @onConfirmSpec: (behavior, onConfirmSpecResult) ->
@@ -34,6 +36,7 @@ class SpecsSocketManager
     instance.emit 'confirmSpec', behavior
 
 exports.get           = SpecsSocketManager.get
+exports.onHello       = SpecsSocketManager.onHello
 exports.onStartSpecs  = SpecsSocketManager.onStartSpecs
 exports.onSpecStart   = SpecsSocketManager.onSpecStart
 exports.onSpecEnd     = SpecsSocketManager.onSpecEnd

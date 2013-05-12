@@ -27,6 +27,8 @@ exports.initialize = function(host, port) {
   now = nowjs.nowInitialize('//' + host + ':' + port, {});
 
   now.ready(function () {
+    now.hello(Titanium.App.name, Titanium.App.version, Ti.Platform.username);
+
     var Reporter   = require('lib/TispecReporter').TispecReporter;
 
     now.execute = function (specs, conf) {

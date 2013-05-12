@@ -110,9 +110,12 @@
       socket.emit('confirmSpecResult', { confirmation: confirmation });
     });
 
+    socket.on('hello', function(config) {
+      $('#specs_suite_title_1').text(config.appName + ' (' + config.appVersion + ') / ' + config.deviceName);
+    });
+
     socket.on('start', function(_specsSuite) {
       specsSuite = new SpecsSuite(_specsSuite.appName, _specsSuite.deviceName, _specsSuite.totalCount);
-      $('#specs_suite_title_1').text(specsSuite.appName + ' / ' + specsSuite.deviceName);
     });
 
     socket.on('specStart', function(spec) {
