@@ -1,7 +1,9 @@
 var that = this,
     queue = [];
 
-exports.setSpecsSuiteId = function(specsSuiteId) {
+exports.initialize = function(host, port, specsSuiteId) {
+  that.host         = host;
+  that.port         = port;
   that.specsSuiteId = specsSuiteId;
 };
 
@@ -33,7 +35,7 @@ function parseResponse(e) {
 (function sendRequests() {
   if (queue[0]) {
     var currentRequest = queue.shift();
-    var url = "http://localhost:8666/specs/" +
+    var url = "http://" + that.host + ":" + that.port + "/specs/" +
               currentRequest.actionName +
               '?specsSuiteId=' + that.specsSuiteId;
 
