@@ -29,76 +29,14 @@
         </div>
       </div>
 
-      <div class="row-fluid">
-        <div class="span6 specs_container" id="specs_suite_1"> <!-- Spec Container -->
-          <div class="span12"> <!-- App / Device -->
-            <h3 id="specs_suite_title_1" style="line-height: 20px; padding-left: 20px;"></h3>
-          </div>
-
-          <div class="span12"> <!-- Statistics (header) -->
-            <div class="span5" style="">
-              <table style="width: 100%;">
-                <tr>
-                  <td rowspan="2" style="width: 70px;">
-                    <input type="text" value="0" id="specs_suite_avancement_1" class="dial" style="webkit-box-shadow:none; box-shadow: none;">
-                  </td>
-                  <td>
-                    <div id="specs_suite_avancement_success_1" class="progress progress-success progress-striped" style="margin-top: 10px; margin-bottom: 10px;">
-                      <div class="bar" style="width: 0%"></div>
-                    </div>
-                  </td>
-                </tr>
-                <tr>
-                  <td>
-                    <div id="specs_suite_avancement_error_1" class="progress progress-danger progress-striped">
-                      <div class="bar" style="width: 0%"></div>
-                    </div>
-                  </td>
-                </tr>
-              </table>
-            </div>
-            <div class="span7"> <!-- alerts -->
-              <form id="monid" class="span10" method="GET" action="#" onsubmit="return runSpecs(this);">
-                <div class="input-append span12" style="margin-top: 20px;">
-                  <input type="text" class="span11" name="filter" placeholder="Filter">
-                  <button type="submit" class="btn">Run</button>
-                </div>
-              </form>
-            </div>
-          </div>
-
-          <div style="span12"> <!-- Results -->
-
-            <div class="span12" style="height: 300px; overflow-y: scroll;">
-              <table class="table table-hover table-condensed" id="specs_results">
-                <thead>
-                  <tr>
-                    <th>Name</th>
-                    <th>Status</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr><td colspan="3"></td></tr>
-                </tbody>
-              </table>
-            </div>
-
-          </div>
-        </div>
-
+      <div id="specs_suites" class="row-fluid">
+        <!-- specs_suites here -->
       </div>
 
     </div>
   </body>
 
   <script type="text/javascript">
-    $(function() {
-        $(".dial").knob({
-          width:    60,
-          height:   60,
-          readOnly: true
-        });
-    });
 
     // Socket
     // =========================================================================
@@ -111,7 +49,10 @@
     });
 
     socket.on('hello', function(config) {
-      $('#specs_suite_title_1').text(config.appName + ' (' + config.appVersion + ') / ' + config.deviceName);
+      $.get('/specs_suites/' + config.id, function(data) {
+        $('#specs_suites').append(data);
+        initializeView(config);
+      });
     });
 
     socket.on('start', function(_specsSuite) {
@@ -150,11 +91,17 @@
 
     var specsSuite;
 
-    function initializeView() {
+    function initializeView(config) {
       $('#specs_results').find("tr:gt(0)").remove();
       $('#specs_suite_avancement_success_1 > .bar').css("width", "0%");
       $('#specs_suite_avancement_error_1 > .bar').css("width", "0%");
       $('#specs_suite_avancement_1').val(0).trigger('change');
+      $('#specs_suite_title_1').text(config.appName + ' (' + config.appVersion + ') / ' + config.deviceName);
+      $("#specs_suite_avancement_1").knob({
+        width:    60,
+        height:   60,
+        readOnly: true
+      });
     }
 
     function updateAvancement(specsSuite) {
@@ -171,14 +118,14 @@
 
     function appendSpecResult(spec) {
       var row = '<tr class="spec_row ' + (spec.passed ? 'success' : 'error') + '" data-title="' + spec.description + '" data-content="coucou" data-placement="top"><td>' + spec.suiteName + ' ' + spec.description + '</td><td>' + spec.passedCount + '/' + spec.totalCount + '</td></tr>';
-      $(row).prependTo('#specs_results');
+      $(row).prependTo('#specs_results_1');
 
       specsSuite.addSpec(spec);
       updateAvancement(specsSuite);
     }
 
     function appendSuiteEnd(suite) {
-      $('#specs_results > tbody > tr:first').before('<tr><td>' + suite.description + '</td><td colspan="2">' + suite.passedCount + '/' + suite.totalCount + '</td></tr>');
+      $('#specs_results_1 > tbody > tr:first').before('<tr><td>' + suite.description + '</td><td colspan="2">' + suite.passedCount + '/' + suite.totalCount + '</td></tr>');
       specsSuite.addSuite(suite);
     }
 

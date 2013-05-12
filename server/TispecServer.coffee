@@ -1,7 +1,8 @@
-express = require 'express'
-specs   = require './routes/specs'
-http    = require 'http'
-path    = require 'path'
+express      = require 'express'
+specs        = require './routes/specs'
+specs_suites = require './routes/specs_suites'
+http         = require 'http'
+path         = require 'path'
 
 class TispecServer
   constructor: () ->
@@ -22,6 +23,7 @@ class TispecServer
     app.use(express.errorHandler()) if 'development' is app.get('env')
 
     app.get  '/',                      specs.dashboard
+    app.get  '/specs_suites/:id',      specs_suites.show
     app.post '/specs/startSpecs',      specs.startSpecs
     app.post '/specs/specStart',       specs.specStart
     app.post '/specs/specEnd',         specs.specEnd

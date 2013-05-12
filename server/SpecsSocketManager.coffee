@@ -24,7 +24,7 @@ class SpecsSocketManager
 
   @get:          (server)     -> instance ?= new SpecsSocketManagerSingleton(server)
   @onHello:      (appName, appVersion, deviceName) ->
-    instance.emit 'hello', appName: appName, appVersion: appVersion, deviceName: deviceName
+    instance.emit 'hello', id: 1, appName: appName, appVersion: appVersion, deviceName: deviceName
   @onStartSpecs: (specsSuite) -> instance.emit 'start',     specsSuite
   @onSpecStart:  (spec)       -> instance.emit 'specStart', spec
   @onSpecEnd:    (spec)       -> instance.emit 'specEnd',   spec
