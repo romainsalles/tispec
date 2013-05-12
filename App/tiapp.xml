@@ -13,7 +13,7 @@
     <description>Tispec App</description>
     <copyright>2013 by Romain Salles</copyright>
     <sdk-version>3.1.0.GA</sdk-version>
-    <icon>default_app_logo.png</icon>
+    <icon>appicon.png</icon>
     <persistent-wifi>false</persistent-wifi>
     <prerendered-icon>false</prerendered-icon>
     <statusbar-style>default</statusbar-style>
