@@ -42,7 +42,9 @@ exports.initialize = function(host, nowPort, serverPort) {
 
         Ti.include('/lib/TispecHelper.js');
 
-        _.each(specs, function(spec) { Ti.include(spec); });
+        for (var i=0, l=specs.length; i < l; i += 1) {
+          Ti.include(specs[i]);
+        }
 
         if (options.filter) { reporter.setSpecFilter(options.filter); }
         else                { reporter.removeSpecFilter();    }
