@@ -19,6 +19,11 @@ Thumbs.db
 ################
 build/
 
+# Titanium files #
+##################
+App/.project
+App/.settings/*
+
 # Node modules #
 ################
 node_modules/
