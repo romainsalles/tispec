@@ -101,6 +101,11 @@
       socket.emit('confirmSpecResult', { specsSuiteId: specsSuiteId, valide: valide });
     }
 
+    function endSpecsSuite(specsSuiteId) {
+      delete specsSuites[specsSuiteId];
+      $('#specs_suite_' + specsSuiteId).remove();
+    }
+
     // Specs
     // =========================================================================
 

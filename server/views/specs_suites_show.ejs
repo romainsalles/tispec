@@ -1,6 +1,11 @@
 <div class="span6 specs_container" id="specs_suite_<%= specsSuite.id %>"> <!-- Spec Container -->
   <div class="span12"> <!-- App / Device -->
-    <h3 id="specs_suite_title_<%= specsSuite.id %>" style="line-height: 20px; padding-left: 20px;"></h3>
+    <table style="width: 100%;">
+      <tr>
+        <td><h3 id="specs_suite_title_<%= specsSuite.id %>" style="line-height: 20px; padding-left: 20px;"></h3></td>
+        <td style="width:20px; vertical-align: top;"><a class="close" data-dismiss="alert" href="#" onclick="endSpecsSuite(<%= specsSuite.id %>);">&times;</a></td>
+      </tr>
+    </table>
   </div>
 
   <div class="span12"> <!-- Statistics (header) -->
