@@ -114,10 +114,11 @@
       var passed           = specsSuite.passedCount,
           error            = specsSuite.errorCount,
           advancement      = (passed+error)/specsSuite.totalCount * 100,
-          passedPercentage = (passed / specsSuite.totalCount) * 100;
+          passedPercentage = (passed / specsSuite.totalCount) * 100,
+          errorPercentage  = (error / specsSuite.totalCount) * 100;
 
       $('#specs_suite_avancement_success_' + specsSuite.id + ' > .bar').css( "width", passedPercentage + "%" );
-      $('#specs_suite_avancement_error_' + specsSuite.id + ' > .bar').css( "width", (100 - passedPercentage) + "%" );
+      $('#specs_suite_avancement_error_' + specsSuite.id + ' > .bar').css( "width", errorPercentage + "%" );
       $('#specs_suite_avancement_' + specsSuite.id).val( advancement ).trigger('change');
     }
 
