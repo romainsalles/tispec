@@ -1,9 +1,9 @@
-#appname: Tispec
-#appid: com.romainsalles.tispec
-#type: mobile
-#guid: d2f20c8a-6817-4092-a516-f858b4bf1fc5
-#version: 1.0
-#publisher: Romain Salles
-#url: https://github.com/romainsalles/tispec
-#image: appicon.png
-#desc: not specified
+#appname:Tispec
+#appid:com.romainsalles.tispec
+#type:ipad
+#guid:d2f20c8a-6817-4092-a516-f858b4bf1fc5
+#version:1.0
+#publisher:Romain Salles
+#url:https://github.com/romainsalles/tispec
+#image:appicon.png
+#desc:Tispec App
