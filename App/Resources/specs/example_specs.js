@@ -74,8 +74,13 @@
   });
 
   describe('#visual tests', function() {
-    it('sould ask the user', function() {
-      askConfirmation('You should see an unicorn with a black tatoo');
+    it('should open a yellow window', function() {
+      Ti.UI.createWindow({backgroundColor: '#FFFF00'}).open();
+      askConfirmation('You should see a yellow window');
+    });
+    it('should open a green window', function() {
+      Ti.UI.createWindow({backgroundColor: '#00FF00'}).open();
+      askConfirmation('You should see a green window');
     });
   });
 })();
