@@ -14,7 +14,6 @@ var SpecsSuite = (function() {
     this.appName = appName;
     this.deviceName = deviceName;
     this.totalCount = totalCount;
-    this.id = 1;
   }
 
   SpecsSuite.prototype.addSpec = function(spec) {

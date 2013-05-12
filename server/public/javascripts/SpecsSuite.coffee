@@ -5,7 +5,6 @@ class SpecsSuite
   errorCount: 0
 
   constructor: (@id, @appName, @deviceName, @totalCount) ->
-    @id = 1
 
   addSpec: (spec) ->
     specs.push(spec)

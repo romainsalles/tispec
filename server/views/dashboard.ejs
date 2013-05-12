@@ -38,10 +38,12 @@
 
   <script type="text/javascript">
 
+    var socket, specsSuites = {};
+
     // Socket
     // =========================================================================
 
-    var socket = io.connect('http://localhost');
+    socket = io.connect('http://localhost');
 
     socket.on('confirmSpec', function (expectedBehavior) {
       var confirmation = confirm(expectedBehavior.description);
@@ -49,7 +51,8 @@
     });
 
     socket.on('hello', function(config) {
-      specsSuite = config;
+      specsSuites[config.id] = config
+
       $.get('/specs_suites/' + config.id, function(data) {
         $('#specs_suites').append(data);
         initializeView(config);
@@ -57,7 +60,7 @@
     });
 
     socket.on('start', function(_specsSuite) {
-      specsSuite = new SpecsSuite(_specsSuite.id, _specsSuite.appName, _specsSuite.deviceName, _specsSuite.totalCount);
+      specsSuites[_specsSuite.specsSuiteId] = new SpecsSuite(_specsSuite.specsSuiteId, _specsSuite.appName, _specsSuite.deviceName, _specsSuite.totalCount);
     });
 
     socket.on('specStart', function(spec) {
@@ -73,27 +76,27 @@
       appendSuiteEnd(suite);
     });
 
-    socket.on('end', function() {
+    socket.on('end', function(specsSuiteId) {
       $('.spec_row').each(function() {
         // Add a popover displaying the results of the specs
         $(this).popover('hide');
       });
     });
 
-    function runSpecs(form) {
+    function runSpecs(specsSuiteId, form) {
+      var specsSuite = specsSuites[specsSuiteId];
       initializeView(specsSuite);
+
       var filter = $(form).find(':input').first().val();
-      socket.emit('runSpecs', {filter: filter});
+      socket.emit('runSpecs', {specsSuiteId: specsSuiteId, filter: filter});
       return false;
     }
 
     // Specs
     // =========================================================================
 
-    var specsSuite;
-
     function initializeView(specsSuite) {
-      $('#specs_results').find("tr:gt(0)").remove();
+      $('#specs_results_' + specsSuite.id).find("tr:gt(0)").remove();
       $('#specs_suite_avancement_success_' + specsSuite.id + ' > .bar').css("width", "0%");
       $('#specs_suite_avancement_error_' + specsSuite.id + ' > .bar').css("width", "0%");
       $('#specs_suite_avancement_' + specsSuite.id).val(0).trigger('change');
@@ -112,21 +115,24 @@
           advancement      = (passed+error)/specsSuite.totalCount * 100,
           passedPercentage = (passed / total) * 100;
 
-      $('#specs_suite_avancement_success_1 > .bar').css( "width", passedPercentage + "%" );
-      $('#specs_suite_avancement_error_1 > .bar').css( "width", (100 - passedPercentage) + "%" );
-      $('#specs_suite_avancement_1').val( advancement ).trigger('change');
+      $('#specs_suite_avancement_success_' + specsSuite.id + ' > .bar').css( "width", passedPercentage + "%" );
+      $('#specs_suite_avancement_error_' + specsSuite.id + ' > .bar').css( "width", (100 - passedPercentage) + "%" );
+      $('#specs_suite_avancement_' + specsSuite.id).val( advancement ).trigger('change');
     }
 
     function appendSpecResult(spec) {
       var row = '<tr class="spec_row ' + (spec.passed ? 'success' : 'error') + '" data-title="' + spec.description + '" data-content="coucou" data-placement="top"><td>' + spec.suiteName + ' ' + spec.description + '</td><td>' + spec.passedCount + '/' + spec.totalCount + '</td></tr>';
-      $(row).prependTo('#specs_results_1');
+      $(row).prependTo('#specs_results_' + spec.specsSuiteId);
 
+      var specsSuite = specsSuites[spec.specsSuiteId];
       specsSuite.addSpec(spec);
       updateAvancement(specsSuite);
     }
 
     function appendSuiteEnd(suite) {
-      $('#specs_results_1 > tbody > tr:first').before('<tr><td>' + suite.description + '</td><td colspan="2">' + suite.passedCount + '/' + suite.totalCount + '</td></tr>');
+      $('#specs_results_' + suite.specsSuiteId + ' > tbody > tr:first').before('<tr><td>' + suite.description + '</td><td colspan="2">' + suite.passedCount + '/' + suite.totalCount + '</td></tr>');
+
+      var specsSuite = specsSuites[suite.specsSuiteId];
       specsSuite.addSuite(suite);
     }
 

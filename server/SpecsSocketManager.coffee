@@ -10,8 +10,8 @@ class SpecsSocketManager
       io.sockets.on 'connection', (socket) =>
         currentSocket = socket
 
-        socket.on 'runSpecs', (filter) =>
-          global.broadcastServer.runSpecs ['/specs/example_specs.js'], filter
+        socket.on 'runSpecs', (options) =>
+          global.broadcastServer.runSpecs ['/specs/example_specs.js'], options
 
         socket.on 'confirmSpecResult', (result) =>
           onConfirmSpecResult result.confirmation
@@ -23,15 +23,13 @@ class SpecsSocketManager
       onConfirmSpecResult = _onConfirmSpecResult
 
   @get:          (server)     -> instance ?= new SpecsSocketManagerSingleton(server)
-  @onHello:      (appName, appVersion, deviceName) ->
-    instance.emit 'hello', id: 1, appName: appName, appVersion: appVersion, deviceName: deviceName
-  @onStartSpecs: (specsSuite) ->
-    specsSuite.id = 1
-    instance.emit 'start',     specsSuite
-  @onSpecStart:  (spec)       -> instance.emit 'specStart', spec
-  @onSpecEnd:    (spec)       -> instance.emit 'specEnd',   spec
-  @onSuiteEnd:   (suite)      -> instance.emit 'suiteEnd',  suite
-  @onEnd:                     -> instance.emit 'end'
+  @onHello:      (specsSuiteId, appName, appVersion, deviceName) ->
+    instance.emit 'hello', id: specsSuiteId, appName: appName, appVersion: appVersion, deviceName: deviceName
+  @onStartSpecs: (specsSuite)   -> instance.emit 'start',     specsSuite
+  @onSpecStart:  (spec)         -> instance.emit 'specStart', spec
+  @onSpecEnd:    (spec)         -> instance.emit 'specEnd',   spec
+  @onSuiteEnd:   (suite)        -> instance.emit 'suiteEnd',  suite
+  @onEnd:        (specsSuiteId) -> instance.emit 'end',       specsSuiteId
 
   @onConfirmSpec: (behavior, onConfirmSpecResult) ->
     instance.setConfirmSpecCallback onConfirmSpecResult

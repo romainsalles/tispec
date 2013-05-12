@@ -27,12 +27,16 @@ exports.initialize = function(host, port) {
   now = nowjs.nowInitialize('//' + host + ':' + port, {});
 
   now.ready(function () {
-    now.hello(Titanium.App.name, Titanium.App.version, Ti.Platform.username);
+    var specsSuiteId = (new Date()).getTime();
+    require('/lib/RequestManager').setSpecsSuiteId(specsSuiteId);
+    now.hello(specsSuiteId, Titanium.App.name, Titanium.App.version, Ti.Platform.username);
 
-    var Reporter   = require('/lib/TispecReporter').TispecReporter;
+    var Reporter       = require('/lib/TispecReporter').TispecReporter;
 
-    now.execute = function (specs, conf) {
+    now.execute = function (specs, options) {
       (function() {
+        if (options.specsSuiteId != specsSuiteId) { return; }
+
         var reporter   = new Reporter(now),
             jasmineEnv = initializeJasmine(reporter);
 
@@ -40,8 +44,8 @@ exports.initialize = function(host, port) {
 
         _.each(specs, function(spec) { Ti.include(spec); });
 
-        if (conf.filter) { reporter.setSpecFilter(conf.filter); }
-        else        { reporter.removeSpecFilter();    }
+        if (options.filter) { reporter.setSpecFilter(options.filter); }
+        else                { reporter.removeSpecFilter();    }
 
         jasmineEnv.execute();
       })();

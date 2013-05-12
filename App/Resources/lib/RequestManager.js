@@ -1,4 +1,11 @@
-var queue = [];
+var that = this,
+    queue = [];
+
+exports.setSpecsSuiteId = function(specsSuiteId) {
+  that.specsSuiteId = specsSuiteId;
+};
+
+
 this.sendRequest = function(actionName, data, onload) {
     queue.push({
       actionName: actionName,
@@ -26,7 +33,9 @@ function parseResponse(e) {
 (function sendRequests() {
   if (queue[0]) {
     var currentRequest = queue.shift();
-    var url = "http://localhost:8666/specs/" + currentRequest.actionName;
+    var url = "http://localhost:8666/specs/" +
+              currentRequest.actionName +
+              '?specsSuiteId=' + that.specsSuiteId;
 
     var client = Ti.Network.createHTTPClient({
       onload: function() {
