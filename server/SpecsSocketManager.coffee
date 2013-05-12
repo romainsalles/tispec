@@ -2,8 +2,8 @@ class SpecsSocketManager
   instance = null
 
   class SpecsSocketManagerSingleton
-    currentSocket       = null
-    onConfirmSpecResult = null
+    currentSocket        = null
+    onConfirmSpecResults = {}
 
     constructor: (server) ->
       io = require('socket.io').listen server
@@ -14,13 +14,13 @@ class SpecsSocketManager
           global.broadcastServer.runSpecs ['/specs/example_specs.js'], options
 
         socket.on 'confirmSpecResult', (result) =>
-          onConfirmSpecResult result.confirmation
+          onConfirmSpecResults[result.specsSuiteId] result.valide
 
     emit: (event, data) ->
       currentSocket.emit(event, data)
 
-    setConfirmSpecCallback: (_onConfirmSpecResult) ->
-      onConfirmSpecResult = _onConfirmSpecResult
+    setConfirmSpecCallback: (specsSuiteId, _onConfirmSpecResult) ->
+      onConfirmSpecResults[specsSuiteId] = _onConfirmSpecResult
 
   @get:          (server)     -> instance ?= new SpecsSocketManagerSingleton(server)
   @onHello:      (specsSuiteId, appName, appVersion, deviceName) ->
@@ -32,7 +32,7 @@ class SpecsSocketManager
   @onEnd:        (specsSuiteId) -> instance.emit 'end',       specsSuiteId
 
   @onConfirmSpec: (behavior, onConfirmSpecResult) ->
-    instance.setConfirmSpecCallback onConfirmSpecResult
+    instance.setConfirmSpecCallback behavior.specsSuiteId, onConfirmSpecResult
     instance.emit 'confirmSpec', behavior
 
 exports.get           = SpecsSocketManager.get

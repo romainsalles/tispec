@@ -35,6 +35,14 @@
     </div>
   </div>
 
+  <div class="alert alert-block fade in span12" id="spec_confirmation_<%= specsSuite.id %>" style="display: none;">
+    <p class="confirmation_expected_message" style="text-align: center;"></p>
+    <p>
+      <a class="btn btn-success span6" href="#" onclick="validateSpec(<%= specsSuite.id %>, true);">OK</a>
+      <a class="btn btn-danger span6" href="#" onclick="validateSpec(<%= specsSuite.id %>, false);">NOT</a>
+    </p>
+  </div>
+
   <div style="span12"> <!-- Results -->
 
     <div class="span12" style="height: 300px; overflow-y: scroll;">

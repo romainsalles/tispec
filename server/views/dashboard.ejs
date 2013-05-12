@@ -46,8 +46,10 @@
     socket = io.connect('http://localhost');
 
     socket.on('confirmSpec', function (expectedBehavior) {
-      var confirmation = confirm(expectedBehavior.description);
-      socket.emit('confirmSpecResult', { confirmation: confirmation });
+      var confirmationDiv = $('#spec_confirmation_' + expectedBehavior.specsSuiteId);
+
+      confirmationDiv.find('.confirmation_expected_message').text(expectedBehavior.description);
+      confirmationDiv.show();
     });
 
     socket.on('hello', function(config) {
@@ -92,6 +94,11 @@
       var filter = $(form).find(':input').first().val();
       socket.emit('runSpecs', {specsSuiteId: specsSuiteId, filter: filter});
       return false;
+    }
+
+    function validateSpec(specsSuiteId, valide) {
+      $('#spec_confirmation_' + specsSuiteId).hide();
+      socket.emit('confirmSpecResult', { specsSuiteId: specsSuiteId, valide: valide });
     }
 
     // Specs

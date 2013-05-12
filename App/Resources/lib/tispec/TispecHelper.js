@@ -6,7 +6,7 @@ function askConfirmation(description) {
       description: description
     })
   }, function(e) {
-    confirmation = e.json.confirmation;
+    confirmation = e.json.valide;
   });
 
   waitsFor(function() {

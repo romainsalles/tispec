@@ -1,8 +1,6 @@
 ejs = require 'ejs'
 fs  = require 'fs'
 
-currentResponse = null
-
 endResponse = (response) ->
   response.writeHead 200
   console.log('end response')
@@ -10,14 +8,11 @@ endResponse = (response) ->
 
 
 askConfirmation = (request, response) ->
-  currentResponse.end() if currentResponse
-  currentResponse  = response
-
   expectedBehavior = JSON.parse(request.body.expectedBehavior)
   expectedBehavior.specsSuiteId = request.query["specsSuiteId"]
 
-  require('../SpecsSocketManager').onConfirmSpec expectedBehavior, (confirmation) =>
-    currentResponse.end(JSON.stringify({confirmation: confirmation}))
+  require('../SpecsSocketManager').onConfirmSpec expectedBehavior, (valide) =>
+    response.end(JSON.stringify({valide: valide}))
 
 exports.askConfirmation = askConfirmation
 
