@@ -9,7 +9,8 @@ var SpecsSuite = (function() {
 
   SpecsSuite.prototype.errorCount = 0;
 
-  function SpecsSuite(appName, deviceName, totalCount) {
+  function SpecsSuite(id, appName, deviceName, totalCount) {
+    this.id = id;
     this.appName = appName;
     this.deviceName = deviceName;
     this.totalCount = totalCount;

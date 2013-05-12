@@ -49,6 +49,7 @@
     });
 
     socket.on('hello', function(config) {
+      specsSuite = config;
       $.get('/specs_suites/' + config.id, function(data) {
         $('#specs_suites').append(data);
         initializeView(config);
@@ -56,7 +57,7 @@
     });
 
     socket.on('start', function(_specsSuite) {
-      specsSuite = new SpecsSuite(_specsSuite.appName, _specsSuite.deviceName, _specsSuite.totalCount);
+      specsSuite = new SpecsSuite(_specsSuite.id, _specsSuite.appName, _specsSuite.deviceName, _specsSuite.totalCount);
     });
 
     socket.on('specStart', function(spec) {
@@ -80,7 +81,7 @@
     });
 
     function runSpecs(form) {
-      initializeView();
+      initializeView(specsSuite);
       var filter = $(form).find(':input').first().val();
       socket.emit('runSpecs', {filter: filter});
       return false;
@@ -91,13 +92,13 @@
 
     var specsSuite;
 
-    function initializeView(config) {
+    function initializeView(specsSuite) {
       $('#specs_results').find("tr:gt(0)").remove();
-      $('#specs_suite_avancement_success_1 > .bar').css("width", "0%");
-      $('#specs_suite_avancement_error_1 > .bar').css("width", "0%");
-      $('#specs_suite_avancement_1').val(0).trigger('change');
-      $('#specs_suite_title_1').text(config.appName + ' (' + config.appVersion + ') / ' + config.deviceName);
-      $("#specs_suite_avancement_1").knob({
+      $('#specs_suite_avancement_success_' + specsSuite.id + ' > .bar').css("width", "0%");
+      $('#specs_suite_avancement_error_' + specsSuite.id + ' > .bar').css("width", "0%");
+      $('#specs_suite_avancement_' + specsSuite.id).val(0).trigger('change');
+      $('#specs_suite_title_' + specsSuite.id).text(specsSuite.appName + ' (' + specsSuite.appVersion + ') / ' + specsSuite.deviceName);
+      $("#specs_suite_avancement_" + specsSuite.id).knob({
         width:    60,
         height:   60,
         readOnly: true

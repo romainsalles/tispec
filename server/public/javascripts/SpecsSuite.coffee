@@ -4,7 +4,7 @@ class SpecsSuite
   passedCount: 0
   errorCount: 0
 
-  constructor: (@appName, @deviceName, @totalCount) ->
+  constructor: (@id, @appName, @deviceName, @totalCount) ->
     @id = 1
 
   addSpec: (spec) ->
