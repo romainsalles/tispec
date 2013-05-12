@@ -1,8 +1,6 @@
-var _ = require('/lib/underscore')._;
-
 var initialized = false;
 
-Ti.include('/lib/jasmine.js');
+Ti.include('/lib/tispec/lib/jasmine.js');
 
 function initializeJasmine(reporter) {
   // [Hack] force a new env.
@@ -23,15 +21,15 @@ function initializeJasmine(reporter) {
 exports.initialize = function(host, nowPort, serverPort) {
   if (initialized) { return; }
 
-  var nowjs = require('/lib/now'),
+  var nowjs = require('/lib/tispec/lib/now'),
   now = nowjs.nowInitialize('//' + host + ':' + nowPort, {});
 
   now.ready(function () {
     var specsSuiteId = (new Date()).getTime();
-    require('/lib/RequestManager').initialize(host, serverPort, specsSuiteId);
+    require('/lib/tispec/RequestManager').initialize(host, serverPort, specsSuiteId);
     now.hello(specsSuiteId, Titanium.App.name, Titanium.App.version, Ti.Platform.username);
 
-    var Reporter       = require('/lib/TispecReporter').TispecReporter;
+    var Reporter       = require('/lib/tispec/TispecReporter').TispecReporter;
 
     now.execute = function (specs, options) {
       (function() {
@@ -40,7 +38,7 @@ exports.initialize = function(host, nowPort, serverPort) {
         var reporter   = new Reporter(now),
             jasmineEnv = initializeJasmine(reporter);
 
-        Ti.include('/lib/TispecHelper.js');
+        Ti.include('/lib/tispec/TispecHelper.js');
 
         for (var i=0, l=specs.length; i < l; i += 1) {
           Ti.include(specs[i]);

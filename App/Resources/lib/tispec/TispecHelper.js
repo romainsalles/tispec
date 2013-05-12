@@ -1,7 +1,7 @@
 function askConfirmation(description) {
   var confirmation = null;
 
-  require('/lib/RequestManager').sendRequest('askConfirmation', {
+  require('/lib/tispec/RequestManager').sendRequest('askConfirmation', {
     expectedBehavior: JSON.stringify({
       description: description
     })

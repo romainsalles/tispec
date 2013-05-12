@@ -1,5 +1,5 @@
 // @see https://gist.github.com/iamyellow/2782536
-var io = require('/lib/socket.io');
+var io = require('/lib/tispec/lib/socket.io');
 
 /*
 Copyright (C) 2011 by Flotype Inc. <team@nowjs.com>
