@@ -8,15 +8,11 @@ exports.initialize = function(host, port, specsSuiteId) {
 };
 
 
-this.sendRequest = function(actionName, data, onload) {
-    queue.push({
-      actionName: actionName,
-      data:       data,
-      onload:     onload
-    });
-  };
+this.sendRequest = function(config) {
+  queue.push(config);
+};
+exports.sendRequest = sendRequest;
 
-exports.sendRequest = sendRequest ;
 
 function parseResponse(e) {
   if (e.responseText) {
@@ -34,18 +30,24 @@ function parseResponse(e) {
  */
 (function sendRequests() {
   if (queue[0]) {
-    var currentRequest = queue.shift();
-    var url = "http://" + that.host + ":" + that.port + "/specs/" +
-              currentRequest.actionName +
+    var config = queue.shift();
+
+    var action  = config.action,        // server route
+        data    = config.data,          // data sent to the server
+        onload  = config.onload,        // callback on request response
+        headers = config.headers || []; // request headers
+
+    var url = "http://" + that.host + ":" + that.port +
+              "/specs/" + action +
               '?specsSuiteId=' + that.specsSuiteId;
 
     var client = Ti.Network.createHTTPClient({
       onload: function() {
         var e = this;
         if ((e.status === 200 || e.status == 201 || e.status === 422)) {
-          if (currentRequest.onload) {
+          if (onload) {
             e.json = parseResponse(e);
-            currentRequest.onload(e);
+            onload(e);
           }
 
           sendRequests();
@@ -53,7 +55,10 @@ function parseResponse(e) {
       }
     });
     client.open("POST", url);
-    client.send(currentRequest.data);
+
+    for (var key in headers) { client.setRequestHeader(key, headers[key]); }
+
+    client.send(data);
   } else {
     setTimeout(sendRequests, 200);
   }

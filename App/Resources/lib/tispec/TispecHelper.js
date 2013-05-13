@@ -1,12 +1,14 @@
 function askConfirmation(description) {
   var confirmation = null;
 
-  require('/lib/tispec/RequestManager').sendRequest('askConfirmation', {
-    expectedBehavior: JSON.stringify({
-      description: description
-    })
-  }, function(e) {
-    confirmation = e.json.valide;
+  require('/lib/tispec/RequestManager').sendRequest({
+    action: 'askConfirmation',
+    onload: function(e) { confirmation = e.json.valide; },
+    data: {
+      expectedBehavior: JSON.stringify({
+        description: description
+      })
+    }
   });
 
   waitsFor(function() {

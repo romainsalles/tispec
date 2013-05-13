@@ -19,13 +19,16 @@ var TispecReporter = function(now) {
       }
     }
 
-    RequestManager.sendRequest('startSpecs', {
-      specsSuite: JSON.stringify({
-        deviceName: Ti.Platform.username,
-        appName:    Titanium.App.name,
-        version:    Titanium.App.version,
-        totalCount: totalCount
-      })
+    RequestManager.sendRequest({
+      action: 'startSpecs',
+      data: {
+        specsSuite: JSON.stringify({
+          deviceName: Ti.Platform.username,
+          appName:    Titanium.App.name,
+          version:    Titanium.App.version,
+          totalCount: totalCount
+        })
+      }
     });
   };
 
@@ -33,11 +36,14 @@ var TispecReporter = function(now) {
    * When spec start, send informations on it to the tispec server.
    */
   this.onSpecStart = function(spec) {
-    RequestManager.sendRequest('specStart', {
-      spec: JSON.stringify({
-        suiteName:   spec.suite.getFullName(),
-        description: spec.description
-      })
+    RequestManager.sendRequest({
+      action: 'specStart',
+      data: {
+        spec: JSON.stringify({
+          suiteName:   spec.suite.getFullName(),
+          description: spec.description
+        })
+      }
     });
   };
 
@@ -50,16 +56,19 @@ var TispecReporter = function(now) {
     var results = spec.results();
     if (results.totalCount === 0) { return; }
 
-    RequestManager.sendRequest('specEnd', {
-      spec: JSON.stringify({
-        suiteName:   spec.suite.getFullName(),
-        description: spec.description,
-        totalCount:  results.totalCount,
-        passedCount: results.passedCount,
-        failedCount: results.failedCount,
-        passed:      results.passed(),
-        subSpecs:    results.items_
-      })
+    RequestManager.sendRequest({
+      action: 'specEnd',
+      data: {
+        spec: JSON.stringify({
+          suiteName:   spec.suite.getFullName(),
+          description: spec.description,
+          totalCount:  results.totalCount,
+          passedCount: results.passedCount,
+          failedCount: results.failedCount,
+          passed:      results.passed(),
+          subSpecs:    results.items_
+        })
+      }
     });
   };
 
@@ -72,18 +81,23 @@ var TispecReporter = function(now) {
     var results = suite.results();
     if (results.totalCount === 0) { return; }
 
-    RequestManager.sendRequest('suiteEnd', {
-      suite: JSON.stringify({
-        description: suite.description,
-        totalCount:  results.totalCount,
-        passedCount: results.passedCount,
-        failedCount: results.failedCount
-      })
+    RequestManager.sendRequest({
+      action: 'suiteEnd',
+      data: {
+        suite: JSON.stringify({
+          description: suite.description,
+          totalCount:  results.totalCount,
+          passedCount: results.passedCount,
+          failedCount: results.failedCount
+        })
+      }
     });
   };
 
   this.endSpecs = function() {
-    RequestManager.sendRequest('end');
+    RequestManager.sendRequest({
+      action: 'end'
+    });
   };
 };
 
