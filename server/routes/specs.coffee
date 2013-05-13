@@ -16,6 +16,26 @@ askConfirmation = (request, response) ->
 
 exports.askConfirmation = askConfirmation
 
+checkScreenshot = (request, response) ->
+  expectedImagePath = request.body.path
+  imagePath         = request.files.image.path
+
+  gm = require 'gm'
+  # @see https://github.com/aheckmann/gm#compare
+  gm.compare expectedImagePath, imagePath, 0, (err, isEqual, equality, raw) =>
+    console.log JSON.stringify(err) if err
+
+    # if the images were considered equal, `isEqual` will be true, otherwise, false.
+    #console.log('The images were equal: %s', isEqual);
+    # to see the total equality returned by graphicsmagick we can inspect the `equality` argument.
+    #console.log('Actual equality: %d', equality);
+    # inspect the raw output
+    #console.log(raw);
+
+    response.end(JSON.stringify({valide: isEqual}))
+
+exports.checkScreenshot = checkScreenshot
+
 startSpecs = (request, response) ->
   specsSuite   = JSON.parse(request.body.specsSuite)
   specsSuite.specsSuiteId = request.query["specsSuiteId"]
