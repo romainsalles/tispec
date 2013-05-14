@@ -40,6 +40,7 @@ var TispecReporter = function(now) {
       action: 'specStart',
       data: {
         spec: JSON.stringify({
+          id:          spec.id,
           suiteName:   spec.suite.getFullName(),
           description: spec.description
         })
@@ -60,6 +61,7 @@ var TispecReporter = function(now) {
       action: 'specEnd',
       data: {
         spec: JSON.stringify({
+          id:          spec.id,
           suiteName:   spec.suite.getFullName(),
           description: spec.description,
           totalCount:  results.totalCount,

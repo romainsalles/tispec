@@ -76,11 +76,11 @@
   describe('#visual tests', function() {
     it('should open a yellow window', function() {
       Ti.UI.createWindow({backgroundColor: '#FFFF00'}).open();
-      askConfirmation('You should see a yellow window');
+      askConfirmation(this.id, 'You should see a yellow window');
     });
     it('should open a green window', function() {
       Ti.UI.createWindow({backgroundColor: '#00FF00'}).open();
-      askConfirmation('You should see a green window');
+      askConfirmation(this.id, 'You should see a green window');
     });
   });
 })();

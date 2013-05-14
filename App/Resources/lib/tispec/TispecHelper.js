@@ -1,10 +1,11 @@
-function askConfirmation(description) {
+function askConfirmation(specId, description) {
   var confirmation = null;
 
   require('/lib/tispec/RequestManager').sendRequest({
     action: 'askConfirmation',
     onload: function(e) { confirmation = e.json.valide; },
     data: {
+      specId:           specId,
       expectedBehavior: JSON.stringify({
         description: description
       })
@@ -22,7 +23,7 @@ function askConfirmation(description) {
   return confirmation;
 }
 
-function compareScreenshots(specAlias) {
+function compareScreenshots(specId, specAlias) {
   var confirmation = null;
 
   Titanium.Media.takeScreenshot(function(event) {
@@ -34,6 +35,7 @@ function compareScreenshots(specAlias) {
       },
       onload: function(e) { confirmation = e.json.valide; },
       data: {
+        specId:      specId,
         image:       event.media,
         appName:     Ti.App.name,
         deviceModel: Ti.Platform.model,
