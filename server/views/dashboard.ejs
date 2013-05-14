@@ -134,29 +134,7 @@
       $('#specs_suite_avancement_' + specsSuite.id).val( advancement ).trigger('change');
     }
 
-    function appendSpecResult(spec) {
-      var errorMessages = [];
-      for (var i=0, l=spec.subSpecs.length; i<l; i += 1) {
-        var subSpec = spec.subSpecs[i];
-
-        if (!subSpec.passed_) {
-          errorMessages.push('(' + (i+1) + ') expected <b>' + JSON.stringify(subSpec.actual) + '</b> to be <b>' + JSON.stringify(subSpec.expected) + '</b>');
-        }
-      }
-
-      var row = '<tr class="spec_row ' + (spec.passed ? 'success' : 'error') + '"';
-      if (errorMessages.length > 0) {
-        var errorMessage = '<ul><li>' + errorMessages.join('</li><li>') + '</li></ul>';
-
-        row += ' data-title="Errors" data-content="' + errorMessage + '" data-placement="top" data-html="true"';
-      }
-      row += '><td>' + spec.suiteName + ' ' + spec.description + '</td><td>' + spec.passedCount + '/' + spec.totalCount + '</td></tr>';
-
-      $(row).prependTo('#specs_results_' + spec.specsSuiteId);
-
-      var specsSuite = specsSuites[spec.specsSuiteId];
       specsSuite.addSpec(spec);
-      updateAvancement(specsSuite);
     }
 
     function appendSuiteEnd(suite) {
