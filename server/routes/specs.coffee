@@ -41,7 +41,7 @@ checkScreenshot = (request, response) ->
 exports.checkScreenshot = checkScreenshot
 
 startSpecs = (request, response) ->
-  specsSuite   = JSON.parse(request.body.specsSuite)
+  specsSuite              = JSON.parse(request.body.specsSuite)
   specsSuite.specsSuiteId = request.query["specsSuiteId"]
 
   require('../SpecsSocketManager').onStartSpecs specsSuite
@@ -50,7 +50,7 @@ startSpecs = (request, response) ->
 exports.startSpecs = startSpecs
 
 specStart = (request, response) ->
-  spec         = JSON.parse(request.body.spec)
+  spec              = JSON.parse(request.body.spec)
   spec.specsSuiteId = request.query["specsSuiteId"]
 
   require('../SpecsSocketManager').onSpecStart spec
@@ -59,7 +59,7 @@ specStart = (request, response) ->
 exports.specStart = specStart
 
 specEnd = (request, response) ->
-  spec         = JSON.parse(request.body.spec)
+  spec              = JSON.parse(request.body.spec)
   spec.specsSuiteId = request.query["specsSuiteId"]
 
   require('../SpecsSocketManager').onSpecEnd spec
@@ -68,7 +68,7 @@ specEnd = (request, response) ->
 exports.specEnd = specEnd
 
 suiteEnd = (request, response) ->
-  suite        = JSON.parse(request.body.suite)
+  suite              = JSON.parse(request.body.suite)
   suite.specsSuiteId = request.query["specsSuiteId"]
 
   require('../SpecsSocketManager').onSuiteEnd suite
@@ -85,7 +85,7 @@ specsEnd = (request, response) ->
 exports.specsEnd = specsEnd
 
 dashboard = (request, response) ->
-  file   = fs.readFileSync 'server/views/dashboard.ejs', 'ascii'
+  file = fs.readFileSync 'server/views/dashboard.ejs', 'ascii'
   response.end(ejs.render(file))
 
 exports.dashboard = dashboard
