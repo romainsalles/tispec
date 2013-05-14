@@ -17,7 +17,11 @@ askConfirmation = (request, response) ->
 exports.askConfirmation = askConfirmation
 
 checkScreenshot = (request, response) ->
-  expectedImagePath = request.body.path
+  appName           = request.body.appName
+  deviceModel       = request.body.deviceModel
+  specAlias         = request.body.specAlias
+
+  expectedImagePath = 'server/spec_images/' + appName + '/' + deviceModel + '/' + specAlias + '.png'
   imagePath         = request.files.image.path
 
   gm = require 'gm'

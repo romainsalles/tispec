@@ -17,13 +17,13 @@
   describe('#blue window with a square and a text', function() {
     it('should be positionned perfectly', function() {
       constructAndOpenABlueWindowWithASquareAndAText(30);
-      compareScreenshots('server/spec_images/blueWindowWithASquareAndAText.png');
+      compareScreenshots('blueWindowWithASquareAndAText_1');
     });
 
     it('should be positionned perfectly (2)', function() {
       // this spec is expected to fail
       constructAndOpenABlueWindowWithASquareAndAText(31);
-      compareScreenshots('server/spec_images/blueWindowWithASquareAndAText.png');
+      compareScreenshots('blueWindowWithASquareAndAText_2');
     });
   });
 })();

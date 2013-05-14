@@ -22,7 +22,7 @@ function askConfirmation(description) {
   return confirmation;
 }
 
-function compareScreenshots(expectedImagePath) {
+function compareScreenshots(specAlias) {
   var confirmation = null;
 
   Titanium.Media.takeScreenshot(function(event) {
@@ -33,7 +33,12 @@ function compareScreenshots(expectedImagePath) {
         "Content-Type": "image/png"
       },
       onload: function(e) { confirmation = e.json.valide; },
-      data: {image: event.media, path: expectedImagePath}
+      data: {
+        image:       event.media,
+        appName:     Ti.App.name,
+        deviceModel: Ti.Platform.model,
+        specAlias:   specAlias
+      }
     });
   });
 
