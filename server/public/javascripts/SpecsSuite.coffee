@@ -7,8 +7,12 @@ class SpecsSuite
   passedCount: 0
   errorCount:  0
 
-  constructor: (@id, @appName, @deviceName, @totalCount) ->
+  constructor: (@id, @appName, @appVersion, @deviceName, @deviceModel) ->
 
+  setTotalCount: (@totalCount) ->
+
+  # Spec
+  # ----------------------------------------------------------------------------
   addSpec: (spec) ->
     specs.push(spec)
     spec.setSpecsSuite(this)
@@ -18,18 +22,27 @@ class SpecsSuite
     else
       @errorCount  += 1
 
-    updateAvancement(this)
     return spec
-
-  addSuite: (suite) ->
-    suites.push(suite)
-    return this
 
   getSpec: (id) ->
     _.find specs, (spec) -> return spec.id is id
 
+  # Suite
+  # ----------------------------------------------------------------------------
+  addSuite: (suite) ->
+    suites.push(suite)
+    return this
 
-# Specs
+
+# Suite
+# ==============================================================================
+class Suite
+  constructor: (@specsSuiteId, @description, @totalCount, @passedCount) ->
+
+  showResults: ->
+    $("#specs_results_#{@specsSuiteId} > tbody > tr:first").before("<tr><td>#{@description}</td><td colspan=\"2\">#{@passedCount}/#{@totalCount}</td></tr>");
+
+# Spec
 # ==============================================================================
 class Spec
   constructor:   (@id, @suiteName, @description) ->

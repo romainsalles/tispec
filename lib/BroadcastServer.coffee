@@ -10,8 +10,8 @@ class BroadcastServer
     @everyone = nowjs.initialize server
     console.log('Server created and listening on port ' + port)
 
-    @everyone.now.hello = (specsSuiteId, appName, appVersion, deviceName) ->
-      require('../server/SpecsSocketManager').onHello(specsSuiteId, appName, appVersion, deviceName)
+    @everyone.now.hello = (specsSuiteId, appName, appVersion, deviceName, deviceModel) ->
+      require('../server/SpecsSocketManager').onHello(specsSuiteId, appName, appVersion, deviceName, deviceModel)
 
   # Dispatch specs to the different apps
   #

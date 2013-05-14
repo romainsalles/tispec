@@ -1,4 +1,4 @@
-var Spec, SpecsSuite;
+var Spec, SpecsSuite, Suite;
 
 SpecsSuite = (function() {
   var specs, suites;
@@ -11,12 +11,17 @@ SpecsSuite = (function() {
 
   SpecsSuite.prototype.errorCount = 0;
 
-  function SpecsSuite(id, appName, deviceName, totalCount) {
+  function SpecsSuite(id, appName, appVersion, deviceName, deviceModel) {
     this.id = id;
     this.appName = appName;
+    this.appVersion = appVersion;
     this.deviceName = deviceName;
-    this.totalCount = totalCount;
+    this.deviceModel = deviceModel;
   }
+
+  SpecsSuite.prototype.setTotalCount = function(totalCount) {
+    this.totalCount = totalCount;
+  };
 
   SpecsSuite.prototype.addSpec = function(spec) {
     specs.push(spec);
@@ -26,13 +31,7 @@ SpecsSuite = (function() {
     } else {
       this.errorCount += 1;
     }
-    updateAvancement(this);
     return spec;
-  };
-
-  SpecsSuite.prototype.addSuite = function(suite) {
-    suites.push(suite);
-    return this;
   };
 
   SpecsSuite.prototype.getSpec = function(id) {
@@ -41,7 +40,28 @@ SpecsSuite = (function() {
     });
   };
 
+  SpecsSuite.prototype.addSuite = function(suite) {
+    suites.push(suite);
+    return this;
+  };
+
   return SpecsSuite;
+
+})();
+
+Suite = (function() {
+  function Suite(specsSuiteId, description, totalCount, passedCount) {
+    this.specsSuiteId = specsSuiteId;
+    this.description = description;
+    this.totalCount = totalCount;
+    this.passedCount = passedCount;
+  }
+
+  Suite.prototype.showResults = function() {
+    return $("#specs_results_" + this.specsSuiteId + " > tbody > tr:first").before("<tr><td>" + this.description + "</td><td colspan=\"2\">" + this.passedCount + "/" + this.totalCount + "</td></tr>");
+  };
+
+  return Suite;
 
 })();
 

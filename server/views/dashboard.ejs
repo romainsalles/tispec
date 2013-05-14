@@ -11,7 +11,6 @@
     <link href="/lib/bootstrap/css/bootstrap-responsive.min.css" rel="stylesheet">
     <link href="/stylesheets/tispec.css" rel="stylesheet">
 
-    <script type="text/javascript" src="/javascripts/SpecsSuite.js"></script>
 
     <script type="text/javascript" src="/lib/bootstrap/js/bootstrap.min.js"></script>
     <script type="text/javascript" src="/javascripts/jquery-2.0.0.min.js"></script>
@@ -19,6 +18,9 @@
     <script type="text/javascript" src="/javascripts/bootstrap-popover.js"></script>
     <script type="text/javascript" src="/javascripts/jquery.knob.js"></script>
     <script type="text/javascript" src="/socket.io/socket.io.js"></script>
+
+    <script type="text/javascript" src="/javascripts/underscore-min.js"></script>
+    <script type="text/javascript" src="/javascripts/SpecsSuite.js"></script>
   </head>
 
   <body data-spy="scroll" data-target=".bs-docs-sidebar">
@@ -52,30 +54,44 @@
       confirmationDiv.show();
     });
 
-    socket.on('hello', function(config) {
-      specsSuites[config.id] = config
+    socket.on('hello', function(_specsSuite) {
+      var specsSuite = new SpecsSuite(_specsSuite.id, _specsSuite.appName, _specsSuite.appVersion, _specsSuite.deviceName, _specsSuite.deviceModel)
 
-      $.get('/specs_suites/' + config.id, function(data) {
-        $('#specs_suites').append(data);
-        initializeView(config);
+      specsSuites[specsSuite.id] = specsSuite
+
+      $.get('/specs_suites/' + specsSuite.id, function(html) {
+        $('#specs_suites').append(html);
+        initializeView(specsSuite);
       });
     });
 
     socket.on('start', function(_specsSuite) {
-      specsSuites[_specsSuite.specsSuiteId] = new SpecsSuite(_specsSuite.specsSuiteId, _specsSuite.appName, _specsSuite.deviceName, _specsSuite.totalCount);
+      specsSuite = specsSuites[_specsSuite.specsSuiteId];
+      specsSuite.setTotalCount(_specsSuite.totalCount);
     });
 
-    socket.on('specStart', function(spec) {
-      // [TODO] add row in the specs table
+    socket.on('specStart', function(_spec) {
+      var specsSuite = specsSuites[_spec.specsSuiteId],
+          spec       = new Spec(_spec.id, _spec.suiteName, _spec.description);
+
+      specsSuite.addSpec(spec);
+      updateAvancement(this);
     });
 
-    socket.on('specEnd', function(spec) {
-      // [TODO] complete spec row with the results
-      appendSpecResult(spec);
+    socket.on('specEnd', function(_spec) {
+      var specsSuite = specsSuites[_spec.specsSuiteId],
+          spec       = specsSuite.getSpec(_spec.id);
+
+      spec.setResult(_spec.totalCount, _spec.passedCount, _spec.failedCount, _spec.passed, _spec.subSpecs);
+      spec.showResults();
     });
 
-    socket.on('suiteEnd', function(suite) {
-      appendSuiteEnd(suite);
+    socket.on('suiteEnd', function(_suite) {
+      var specsSuite = specsSuites[_suite.specsSuiteId],
+          suite = new Suite(_suite.specsSuiteId, _suite.description, _suite.totalCount, _suite.passedCount);
+
+      specsSuite.addSuite(suite);
+      suite.showResults();
     });
 
     socket.on('end', function(specsSuiteId) {
@@ -133,17 +149,6 @@
       $('#specs_suite_avancement_error_' + specsSuite.id + ' > .bar').css( "width", errorPercentage + "%" );
       $('#specs_suite_avancement_' + specsSuite.id).val( advancement ).trigger('change');
     }
-
-      specsSuite.addSpec(spec);
-    }
-
-    function appendSuiteEnd(suite) {
-      $('#specs_results_' + suite.specsSuiteId + ' > tbody > tr:first').before('<tr><td>' + suite.description + '</td><td colspan="2">' + suite.passedCount + '/' + suite.totalCount + '</td></tr>');
-
-      var specsSuite = specsSuites[suite.specsSuiteId];
-      specsSuite.addSuite(suite);
-    }
-
   </script>
 
 </html>

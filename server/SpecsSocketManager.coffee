@@ -23,8 +23,8 @@ class SpecsSocketManager
       onConfirmSpecResults[specsSuiteId] = _onConfirmSpecResult
 
   @get:          (server)     -> instance ?= new SpecsSocketManagerSingleton(server)
-  @onHello:      (specsSuiteId, appName, appVersion, deviceName) ->
-    instance.emit 'hello', id: specsSuiteId, appName: appName, appVersion: appVersion, deviceName: deviceName
+  @onHello:      (specsSuiteId, appName, appVersion, deviceName, deviceModel) ->
+    instance.emit 'hello', id: specsSuiteId, appName: appName, appVersion: appVersion, deviceName: deviceName, deviceModel: deviceModel
   @onStartSpecs: (specsSuite)   -> instance.emit 'start',     specsSuite
   @onSpecStart:  (spec)         -> instance.emit 'specStart', spec
   @onSpecEnd:    (spec)         -> instance.emit 'specEnd',   spec
