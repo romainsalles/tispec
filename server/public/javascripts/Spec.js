@@ -5,6 +5,7 @@ Spec = (function() {
     this.id = id;
     this.suiteName = suiteName;
     this.description = description;
+    this.newResultCallbacks = $.Callbacks();
   }
 
   Spec.prototype.setSpecsSuite = function(specsSuite) {
@@ -17,6 +18,7 @@ Spec = (function() {
     this.failedCount = failedCount;
     this.passed = passed;
     this.subSpecs = subSpecs;
+    return this.newResultCallbacks.fire(this);
   };
 
   Spec.prototype.showResults = function() {
@@ -41,6 +43,11 @@ Spec = (function() {
     return this;
   };
 
+  Spec.prototype.onAddResult = function(callback) {
+    return this.newResultCallbacks.add(callback);
+  };
+
   return Spec;
 
 })();
+

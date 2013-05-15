@@ -5,6 +5,9 @@ class SpecsSuite
   errorCount:  0
 
   constructor: (@id, @appName, @appVersion, @deviceName, @deviceModel) ->
+    @newSpecsCallbacks        = $.Callbacks()
+    @newSpecsResultsCallbacks = $.Callbacks()
+    @newSuiteCallbacks        = $.Callbacks()
 
   setTotalCount: (@totalCount) ->
 
@@ -19,6 +22,8 @@ class SpecsSuite
     else
       @errorCount  += 1
 
+    spec.onAddResult(=> @newSpecsResultsCallbacks.fire spec)
+    @newSpecsCallbacks.fire spec
     return spec
 
   getSpec: (id) ->
@@ -28,4 +33,13 @@ class SpecsSuite
   # ----------------------------------------------------------------------------
   addSuite: (suite) ->
     suites.push(suite)
-    return this
+
+    @newSuiteCallbacks.fire suite
+    return suite
+
+  # Callbacks
+  # ----------------------------------------------------------------------------
+
+  onAddSpec:       (callback) -> @newSpecsCallbacks.add        callback
+  onAddSpecResult: (callback) -> @newSpecsResultsCallbacks.add callback
+  onAddSuite:      (callback) -> @newSuiteCallbacks.add        callback

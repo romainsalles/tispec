@@ -1,9 +1,11 @@
 class Spec
   constructor:   (@id, @suiteName, @description) ->
+    @newResultCallbacks = $.Callbacks()
 
   setSpecsSuite: (@specsSuite) ->
 
   setResult:     (@totalCount, @passedCount, @failedCount, @passed, @subSpecs) ->
+    @newResultCallbacks.fire this
 
   showResults: ->
     errorMessages = []
@@ -21,3 +23,7 @@ class Spec
     $(row).prependTo "#specs_results_#{@specsSuite.id}"
 
     return this
+
+  # Callbacks
+  # ----------------------------------------------------------------------------
+  onAddResult: (callback) -> @newResultCallbacks.add(callback)
