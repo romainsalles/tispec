@@ -31,12 +31,12 @@ SpecsSuite = (function() {
 
     specs.push(spec);
     spec.setSpecsSuite(this);
-    if (spec.passed) {
-      this.passedCount += 1;
-    } else {
-      this.errorCount += 1;
-    }
-    spec.onAddResult(function() {
+    spec.onAddResult(function(spec) {
+      if (spec.passed) {
+        _this.passedCount += 1;
+      } else {
+        _this.errorCount += 1;
+      }
       return _this.newSpecsResultsCallbacks.fire(spec);
     });
     this.newSpecsCallbacks.fire(spec);

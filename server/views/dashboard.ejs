@@ -23,6 +23,7 @@
     <script type="text/javascript" src="/javascripts/Spec.js"></script>
     <script type="text/javascript" src="/javascripts/Suite.js"></script>
     <script type="text/javascript" src="/javascripts/SpecsSuite.js"></script>
+    <script type="text/javascript" src="/javascripts/SpecsSuiteView.js"></script>
   </head>
 
   <body data-spy="scroll" data-target=".bs-docs-sidebar">
@@ -42,7 +43,7 @@
 
   <script type="text/javascript">
 
-    var socket, specsSuites = {};
+    var socket, specsSuiteViews = {};
 
     // Socket
     // =========================================================================
@@ -57,43 +58,39 @@
     });
 
     socket.on('hello', function(_specsSuite) {
-      var specsSuite = new SpecsSuite(_specsSuite.id, _specsSuite.appName, _specsSuite.appVersion, _specsSuite.deviceName, _specsSuite.deviceModel)
+      var specSuiteView = new SpecsSuiteView(_specsSuite.id, _specsSuite.appName, _specsSuite.appVersion, _specsSuite.deviceName, _specsSuite.deviceModel)
 
-      specsSuites[specsSuite.id] = specsSuite
-
-      $.get('/specs_suites/' + specsSuite.id, function(html) {
-        $('#specs_suites').append(html);
-        initializeView(specsSuite);
-      });
+      specsSuiteViews[specSuiteView.id] = specSuiteView
     });
 
     socket.on('start', function(_specsSuite) {
-      specsSuite = specsSuites[_specsSuite.specsSuiteId];
+      var specsSuiteView = specsSuiteViews[_specsSuite.specsSuiteId],
+          specsSuite     = specsSuiteView.getSpecsSuite();
       specsSuite.setTotalCount(_specsSuite.totalCount);
     });
 
     socket.on('specStart', function(_spec) {
-      var specsSuite = specsSuites[_spec.specsSuiteId],
-          spec       = new Spec(_spec.id, _spec.suiteName, _spec.description);
+      var specsSuiteView = specsSuiteViews[_spec.specsSuiteId],
+          specsSuite     = specsSuiteView.getSpecsSuite(),
+          spec           = new Spec(_spec.id, _spec.suiteName, _spec.description);
 
       specsSuite.addSpec(spec);
-      updateAvancement(this);
     });
 
     socket.on('specEnd', function(_spec) {
-      var specsSuite = specsSuites[_spec.specsSuiteId],
-          spec       = specsSuite.getSpec(_spec.id);
+      var specsSuiteView = specsSuiteViews[_spec.specsSuiteId],
+          specsSuite     = specsSuiteView.getSpecsSuite(),
+          spec           = specsSuite.getSpec(_spec.id);
 
       spec.setResult(_spec.totalCount, _spec.passedCount, _spec.failedCount, _spec.passed, _spec.subSpecs);
-      spec.showResults();
     });
 
     socket.on('suiteEnd', function(_suite) {
-      var specsSuite = specsSuites[_suite.specsSuiteId],
-          suite = new Suite(_suite.specsSuiteId, _suite.description, _suite.totalCount, _suite.passedCount);
+      var specsSuiteView = specsSuiteViews[_suite.specsSuiteId],
+          specsSuite     = specsSuiteView.getSpecsSuite(),
+          suite          = new Suite(_suite.specsSuiteId, _suite.description, _suite.totalCount, _suite.passedCount);
 
       specsSuite.addSuite(suite);
-      suite.showResults();
     });
 
     socket.on('end', function(specsSuiteId) {
@@ -106,8 +103,8 @@
     });
 
     function runSpecs(specsSuiteId, form) {
-      var specsSuite = specsSuites[specsSuiteId];
-      initializeView(specsSuite);
+      var specsSuiteView = specsSuiteViews[specsSuiteId];
+      specsSuiteView.initializeView();
 
       var filter = $(form).find(':input').first().val();
       socket.emit('runSpecs', {specsSuiteId: specsSuiteId, filter: filter});
@@ -120,36 +117,8 @@
     }
 
     function endSpecsSuite(specsSuiteId) {
-      delete specsSuites[specsSuiteId];
+      delete specsSuiteViews[specsSuiteId];
       $('#specs_suite_' + specsSuiteId).remove();
-    }
-
-    // Specs
-    // =========================================================================
-
-    function initializeView(specsSuite) {
-      $('#specs_results_' + specsSuite.id).find("tr:gt(0)").remove();
-      $('#specs_suite_avancement_success_' + specsSuite.id + ' > .bar').css("width", "0%");
-      $('#specs_suite_avancement_error_' + specsSuite.id + ' > .bar').css("width", "0%");
-      $('#specs_suite_avancement_' + specsSuite.id).val(0).trigger('change');
-      $('#specs_suite_title_' + specsSuite.id).text(specsSuite.appName + ' (' + specsSuite.appVersion + ') / ' + specsSuite.deviceName);
-      $("#specs_suite_avancement_" + specsSuite.id).knob({
-        width:    60,
-        height:   60,
-        readOnly: true
-      });
-    }
-
-    function updateAvancement(specsSuite) {
-      var passed           = specsSuite.passedCount,
-          error            = specsSuite.errorCount,
-          advancement      = (passed+error)/specsSuite.totalCount * 100,
-          passedPercentage = (passed / specsSuite.totalCount) * 100,
-          errorPercentage  = (error / specsSuite.totalCount) * 100;
-
-      $('#specs_suite_avancement_success_' + specsSuite.id + ' > .bar').css( "width", passedPercentage + "%" );
-      $('#specs_suite_avancement_error_' + specsSuite.id + ' > .bar').css( "width", errorPercentage + "%" );
-      $('#specs_suite_avancement_' + specsSuite.id).val( advancement ).trigger('change');
     }
   </script>
 

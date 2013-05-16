@@ -17,12 +17,13 @@ class SpecsSuite
     specs.push(spec)
     spec.setSpecsSuite(this)
 
-    if spec.passed
-      @passedCount += 1
-    else
-      @errorCount  += 1
+    spec.onAddResult (spec) =>
+      if spec.passed
+        @passedCount += 1
+      else
+        @errorCount  += 1
+      @newSpecsResultsCallbacks.fire spec
 
-    spec.onAddResult(=> @newSpecsResultsCallbacks.fire spec)
     @newSpecsCallbacks.fire spec
     return spec
 
