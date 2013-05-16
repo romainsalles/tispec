@@ -92,3 +92,7 @@ Spec.prototype.showResults = function() {
   $(row).prependTo("#specs_results_" + this.specsSuite.id);
   return this;
 };
+
+Suite.prototype.showResults = function() {
+  return $("#specs_results_" + this.specsSuiteId + " > tbody > tr:first").before("<tr><td>" + this.description + "</td><td colspan=\"2\">" + this.passedCount + "/" + this.totalCount + "</td></tr>");
+};

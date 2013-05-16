@@ -59,3 +59,6 @@ Spec.prototype.showResults = ->
   $(row).prependTo "#specs_results_#{@specsSuite.id}"
 
   return this
+
+Suite.prototype.showResults = ->
+  $("#specs_results_#{@specsSuiteId} > tbody > tr:first").before("<tr><td>#{@description}</td><td colspan=\"2\">#{@passedCount}/#{@totalCount}</td></tr>")

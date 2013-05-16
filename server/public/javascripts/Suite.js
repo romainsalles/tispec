@@ -8,10 +8,6 @@ Suite = (function() {
     this.passedCount = passedCount;
   }
 
-  Suite.prototype.showResults = function() {
-    return $("#specs_results_" + this.specsSuiteId + " > tbody > tr:first").before("<tr><td>" + this.description + "</td><td colspan=\"2\">" + this.passedCount + "/" + this.totalCount + "</td></tr>");
-  };
-
   return Suite;
 
 })();
