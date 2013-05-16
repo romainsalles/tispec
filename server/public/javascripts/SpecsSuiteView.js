@@ -54,6 +54,22 @@ SpecsSuiteView = (function() {
     });
   };
 
+  SpecsSuiteView.prototype.confirmManualSpec = function(description) {
+    var confirmationDiv;
+
+    confirmationDiv = $("#spec_confirmation_" + this.id);
+    confirmationDiv.find('.confirmation_expected_message').text(description);
+    return confirmationDiv.show();
+  };
+
+  SpecsSuiteView.prototype.end = function() {
+    return $('.spec_row').each(function() {
+      if ($(this).data('content')) {
+        return $(this).popover('hide');
+      }
+    });
+  };
+
   updateAvancement = function() {
     var advancement, error, errorPercentage, passed, passedPercentage;
 

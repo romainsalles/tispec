@@ -27,6 +27,14 @@ class SpecsSuiteView
     $("#specs_suite_title_#{@id}").text("#{specsSuite.appName} (#{specsSuite.appVersion}) / #{specsSuite.deviceName}")
     $("#specs_suite_avancement_#{@id}").knob width: 60, height: 60, readOnly: true
 
+  confirmManualSpec: (description) ->
+    confirmationDiv = $("#spec_confirmation_#{@id}");
+    confirmationDiv.find('.confirmation_expected_message').text(description)
+    confirmationDiv.show()
+
+  end: () ->
+    $('.spec_row').each( -> $(this).popover 'hide' if $(this).data 'content' )
+
   # Private functions
   # ----------------------------------------------------------------------------
   updateAvancement = () ->
