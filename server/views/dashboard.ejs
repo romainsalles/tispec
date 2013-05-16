@@ -84,7 +84,7 @@
     });
 
     socket.on('end', function(specsSuiteId) {
-      getSpecsSuiteView(_spec.specsSuiteId).end();
+      getSpecsSuiteView(specsSuiteId).end();
     });
 
     function getSpecsSuiteView(id) { return specsSuiteViews[id]; }
