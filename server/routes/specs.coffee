@@ -27,7 +27,7 @@ checkScreenshot = (request, response) ->
   specAlias         = request.body.specAlias
   specId            = request.body.specId
   specsSuiteId      = request.query["specsSuiteId"]
-  expectedImage = 'server/spec_images/' + appName + '/' + deviceModel + '/' + specAlias + '.png'
+  expectedImage = "server/spec_images/#{appName}/#{deviceModel}/#{specAlias}.png"
   actualImage   = request.files.image.path
 
 
@@ -53,6 +53,11 @@ checkScreenshot = (request, response) ->
     return
 
 exports.checkScreenshot = checkScreenshot
+
+screenshotErrorDifferent = (request, response) ->
+  response.render 'specs_screenshots_different', specsSuiteId: request.params.specsSuiteid, specId: request.params.specId, expectedImage: request.query["expectedImage"], actualImage: request.query["actualImage"]
+
+exports.screenshotErrorDifferent = screenshotErrorDifferent
 
 startSpecs = (request, response) ->
   specsSuite              = JSON.parse(request.body.specsSuite)

@@ -22,15 +22,16 @@ class TispecServer
     # development only
     app.use(express.errorHandler()) if 'development' is app.get('env')
 
-    app.get  '/',                      specs.dashboard
-    app.get  '/specs_suites/:id',      specs_suites.show
-    app.post '/specs/startSpecs',      specs.startSpecs
-    app.post '/specs/specStart',       specs.specStart
-    app.post '/specs/specEnd',         specs.specEnd
-    app.post '/specs/suiteEnd',        specs.suiteEnd
-    app.post '/specs/end',             specs.specsEnd
-    app.post '/specs/askConfirmation', specs.askConfirmation
-    app.post '/specs/checkScreenshot', specs.checkScreenshot
+    app.get  '/',                                                 specs.dashboard
+    app.get  '/specs_suites/:id',                                 specs_suites.show
+    app.post '/specs/startSpecs',                                 specs.startSpecs
+    app.post '/specs/specStart',                                  specs.specStart
+    app.post '/specs/specEnd',                                    specs.specEnd
+    app.post '/specs/suiteEnd',                                   specs.suiteEnd
+    app.post '/specs/end',                                        specs.specsEnd
+    app.post '/specs/askConfirmation',                            specs.askConfirmation
+    app.post '/specs/checkScreenshot',                            specs.checkScreenshot
+    app.get  '/specs/screenshotsDifferent/:specsSuiteId/:specId', specs.screenshotErrorDifferent
 
     server = http.createServer(app).listen(app.get('port'), ->
       console.log('Server listening on port ' + app.get('port'))

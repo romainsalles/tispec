@@ -93,7 +93,14 @@ Spec.prototype.formatNormalError = ->
   return this
 
 Spec.prototype.formatScreenshotDifferentError = ->
-  @formatResult "The expected screenshot doesn't match the actual one"
+  #@formatResult "The expected screenshot doesn't match the actual one"
+  id = "error_screenshot_different_#{@specsSuite.id}_#{@id}"
+  modalId = "modal_#{id}"
+  url = "/specs/screenshotsDifferent/#{@specsSuite.id}/#{@id}?expectedImage=#{encodeURIComponent(@expectedImage)}&actualImage=#{encodeURIComponent(@actualImage)}"
+  modal = "<div id=\"#{modalId}\" data-remote=\"#{url}\" class=\"modal hide fade\" style=\"width: 90%; left: 0; margin-left: 6%; height: 96%; top: 2%;\"><div class=\"modal-body\" style=\"max-height: none;\"></div></div>"
+    #.attr('data-remote', 'http://www.yahoo.com')
+  row = "<tr class=\"spec_row error\" onclick=\"$('##{modalId}').attr('data-remote', '#{url}').modal('show');\"><td><div id=\"#{id}\">#{@suiteName} #{@description}#{modal}</div></td><td>#{@passedCount}/#{@totalCount}</td></tr>"
+  $(row).prependTo "#specs_results_#{@specsSuite.id}"
   return
 
 Spec.prototype.formatScreenshotUnknownError = ->
