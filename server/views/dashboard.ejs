@@ -51,11 +51,18 @@
     socket = io.connect('http://localhost');
 
     socket.on('confirmSpec', function (expectedBehavior) {
-      getSpecsSuiteView(expectedBehavior.specsSuiteId).confirmManualSpec(expectedBehavior.description);
+      getSpecsSuiteView(expectedBehavior.specsSuiteId).confirmManualSpec(expectedBehavior);
+    });
+
+    socket.on('screenshotError', function(_spec) {
+      var specsSuite = getSpecsSuite(_spec.specsSuiteId),
+          spec       = specsSuite.getSpec(_spec.id);
+
+      spec.setScreenshotError(_spec.errorType, _spec.expectedImage, _spec.actualImage)
     });
 
     socket.on('hello', function(_specsSuite) {
-      var specSuiteView = new SpecsSuiteView(_specsSuite.id, _specsSuite.appName, _specsSuite.appVersion, _specsSuite.deviceName, _specsSuite.deviceModel)
+      var specSuiteView = new SpecsSuiteView(socket, _specsSuite.id, _specsSuite.appName, _specsSuite.appVersion, _specsSuite.deviceName, _specsSuite.deviceModel)
 
       specsSuiteViews[specSuiteView.id] = specSuiteView
     });
@@ -98,9 +105,8 @@
       return false;
     }
 
-    function validateSpec(specsSuiteId, valide) {
-      $('#spec_confirmation_' + specsSuiteId).hide();
-      socket.emit('confirmSpecResult', { specsSuiteId: specsSuiteId, valide: valide });
+    function validateSpec(specsSuiteId, valid) {
+      getSpecsSuiteView(specsSuiteId).setManualSpecResult(valid);
     }
 
     function endSpecsSuite(specsSuiteId) {

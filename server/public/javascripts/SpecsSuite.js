@@ -44,8 +44,11 @@ SpecsSuite = (function() {
   };
 
   SpecsSuite.prototype.getSpec = function(id) {
+    var _id;
+
+    _id = id.toString();
     return _.find(specs, function(spec) {
-      return spec.id === id;
+      return spec.id.toString() === _id;
     });
   };
 

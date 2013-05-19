@@ -10,6 +10,7 @@ endResponse = (response) ->
 
 askConfirmation = (request, response) ->
   expectedBehavior = JSON.parse(request.body.expectedBehavior)
+  expectedBehavior.specId       = request.body.specId
   expectedBehavior.specsSuiteId = request.query["specsSuiteId"]
 
   SpecsSocketManager.onConfirmSpec expectedBehavior, (valide) =>
@@ -17,19 +18,30 @@ askConfirmation = (request, response) ->
 
 exports.askConfirmation = askConfirmation
 
+SCREENSHOT_ERROR_UNKNOWN_IMAGE   = 1
+SCREENSHOT_ERROR_DIFFERENT_IMAGE = 2
+
 checkScreenshot = (request, response) ->
   appName           = request.body.appName
   deviceModel       = request.body.deviceModel
   specAlias         = request.body.specAlias
+  specId            = request.body.specId
+  specsSuiteId      = request.query["specsSuiteId"]
+  expectedImage = 'server/spec_images/' + appName + '/' + deviceModel + '/' + specAlias + '.png'
+  actualImage   = request.files.image.path
 
-  expectedImagePath = 'server/spec_images/' + appName + '/' + deviceModel + '/' + specAlias + '.png'
-  imagePath         = request.files.image.path
 
   gm = require 'gm'
   # @see https://github.com/aheckmann/gm#compare
-  gm.compare expectedImagePath, imagePath, 0, (err, isEqual, equality, raw) =>
-    console.log JSON.stringify(err) if err
+  gm.compare expectedImage, actualImage, 0, (err, isEqual, equality, raw) =>
+    if err
+      console.log JSON.stringify(err) # {"killed":false,"code":1,"signal":null}
+      SpecsSocketManager.onScreenshotError id: specId, specsSuiteId: specsSuiteId, errorType: SCREENSHOT_ERROR_UNKNOWN_IMAGE, actualImage: actualImage
+      response.end(JSON.stringify(valide: false))
+      return
 
+    unless isEqual
+      SpecsSocketManager.onScreenshotError id: specId, specsSuiteId: specsSuiteId, errorType: SCREENSHOT_ERROR_DIFFERENT_IMAGE, expectedImage: expectedImage, actualImage: actualImage
     # if the images were considered equal, `isEqual` will be true, otherwise, false.
     #console.log('The images were equal: %s', isEqual);
     # to see the total equality returned by graphicsmagick we can inspect the `equality` argument.
@@ -38,6 +50,7 @@ checkScreenshot = (request, response) ->
     #console.log(raw);
 
     response.end(JSON.stringify({valide: isEqual}))
+    return
 
 exports.checkScreenshot = checkScreenshot
 

@@ -1,7 +1,8 @@
 class SpecsSuiteView
-  specsSuite = null
+  specsSuite  = null
+  currentSpec = null
 
-  constructor: (@id, appName, appVersion, deviceName, deviceModel) ->
+  constructor: (@socket, @id, appName, appVersion, deviceName, deviceModel) ->
     specsSuite = new SpecsSuite(@id, appName, appVersion, deviceName, deviceModel)
     that       = this
 
@@ -27,10 +28,16 @@ class SpecsSuiteView
     $("#specs_suite_title_#{@id}").text("#{specsSuite.appName} (#{specsSuite.appVersion}) / #{specsSuite.deviceName}")
     $("#specs_suite_avancement_#{@id}").knob width: 60, height: 60, readOnly: true
 
-  confirmManualSpec: (description) ->
+  confirmManualSpec: (behavior) ->
+    currentSpec = specsSuite.getSpec behavior.specId
     confirmationDiv = $("#spec_confirmation_#{@id}");
-    confirmationDiv.find('.confirmation_expected_message').text(description)
+    confirmationDiv.find('.confirmation_expected_message').text(behavior.description)
     confirmationDiv.show()
+
+  setManualSpecResult: (valid) ->
+    currentSpec.setManualError() unless valid
+    $("#spec_confirmation_#{@id}").hide();
+    socket.emit('confirmSpecResult', specsSuiteId: @id, valide: valid );
 
   end: () ->
     $('.spec_row').each( -> $(this).popover 'hide' if $(this).data 'content' )
@@ -52,21 +59,41 @@ class SpecsSuiteView
 # Decorate models
 # ------------------------------------------------------------------------------
 Spec.prototype.showResults = ->
+  switch @errorType
+    when @ERROR_NORMAL                     then @formatNormalError()
+    when @ERROR_SCREENSHOT_UNKNOWN_IMAGE   then @formatScreenshotUnknownError()
+    when @ERROR_SCREENSHOT_DIFFERENT_IMAGE then @formatScreenshotDifferentError()
+    when @ERROR_MANUAL_VALIDATION          then @formatManualValidationError()
+    else                                        @formatResult()
+
+Spec.prototype.formatNormalError = ->
   errorMessages = []
   for subSpec, i in @subSpecs
     unless subSpec.passed_
       errorMessages.push '(' + (i+1) + ') expected <b>' + JSON.stringify(subSpec.actual) + '</b> to be <b>' + JSON.stringify(subSpec.expected) + '</b>'
 
-  className = if @passed then 'success' else 'error'
-  row = "<tr class=\"spec_row #{className}\""
   if errorMessages.length > 0
-    subSpecsErrors = "<ul><li>#{errorMessages.join('</li><li>')}</li></ul>"
-    row += " data-title=\"Errors\" data-content=\"#{subSpecsErrors}\" data-placement=\"top\" data-html=\"true\""
-
-  row += "><td>#{@suiteName} #{@description}</td><td>#{@passedCount}/#{@totalCount}</td></tr>"
-  $(row).prependTo "#specs_results_#{@specsSuite.id}"
+    @formatResult "<ul><li>#{errorMessages.join('</li><li>')}</li></ul>"
+  else
+    @formatResult()
 
   return this
+
+Spec.prototype.formatScreenshotDifferentError = ->
+  @formatResult "The expected screenshot doesn't match the actual one"
+
+Spec.prototype.formatScreenshotUnknownError = ->
+  @formatResult "You haven't defined an expected screenshot for this device and this app yet"
+
+Spec.prototype.formatManualValidationError = ->
+  @formatResult "You have manually rejected this test"
+
+Spec.prototype.formatResult = (errorMessage) ->
+  className = if errorMessage then 'error' else 'success'
+  error = if errorMessage then " data-title=\"Errors\" data-content=\"#{errorMessage}\" data-placement=\"top\" data-html=\"true\"" else ""
+
+  row = "<tr class=\"spec_row #{className}\"#{error}><td>#{@suiteName} #{@description}</td><td>#{@passedCount}/#{@totalCount}</td></tr>"
+  $(row).prependTo "#specs_results_#{@specsSuite.id}"
 
 Suite.prototype.showResults = ->
   $("#specs_results_#{@specsSuiteId} > tbody > tr:first").before("<tr><td>#{@description}</td><td colspan=\"2\">#{@passedCount}/#{@totalCount}</td></tr>")

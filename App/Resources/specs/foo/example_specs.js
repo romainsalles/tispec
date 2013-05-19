@@ -25,5 +25,10 @@
       constructAndOpenABlueWindowWithASquareAndAText(31);
       compareScreenshots(this.id, 'blueWindowWithASquareAndAText_2');
     });
+
+    it('should be positionned perfectly (3)', function() {
+      // this spec is expected to fail
+      compareScreenshots(this.id, 'unknown_image');
+    });
   });
 })();

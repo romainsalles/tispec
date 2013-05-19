@@ -28,7 +28,8 @@ class SpecsSuite
     return spec
 
   getSpec: (id) ->
-    _.find specs, (spec) -> return spec.id is id
+    _id = id.toString()
+    _.find specs, (spec) -> return spec.id.toString() is _id
 
   # Suite
   # ----------------------------------------------------------------------------

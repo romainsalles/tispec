@@ -1,6 +1,14 @@
 var Spec;
 
 Spec = (function() {
+  Spec.prototype.ERROR_NORMAL = 0;
+
+  Spec.prototype.ERROR_SCREENSHOT_UNKNOWN_IMAGE = 1;
+
+  Spec.prototype.ERROR_SCREENSHOT_DIFFERENT_IMAGE = 2;
+
+  Spec.prototype.ERROR_MANUAL_VALIDATION = 3;
+
   function Spec(id, suiteName, description) {
     this.id = id;
     this.suiteName = suiteName;
@@ -10,6 +18,16 @@ Spec = (function() {
 
   Spec.prototype.setSpecsSuite = function(specsSuite) {
     this.specsSuite = specsSuite;
+  };
+
+  Spec.prototype.setScreenshotError = function(errorType, expectedImage, actualImage) {
+    this.errorType = errorType;
+    this.expectedImage = expectedImage;
+    this.actualImage = actualImage;
+  };
+
+  Spec.prototype.setManualError = function() {
+    return this.errorType = this.ERROR_MANUAL_VALIDATION;
   };
 
   Spec.prototype.setResult = function(totalCount, passedCount, failedCount, passed, subSpecs) {

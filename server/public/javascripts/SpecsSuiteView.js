@@ -1,13 +1,16 @@
 var SpecsSuiteView;
 
 SpecsSuiteView = (function() {
-  var specsSuite, updateAvancement;
+  var currentSpec, specsSuite, updateAvancement;
 
   specsSuite = null;
 
-  function SpecsSuiteView(id, appName, appVersion, deviceName, deviceModel) {
+  currentSpec = null;
+
+  function SpecsSuiteView(socket, id, appName, appVersion, deviceName, deviceModel) {
     var that;
 
+    this.socket = socket;
     this.id = id;
     specsSuite = new SpecsSuite(this.id, appName, appVersion, deviceName, deviceModel);
     that = this;
@@ -54,12 +57,24 @@ SpecsSuiteView = (function() {
     });
   };
 
-  SpecsSuiteView.prototype.confirmManualSpec = function(description) {
+  SpecsSuiteView.prototype.confirmManualSpec = function(behavior) {
     var confirmationDiv;
 
+    currentSpec = specsSuite.getSpec(behavior.specId);
     confirmationDiv = $("#spec_confirmation_" + this.id);
-    confirmationDiv.find('.confirmation_expected_message').text(description);
+    confirmationDiv.find('.confirmation_expected_message').text(behavior.description);
     return confirmationDiv.show();
+  };
+
+  SpecsSuiteView.prototype.setManualSpecResult = function(valid) {
+    if (!valid) {
+      currentSpec.setManualError();
+    }
+    $("#spec_confirmation_" + this.id).hide();
+    return socket.emit('confirmSpecResult', {
+      specsSuiteId: this.id,
+      valide: valid
+    });
   };
 
   SpecsSuiteView.prototype.end = function() {
@@ -88,7 +103,22 @@ SpecsSuiteView = (function() {
 })();
 
 Spec.prototype.showResults = function() {
-  var className, errorMessages, i, row, subSpec, subSpecsErrors, _i, _len, _ref;
+  switch (this.errorType) {
+    case this.ERROR_NORMAL:
+      return this.formatNormalError();
+    case this.ERROR_SCREENSHOT_UNKNOWN_IMAGE:
+      return this.formatScreenshotUnknownError();
+    case this.ERROR_SCREENSHOT_DIFFERENT_IMAGE:
+      return this.formatScreenshotDifferentError();
+    case this.ERROR_MANUAL_VALIDATION:
+      return this.formatManualValidationError();
+    default:
+      return this.formatResult();
+  }
+};
+
+Spec.prototype.formatNormalError = function() {
+  var errorMessages, i, subSpec, _i, _len, _ref;
 
   errorMessages = [];
   _ref = this.subSpecs;
@@ -98,15 +128,33 @@ Spec.prototype.showResults = function() {
       errorMessages.push('(' + (i + 1) + ') expected <b>' + JSON.stringify(subSpec.actual) + '</b> to be <b>' + JSON.stringify(subSpec.expected) + '</b>');
     }
   }
-  className = this.passed ? 'success' : 'error';
-  row = "<tr class=\"spec_row " + className + "\"";
   if (errorMessages.length > 0) {
-    subSpecsErrors = "<ul><li>" + (errorMessages.join('</li><li>')) + "</li></ul>";
-    row += " data-title=\"Errors\" data-content=\"" + subSpecsErrors + "\" data-placement=\"top\" data-html=\"true\"";
+    this.formatResult("<ul><li>" + (errorMessages.join('</li><li>')) + "</li></ul>");
+  } else {
+    this.formatResult();
   }
-  row += "><td>" + this.suiteName + " " + this.description + "</td><td>" + this.passedCount + "/" + this.totalCount + "</td></tr>";
-  $(row).prependTo("#specs_results_" + this.specsSuite.id);
   return this;
+};
+
+Spec.prototype.formatScreenshotDifferentError = function() {
+  return this.formatResult("The expected screenshot doesn't match the actual one");
+};
+
+Spec.prototype.formatScreenshotUnknownError = function() {
+  return this.formatResult("You haven't defined an expected screenshot for this device and this app yet");
+};
+
+Spec.prototype.formatManualValidationError = function() {
+  return this.formatResult("You have manually rejected this test");
+};
+
+Spec.prototype.formatResult = function(errorMessage) {
+  var className, error, row;
+
+  className = errorMessage ? 'error' : 'success';
+  error = errorMessage ? " data-title=\"Errors\" data-content=\"" + errorMessage + "\" data-placement=\"top\" data-html=\"true\"" : "";
+  row = "<tr class=\"spec_row " + className + "\"" + error + "><td>" + this.suiteName + " " + this.description + "</td><td>" + this.passedCount + "/" + this.totalCount + "</td></tr>";
+  return $(row).prependTo("#specs_results_" + this.specsSuite.id);
 };
 
 Suite.prototype.showResults = function() {

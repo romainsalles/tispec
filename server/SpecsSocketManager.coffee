@@ -30,16 +30,17 @@ class SpecsSocketManager
   @onSpecEnd:    (spec)         -> instance.emit 'specEnd',   spec
   @onSuiteEnd:   (suite)        -> instance.emit 'suiteEnd',  suite
   @onEnd:        (specsSuiteId) -> instance.emit 'end',       specsSuiteId
-
   @onConfirmSpec: (behavior, onConfirmSpecResult) ->
     instance.setConfirmSpecCallback behavior.specsSuiteId, onConfirmSpecResult
     instance.emit 'confirmSpec', behavior
+  @onScreenshotError: (spec)    -> instance.emit 'screenshotError', spec
 
-exports.get           = SpecsSocketManager.get
-exports.onHello       = SpecsSocketManager.onHello
-exports.onStartSpecs  = SpecsSocketManager.onStartSpecs
-exports.onSpecStart   = SpecsSocketManager.onSpecStart
-exports.onSpecEnd     = SpecsSocketManager.onSpecEnd
-exports.onSuiteEnd    = SpecsSocketManager.onSuiteEnd
-exports.onEnd         = SpecsSocketManager.onEnd
-exports.onConfirmSpec = SpecsSocketManager.onConfirmSpec
+exports.get               = SpecsSocketManager.get
+exports.onHello           = SpecsSocketManager.onHello
+exports.onStartSpecs      = SpecsSocketManager.onStartSpecs
+exports.onSpecStart       = SpecsSocketManager.onSpecStart
+exports.onSpecEnd         = SpecsSocketManager.onSpecEnd
+exports.onSuiteEnd        = SpecsSocketManager.onSuiteEnd
+exports.onEnd             = SpecsSocketManager.onEnd
+exports.onConfirmSpec     = SpecsSocketManager.onConfirmSpec
+exports.onScreenshotError = SpecsSocketManager.onScreenshotError
