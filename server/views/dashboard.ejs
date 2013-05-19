@@ -94,16 +94,10 @@
       getSpecsSuiteView(specsSuiteId).end();
     });
 
-    function getSpecsSuiteView(id) { return specsSuiteViews[id]; }
-    function getSpecsSuite(id)     { return getSpecsSuiteView(id).getSpecsSuite(); }
-
-    function runSpecs(specsSuiteId, form) {
-      return getSpecsSuiteView(specsSuiteId).runSpecs(form);
-    }
-
-    function validateSpec(specsSuiteId, valid) {
-      getSpecsSuiteView(specsSuiteId).setManualSpecResult(valid);
-    }
+    function getSpecsSuiteView(id)             { return specsSuiteViews[id]; }
+    function getSpecsSuite(id)                 { return getSpecsSuiteView(id).getSpecsSuite(); }
+    function runSpecs(specsSuiteId, form)      { return getSpecsSuiteView(specsSuiteId).runSpecs(form); }
+    function validateSpec(specsSuiteId, valid) { getSpecsSuiteView(specsSuiteId).setManualSpecResult(valid); }
 
     function endSpecsSuite(specsSuiteId) {
       delete specsSuiteViews[specsSuiteId];
