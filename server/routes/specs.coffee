@@ -1,11 +1,27 @@
 ejs                = require 'ejs'
 fs                 = require 'fs'
 SpecsSocketManager = require '../SpecsSocketManager'
+mkdirp             = require 'mkdirp'
 
 endResponse = (response) ->
   response.writeHead 200
   console.log('end response')
   response.end()
+
+# @see http://procbits.com/2011/11/15/synchronous-file-copy-in-node-js
+copyFileSync = (srcFile, destFile) ->
+  BUF_LENGTH = 64*1024
+  buff = new Buffer(BUF_LENGTH)
+  fdr = fs.openSync(srcFile, 'r')
+  fdw = fs.openSync(destFile, 'w')
+  bytesRead = 1
+  pos = 0
+  while bytesRead > 0
+    bytesRead = fs.readSync(fdr, buff, 0, BUF_LENGTH, pos)
+    fs.writeSync(fdw,buff,0,bytesRead)
+    pos += bytesRead
+  fs.closeSync(fdr)
+  fs.closeSync(fdw)
 
 
 askConfirmation = (request, response) ->
@@ -21,38 +37,49 @@ exports.askConfirmation = askConfirmation
 SCREENSHOT_ERROR_UNKNOWN_IMAGE   = 1
 SCREENSHOT_ERROR_DIFFERENT_IMAGE = 2
 
+EXPECTED_IMAGE_RELATIVE_FOLDER = "images/spec_images"
+EXPECTED_IMAGE_ABSOLUTE_FOLDER = "#{__dirname}/../public/#{EXPECTED_IMAGE_RELATIVE_FOLDER}"
+ACTUAL_IMAGE_RELATIVE_FOLDER   = "images/spec_images_temp"
+ACTUAL_IMAGE_ABSOLUTE_FOLDER   = "#{__dirname}/../public/#{ACTUAL_IMAGE_RELATIVE_FOLDER}"
+
 checkScreenshot = (request, response) ->
-  appName           = request.body.appName
-  deviceModel       = request.body.deviceModel
-  specAlias         = request.body.specAlias
-  specId            = request.body.specId
-  specsSuiteId      = request.query["specsSuiteId"]
+  appName      = request.body.appName
+  deviceModel  = request.body.deviceModel
+  specAlias    = request.body.specAlias
+  specId       = request.body.specId
+  specsSuiteId = request.query["specsSuiteId"]
 
-  expectedImage     = "images/spec_images/#{appName}/#{deviceModel}/#{specAlias}.png"
-  expectedImagePath = "server/public/#{expectedImage}"
-  actualImage       = request.files.image.path
+  imageFolderPath     = "#{appName}/#{deviceModel}"
+  imageName           = "#{specAlias}.png"
 
-    console.error(err) if err
+  expectedImageFolder = "#{EXPECTED_IMAGE_ABSOLUTE_FOLDER}/#{imageFolderPath}"
+  expectedImage       = "#{expectedImageFolder}/#{specAlias}.png"
+  expectedImageUrl    = "/#{EXPECTED_IMAGE_RELATIVE_FOLDER}/#{imageFolderPath}/#{imageName}"
+
+  actualTempImage     = request.files.image.path
+  actualImageFolder   = "#{ACTUAL_IMAGE_ABSOLUTE_FOLDER}/#{imageFolderPath}"
+  actualImage         = "#{actualImageFolder}/#{specAlias}.png"
+  actualImageUrl      = "/#{ACTUAL_IMAGE_RELATIVE_FOLDER}/#{imageFolderPath}/#{imageName}"
+
+  mkdirp expectedImageFolder, (err) ->
+    console.error err if err
 
     gm = require 'gm'
     # @see https://github.com/aheckmann/gm#compare
-    gm.compare expectedImagePath, actualImage, 0, (err, isEqual, equality, raw) =>
+    gm.compare expectedImage, actualTempImage, 0, (err, isEqual, equality, raw) =>
+      copyFileSync actualTempImage, actualImage if err || !isEqual
+
       if err
         console.log JSON.stringify(err) # {"killed":false,"code":1,"signal":null}
-        SpecsSocketManager.onScreenshotError id: specId, specsSuiteId: specsSuiteId, errorType: SCREENSHOT_ERROR_UNKNOWN_IMAGE, actualImage: actualImage
+
+        SpecsSocketManager.onScreenshotError id: specId, specsSuiteId: specsSuiteId, errorType: SCREENSHOT_ERROR_UNKNOWN_IMAGE, actualImage: actualImageUrl
         response.end(JSON.stringify(valide: false))
         return
 
       unless isEqual
-        SpecsSocketManager.onScreenshotError id: specId, specsSuiteId: specsSuiteId, errorType: SCREENSHOT_ERROR_DIFFERENT_IMAGE, expectedImage: expectedImage, actualImage: actualImage
-      # if the images were considered equal, `isEqual` will be true, otherwise, false.
-      #console.log('The images were equal: %s', isEqual);
-      # to see the total equality returned by graphicsmagick we can inspect the `equality` argument.
-      #console.log('Actual equality: %d', equality);
-      # inspect the raw output
-      #console.log(raw);
+        SpecsSocketManager.onScreenshotError id: specId, specsSuiteId: specsSuiteId, errorType: SCREENSHOT_ERROR_DIFFERENT_IMAGE, expectedImage: expectedImageUrl, actualImage: actualImageUrl
 
-      response.end(JSON.stringify({valide: isEqual}))
+      response.end(JSON.stringify(valide: isEqual))
       return
 
 exports.checkScreenshot = checkScreenshot
