@@ -98,11 +98,7 @@
     function getSpecsSuite(id)     { return getSpecsSuiteView(id).getSpecsSuite(); }
 
     function runSpecs(specsSuiteId, form) {
-      getSpecsSuiteView(specsSuiteId).initializeView();
-
-      var filter = $(form).find(':input').first().val();
-      socket.emit('runSpecs', {specsSuiteId: specsSuiteId, filter: filter});
-      return false;
+      return getSpecsSuiteView(specsSuiteId).runSpecs(form);
     }
 
     function validateSpec(specsSuiteId, valid) {

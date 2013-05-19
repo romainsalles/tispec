@@ -19,6 +19,13 @@ class SpecsSuiteView
 
   getSpecsSuite: -> specsSuite
 
+  runSpecs: (form) ->
+    @initializeView()
+
+    filter = $(form).find(':input').first().val()
+    socket.emit 'runSpecs', specsSuiteId: @id, filter: filter
+    return false
+
   initializeView: () ->
     $('#myModal').modal 'show'
     $("#specs_results_#{@id}").find("tr:gt(0)").remove()
@@ -27,20 +34,24 @@ class SpecsSuiteView
     $("#specs_suite_avancement_#{@id}").val(0).trigger("change")
     $("#specs_suite_title_#{@id}").text("#{specsSuite.appName} (#{specsSuite.appVersion}) / #{specsSuite.deviceName}")
     $("#specs_suite_avancement_#{@id}").knob width: 60, height: 60, readOnly: true
+    return
 
   confirmManualSpec: (behavior) ->
     currentSpec = specsSuite.getSpec behavior.specId
     confirmationDiv = $("#spec_confirmation_#{@id}");
     confirmationDiv.find('.confirmation_expected_message').text(behavior.description)
     confirmationDiv.show()
+    return
 
   setManualSpecResult: (valid) ->
     currentSpec.setManualError() unless valid
-    $("#spec_confirmation_#{@id}").hide();
-    socket.emit('confirmSpecResult', specsSuiteId: @id, valide: valid );
+    $("#spec_confirmation_#{@id}").hide()
+    socket.emit 'confirmSpecResult', specsSuiteId: @id, valide: valid
+    return
 
   end: () ->
     $('.spec_row').each( -> $(this).popover 'hide' if $(this).data 'content' )
+    return
 
   # Private functions
   # ----------------------------------------------------------------------------
@@ -54,6 +65,7 @@ class SpecsSuiteView
     $("#specs_suite_avancement_success_#{specsSuite.id} > .bar").css("width", "#{passedPercentage}%")
     $("#specs_suite_avancement_error_#{specsSuite.id} > .bar").css("width", "#{errorPercentage}%")
     $("#specs_suite_avancement_#{specsSuite.id}").val(advancement).trigger('change')
+    return
 
 
 # Decorate models
@@ -65,6 +77,7 @@ Spec.prototype.showResults = ->
     when @ERROR_SCREENSHOT_DIFFERENT_IMAGE then @formatScreenshotDifferentError()
     when @ERROR_MANUAL_VALIDATION          then @formatManualValidationError()
     else                                        @formatResult()
+  return
 
 Spec.prototype.formatNormalError = ->
   errorMessages = []
@@ -81,12 +94,15 @@ Spec.prototype.formatNormalError = ->
 
 Spec.prototype.formatScreenshotDifferentError = ->
   @formatResult "The expected screenshot doesn't match the actual one"
+  return
 
 Spec.prototype.formatScreenshotUnknownError = ->
   @formatResult "You haven't defined an expected screenshot for this device and this app yet"
+  return
 
 Spec.prototype.formatManualValidationError = ->
   @formatResult "You have manually rejected this test"
+  return
 
 Spec.prototype.formatResult = (errorMessage) ->
   className = if errorMessage then 'error' else 'success'
@@ -94,6 +110,8 @@ Spec.prototype.formatResult = (errorMessage) ->
 
   row = "<tr class=\"spec_row #{className}\"#{error}><td>#{@suiteName} #{@description}</td><td>#{@passedCount}/#{@totalCount}</td></tr>"
   $(row).prependTo "#specs_results_#{@specsSuite.id}"
+  return
 
 Suite.prototype.showResults = ->
   $("#specs_results_#{@specsSuiteId} > tbody > tr:first").before("<tr><td>#{@description}</td><td colspan=\"2\">#{@passedCount}/#{@totalCount}</td></tr>")
+  return

@@ -43,6 +43,18 @@ SpecsSuiteView = (function() {
     return specsSuite;
   };
 
+  SpecsSuiteView.prototype.runSpecs = function(form) {
+    var filter;
+
+    this.initializeView();
+    filter = $(form).find(':input').first().val();
+    socket.emit('runSpecs', {
+      specsSuiteId: this.id,
+      filter: filter
+    });
+    return false;
+  };
+
   SpecsSuiteView.prototype.initializeView = function() {
     $('#myModal').modal('show');
     $("#specs_results_" + this.id).find("tr:gt(0)").remove();
@@ -50,7 +62,7 @@ SpecsSuiteView = (function() {
     $("#specs_suite_avancement_error_" + this.id + " > .bar").css("width", "0%");
     $("#specs_suite_avancement_" + this.id).val(0).trigger("change");
     $("#specs_suite_title_" + this.id).text("" + specsSuite.appName + " (" + specsSuite.appVersion + ") / " + specsSuite.deviceName);
-    return $("#specs_suite_avancement_" + this.id).knob({
+    $("#specs_suite_avancement_" + this.id).knob({
       width: 60,
       height: 60,
       readOnly: true
@@ -63,7 +75,7 @@ SpecsSuiteView = (function() {
     currentSpec = specsSuite.getSpec(behavior.specId);
     confirmationDiv = $("#spec_confirmation_" + this.id);
     confirmationDiv.find('.confirmation_expected_message').text(behavior.description);
-    return confirmationDiv.show();
+    confirmationDiv.show();
   };
 
   SpecsSuiteView.prototype.setManualSpecResult = function(valid) {
@@ -71,14 +83,14 @@ SpecsSuiteView = (function() {
       currentSpec.setManualError();
     }
     $("#spec_confirmation_" + this.id).hide();
-    return socket.emit('confirmSpecResult', {
+    socket.emit('confirmSpecResult', {
       specsSuiteId: this.id,
       valide: valid
     });
   };
 
   SpecsSuiteView.prototype.end = function() {
-    return $('.spec_row').each(function() {
+    $('.spec_row').each(function() {
       if ($(this).data('content')) {
         return $(this).popover('hide');
       }
@@ -95,7 +107,7 @@ SpecsSuiteView = (function() {
     errorPercentage = (error / specsSuite.totalCount) * 100;
     $("#specs_suite_avancement_success_" + specsSuite.id + " > .bar").css("width", "" + passedPercentage + "%");
     $("#specs_suite_avancement_error_" + specsSuite.id + " > .bar").css("width", "" + errorPercentage + "%");
-    return $("#specs_suite_avancement_" + specsSuite.id).val(advancement).trigger('change');
+    $("#specs_suite_avancement_" + specsSuite.id).val(advancement).trigger('change');
   };
 
   return SpecsSuiteView;
@@ -105,15 +117,19 @@ SpecsSuiteView = (function() {
 Spec.prototype.showResults = function() {
   switch (this.errorType) {
     case this.ERROR_NORMAL:
-      return this.formatNormalError();
+      this.formatNormalError();
+      break;
     case this.ERROR_SCREENSHOT_UNKNOWN_IMAGE:
-      return this.formatScreenshotUnknownError();
+      this.formatScreenshotUnknownError();
+      break;
     case this.ERROR_SCREENSHOT_DIFFERENT_IMAGE:
-      return this.formatScreenshotDifferentError();
+      this.formatScreenshotDifferentError();
+      break;
     case this.ERROR_MANUAL_VALIDATION:
-      return this.formatManualValidationError();
+      this.formatManualValidationError();
+      break;
     default:
-      return this.formatResult();
+      this.formatResult();
   }
 };
 
@@ -137,15 +153,15 @@ Spec.prototype.formatNormalError = function() {
 };
 
 Spec.prototype.formatScreenshotDifferentError = function() {
-  return this.formatResult("The expected screenshot doesn't match the actual one");
+  this.formatResult("The expected screenshot doesn't match the actual one");
 };
 
 Spec.prototype.formatScreenshotUnknownError = function() {
-  return this.formatResult("You haven't defined an expected screenshot for this device and this app yet");
+  this.formatResult("You haven't defined an expected screenshot for this device and this app yet");
 };
 
 Spec.prototype.formatManualValidationError = function() {
-  return this.formatResult("You have manually rejected this test");
+  this.formatResult("You have manually rejected this test");
 };
 
 Spec.prototype.formatResult = function(errorMessage) {
@@ -154,9 +170,9 @@ Spec.prototype.formatResult = function(errorMessage) {
   className = errorMessage ? 'error' : 'success';
   error = errorMessage ? " data-title=\"Errors\" data-content=\"" + errorMessage + "\" data-placement=\"top\" data-html=\"true\"" : "";
   row = "<tr class=\"spec_row " + className + "\"" + error + "><td>" + this.suiteName + " " + this.description + "</td><td>" + this.passedCount + "/" + this.totalCount + "</td></tr>";
-  return $(row).prependTo("#specs_results_" + this.specsSuite.id);
+  $(row).prependTo("#specs_results_" + this.specsSuite.id);
 };
 
 Suite.prototype.showResults = function() {
-  return $("#specs_results_" + this.specsSuiteId + " > tbody > tr:first").before("<tr><td>" + this.description + "</td><td colspan=\"2\">" + this.passedCount + "/" + this.totalCount + "</td></tr>");
+  $("#specs_results_" + this.specsSuiteId + " > tbody > tr:first").before("<tr><td>" + this.description + "</td><td colspan=\"2\">" + this.passedCount + "/" + this.totalCount + "</td></tr>");
 };
