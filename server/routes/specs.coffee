@@ -27,30 +27,33 @@ checkScreenshot = (request, response) ->
   specAlias         = request.body.specAlias
   specId            = request.body.specId
   specsSuiteId      = request.query["specsSuiteId"]
-  expectedImage = "server/spec_images/#{appName}/#{deviceModel}/#{specAlias}.png"
-  actualImage   = request.files.image.path
 
+  expectedImage     = "images/spec_images/#{appName}/#{deviceModel}/#{specAlias}.png"
+  expectedImagePath = "server/public/#{expectedImage}"
+  actualImage       = request.files.image.path
 
-  gm = require 'gm'
-  # @see https://github.com/aheckmann/gm#compare
-  gm.compare expectedImage, actualImage, 0, (err, isEqual, equality, raw) =>
-    if err
-      console.log JSON.stringify(err) # {"killed":false,"code":1,"signal":null}
-      SpecsSocketManager.onScreenshotError id: specId, specsSuiteId: specsSuiteId, errorType: SCREENSHOT_ERROR_UNKNOWN_IMAGE, actualImage: actualImage
-      response.end(JSON.stringify(valide: false))
+    console.error(err) if err
+
+    gm = require 'gm'
+    # @see https://github.com/aheckmann/gm#compare
+    gm.compare expectedImagePath, actualImage, 0, (err, isEqual, equality, raw) =>
+      if err
+        console.log JSON.stringify(err) # {"killed":false,"code":1,"signal":null}
+        SpecsSocketManager.onScreenshotError id: specId, specsSuiteId: specsSuiteId, errorType: SCREENSHOT_ERROR_UNKNOWN_IMAGE, actualImage: actualImage
+        response.end(JSON.stringify(valide: false))
+        return
+
+      unless isEqual
+        SpecsSocketManager.onScreenshotError id: specId, specsSuiteId: specsSuiteId, errorType: SCREENSHOT_ERROR_DIFFERENT_IMAGE, expectedImage: expectedImage, actualImage: actualImage
+      # if the images were considered equal, `isEqual` will be true, otherwise, false.
+      #console.log('The images were equal: %s', isEqual);
+      # to see the total equality returned by graphicsmagick we can inspect the `equality` argument.
+      #console.log('Actual equality: %d', equality);
+      # inspect the raw output
+      #console.log(raw);
+
+      response.end(JSON.stringify({valide: isEqual}))
       return
-
-    unless isEqual
-      SpecsSocketManager.onScreenshotError id: specId, specsSuiteId: specsSuiteId, errorType: SCREENSHOT_ERROR_DIFFERENT_IMAGE, expectedImage: expectedImage, actualImage: actualImage
-    # if the images were considered equal, `isEqual` will be true, otherwise, false.
-    #console.log('The images were equal: %s', isEqual);
-    # to see the total equality returned by graphicsmagick we can inspect the `equality` argument.
-    #console.log('Actual equality: %d', equality);
-    # inspect the raw output
-    #console.log(raw);
-
-    response.end(JSON.stringify({valide: isEqual}))
-    return
 
 exports.checkScreenshot = checkScreenshot
 
