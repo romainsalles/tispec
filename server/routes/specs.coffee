@@ -72,12 +72,12 @@ checkScreenshot = (request, response) ->
       if err
         console.log JSON.stringify(err) # {"killed":false,"code":1,"signal":null}
 
-        SpecsSocketManager.onScreenshotError id: specId, specsSuiteId: specsSuiteId, errorType: SCREENSHOT_ERROR_UNKNOWN_IMAGE, actualImage: actualImageUrl
+        SpecsSocketManager.onScreenshotError id: specId, specsSuiteId: specsSuiteId, errorType: SCREENSHOT_ERROR_UNKNOWN_IMAGE, actualImage: actualImageUrl, specAlias: specAlias
         response.end(JSON.stringify(valide: false))
         return
 
       unless isEqual
-        SpecsSocketManager.onScreenshotError id: specId, specsSuiteId: specsSuiteId, errorType: SCREENSHOT_ERROR_DIFFERENT_IMAGE, expectedImage: expectedImageUrl, actualImage: actualImageUrl
+        SpecsSocketManager.onScreenshotError id: specId, specsSuiteId: specsSuiteId, errorType: SCREENSHOT_ERROR_DIFFERENT_IMAGE, expectedImage: expectedImageUrl, actualImage: actualImageUrl, specAlias: specAlias
 
       response.end(JSON.stringify(valide: isEqual))
       return
@@ -85,7 +85,7 @@ checkScreenshot = (request, response) ->
 exports.checkScreenshot = checkScreenshot
 
 screenshotErrorDifferent = (request, response) ->
-  response.render 'specs_screenshots_different', specsSuiteId: request.params.specsSuiteid, specId: request.params.specId, expectedImage: request.query["expectedImage"], actualImage: request.query["actualImage"]
+  response.render 'specs_screenshots_different', specsSuiteId: request.query["specsSuiteId"], specId: request.query["specId"], expectedImage: request.query["expectedImage"], actualImage: request.query["actualImage"]
 
 exports.screenshotErrorDifferent = screenshotErrorDifferent
 

@@ -78,6 +78,17 @@ SpecsSuiteView = (function() {
     confirmationDiv.show();
   };
 
+  SpecsSuiteView.prototype.changeSpecScreenshot = function(specId) {
+    var spec;
+
+    specsSuite = this.getSpecsSuite();
+    spec = specsSuite.getSpec(specId);
+    socket.emit('changeSpecScreenshot', {
+      specsSuite: specsSuite,
+      spec: spec
+    });
+  };
+
   SpecsSuiteView.prototype.setManualSpecResult = function(valid) {
     if (!valid) {
       currentSpec.setManualError();
@@ -157,7 +168,7 @@ Spec.prototype.formatScreenshotDifferentError = function() {
 
   id = "error_screenshot_different_" + this.specsSuite.id + "_" + this.id;
   modalId = "modal_" + id;
-  url = "/specs/screenshotsDifferent/" + this.specsSuite.id + "/" + this.id + "?expectedImage=" + (encodeURIComponent(this.expectedImage)) + "&actualImage=" + (encodeURIComponent(this.actualImage));
+  url = "/specs/screenshotsDifferent?specId=" + (encodeURIComponent(this.id)) + "&specsSuiteId=" + (encodeURIComponent(this.specsSuite.id)) + "&expectedImage=" + (encodeURIComponent(this.expectedImage)) + "&actualImage=" + (encodeURIComponent(this.actualImage));
   modal = "<div id=\"" + modalId + "\" data-remote=\"" + url + "\" class=\"modal hide fade\" style=\"width: 90%; left: 0; margin-left: 6%; height: 96%; top: 2%;\"><div class=\"modal-body\" style=\"max-height: none;\"></div></div>";
   row = "<tr class=\"spec_row error\" onclick=\"$('#" + modalId + "').attr('data-remote', '" + url + "').modal('show');\"><td><div id=\"" + id + "\">" + this.suiteName + " " + this.description + modal + "</div></td><td>" + this.passedCount + "/" + this.totalCount + "</td></tr>";
   $(row).prependTo("#specs_results_" + this.specsSuite.id);

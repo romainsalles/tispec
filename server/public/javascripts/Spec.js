@@ -20,10 +20,11 @@ Spec = (function() {
     this.specsSuite = specsSuite;
   };
 
-  Spec.prototype.setScreenshotError = function(errorType, expectedImage, actualImage) {
+  Spec.prototype.setScreenshotError = function(errorType, expectedImage, actualImage, screenshotError) {
     this.errorType = errorType;
     this.expectedImage = expectedImage;
     this.actualImage = actualImage;
+    this.screenshotError = screenshotError;
   };
 
   Spec.prototype.setManualError = function() {

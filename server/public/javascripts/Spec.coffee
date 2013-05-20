@@ -8,7 +8,7 @@ class Spec
 
   setSpecsSuite:      (@specsSuite) ->
 
-  setScreenshotError: (@errorType, @expectedImage, @actualImage) ->
+  setScreenshotError: (@errorType, @expectedImage, @actualImage, @screenshotError) ->
   setManualError:     -> @errorType = @ERROR_MANUAL_VALIDATION
 
   setResult:          (@totalCount, @passedCount, @failedCount, @passed, @subSpecs) -> @newResultCallbacks.fire this
