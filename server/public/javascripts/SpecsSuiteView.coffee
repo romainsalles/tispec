@@ -100,17 +100,19 @@ Spec.prototype.formatNormalError = ->
   return this
 
 Spec.prototype.formatScreenshotDifferentError = ->
+  return @formatScreenshotError 'screenshotsDifferent'
+
+Spec.prototype.formatScreenshotUnknownError = ->
+  return @formatScreenshotError 'screenshotsUnknown'
+
+Spec.prototype.formatScreenshotError = (action) ->
   id = "error_screenshot_different_#{@specsSuite.id}_#{@id}"
   modalId = "modal_#{id}"
-  url = "/specs/screenshotsDifferent?specId=#{encodeURIComponent(@id)}&specsSuiteId=#{encodeURIComponent(@specsSuite.id)}&expectedImage=#{encodeURIComponent(@expectedImage)}&actualImage=#{encodeURIComponent(@actualImage)}"
+  url = "/specs/#{action}?specId=#{encodeURIComponent(@id)}&specsSuiteId=#{encodeURIComponent(@specsSuite.id)}&expectedImage=#{encodeURIComponent(@expectedImage)}&actualImage=#{encodeURIComponent(@actualImage)}"
   modal = "<div id=\"#{modalId}\" data-remote=\"#{url}\" class=\"modal hide fade\" style=\"width: 90%; left: 0; margin-left: 6%; height: 96%; top: 2%;\"><div class=\"modal-body\" style=\"max-height: none;\"></div></div>"
     #.attr('data-remote', 'http://www.yahoo.com')
   row = "<tr class=\"spec_row error\" onclick=\"$('##{modalId}').attr('data-remote', '#{url}').modal('show');\"><td><div id=\"#{id}\">#{@suiteName} #{@description}#{modal}</div></td><td>#{@passedCount}/#{@totalCount}</td></tr>"
   $(row).prependTo "#specs_results_#{@specsSuite.id}"
-  return
-
-Spec.prototype.formatScreenshotUnknownError = ->
-  @formatResult "You haven't defined an expected screenshot for this device and this app yet"
   return
 
 Spec.prototype.formatManualValidationError = ->

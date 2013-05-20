@@ -84,10 +84,18 @@ checkScreenshot = (request, response) ->
 
 exports.checkScreenshot = checkScreenshot
 
+screenshotError = (request, response, partial) ->
+  response.render partial, specsSuiteId: request.query["specsSuiteId"], specId: request.query["specId"], expectedImage: request.query["expectedImage"], actualImage: request.query["actualImage"]
+
 screenshotErrorDifferent = (request, response) ->
-  response.render 'specs_screenshots_different', specsSuiteId: request.query["specsSuiteId"], specId: request.query["specId"], expectedImage: request.query["expectedImage"], actualImage: request.query["actualImage"]
+  screenshotError request, response, 'specs_screenshots_different'
 
 exports.screenshotErrorDifferent = screenshotErrorDifferent
+
+screenshotsErrorUnknown = (request, response) ->
+  screenshotError request, response, 'specs_screenshots_unknown'
+
+exports.screenshotsErrorUnknown = screenshotsErrorUnknown
 
 startSpecs = (request, response) ->
   specsSuite              = JSON.parse(request.body.specsSuite)

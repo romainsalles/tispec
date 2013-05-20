@@ -32,6 +32,7 @@ class TispecServer
     app.post '/specs/askConfirmation',      specs.askConfirmation
     app.post '/specs/checkScreenshot',      specs.checkScreenshot
     app.get  '/specs/screenshotsDifferent', specs.screenshotErrorDifferent
+    app.get  '/specs/screenshotsUnknown',   specs.screenshotsErrorUnknown
 
     server = http.createServer(app).listen(app.get('port'), ->
       console.log('Server listening on port ' + app.get('port'))
