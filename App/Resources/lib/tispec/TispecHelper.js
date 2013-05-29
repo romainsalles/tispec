@@ -23,7 +23,7 @@ function askConfirmation(specId, description) {
   return confirmation;
 }
 
-function compareScreenshots(specId, specAlias) {
+function compareScreenshots(specId, specAlias, callback) {
   var confirmation = null;
 
   Titanium.Media.takeScreenshot(function(event) {
@@ -46,6 +46,7 @@ function compareScreenshots(specId, specAlias) {
 
   waitsFor(function() {
     if (confirmation !== null) {
+      if (callback) { callback(); }
       expect(confirmation).toEqual(true);
     }
 
