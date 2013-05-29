@@ -49,6 +49,7 @@ class SpecsSuiteView
 
     $("#modal_error_screenshot_different_#{specsSuite.id}_#{specId}").remove()
     $('.modal-backdrop').hide()
+    $("#tr_#{specsSuite.id}_#{specId}").toggleClass('error').toggleClass('success')
     socket.emit 'changeSpecScreenshot', specsSuite: specsSuite, spec: spec
     return true
 
@@ -115,7 +116,7 @@ Spec.prototype.formatScreenshotError = (action) ->
   <h3>Spec images</h3>
 </div><div class=\"modal-body\" style=\"max-height: none;\"></div></div>"
     #.attr('data-remote', 'http://www.yahoo.com')
-  row = "<tr class=\"spec_row error\" onclick=\"$('##{modalId}').attr('data-remote', '#{url}').modal('show');\"><td><div id=\"#{id}\">#{@suiteName} #{@description}#{modal}</div></td><td>#{@passedCount}/#{@totalCount}</td></tr>"
+  row = "<tr class=\"spec_row error\" id=\"tr_#{@specsSuite.id}_#{@id}\" onclick=\"$('##{modalId}').attr('data-remote', '#{url}').modal('show');\"><td><div id=\"#{id}\">#{@suiteName} #{@description}#{modal}</div></td><td>#{@passedCount}/#{@totalCount}</td></tr>"
   $(row).prependTo "#specs_results_#{@specsSuite.id}"
   return
 
