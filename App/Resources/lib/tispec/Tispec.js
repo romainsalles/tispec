@@ -11,7 +11,7 @@ function retrieveSpecs(folder) {
 
   for (var i=0, l=listing.length; i<l; i += 1) {
     var splitPath = listing[i].split('.'),
-        isFile    = splitPath.length > 1 && splitPath[splitPath.length - 1] === 'js';
+        isFile    = splitPath.length > 1 && splitPath[splitPath.length - 1] === 'spec';
 
     if (isFile) { specs.push(folder + '/' + listing[i]); }
     else        { specs = specs.concat(retrieveSpecs(folder + '/' + listing[i])); }
