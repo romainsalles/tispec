@@ -67,7 +67,9 @@ checkScreenshot = (request, response) ->
     gm = require 'gm'
     # @see https://github.com/aheckmann/gm#compare
     gm.compare expectedImage, actualTempImage, 0, (err, isEqual, equality, raw) =>
-      copyFileSync actualTempImage, actualImage if err || !isEqual
+      if err || !isEqual
+        mkdirp.sync actualImageFolder # Create folders recursively
+        copyFileSync actualTempImage, actualImage
 
       if err
         console.log JSON.stringify(err) # {"killed":false,"code":1,"signal":null}
