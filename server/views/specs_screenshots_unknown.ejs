@@ -1,12 +1,5 @@
-<div class="modal-header">
-  <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-  <h3>Spec images</h3>
-</div>
-<div class="modal-body" style="max-height: none;">
-  <p>There is no expected image defined. If you consider that the new one should be the reference, click on "Define as reference image"</p>
-  <img src="<%= actualImage %>" title="Actual image" height="80%">
-  <p style= "margin-top: 10px;">
-    <a href="#" class="btn" onclick="$(\"#screenshots_comparison_<%= specsSuiteId %>\").remove();">Cancel</a>
-    <a href="#" class="btn btn-primary" onclick="changeSpecScreenshot(<%= specsSuiteId %>, <%= specId %>);">Define as reference image</a>
-  </p>
-</div>
+<p>There is no expected image defined. If you consider that the new one should be the reference, click on "Define as reference image"</p>
+<img src="<%= actualImage %>" title="Actual image" height="80%">
+<p style= "margin-top: 10px;">
+  <a href="#" class="btn btn-primary" onclick="changeSpecScreenshot(<%= specsSuiteId %>, <%= specId %>);">Define as reference image</a>
+</p>
