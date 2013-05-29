@@ -47,9 +47,10 @@ class SpecsSuiteView
     specsSuite = this.getSpecsSuite()
     spec       = specsSuite.getSpec specId
 
-    $("#modal_error_screenshot_different_#{specsSuite.id}_#{specId}").modal 'hide'
+    $("#modal_error_screenshot_different_#{specsSuite.id}_#{specId}").remove()
+    $('.modal-backdrop').hide()
     socket.emit 'changeSpecScreenshot', specsSuite: specsSuite, spec: spec
-    return
+    return true
 
   setManualSpecResult: (valid) ->
     currentSpec.setManualError() unless valid

@@ -83,11 +83,13 @@ SpecsSuiteView = (function() {
 
     specsSuite = this.getSpecsSuite();
     spec = specsSuite.getSpec(specId);
-    $("#modal_error_screenshot_different_" + specsSuite.id + "_" + specId).modal('hide');
+    $("#modal_error_screenshot_different_" + specsSuite.id + "_" + specId).remove();
+    $('.modal-backdrop').hide();
     socket.emit('changeSpecScreenshot', {
       specsSuite: specsSuite,
       spec: spec
     });
+    return true;
   };
 
   SpecsSuiteView.prototype.setManualSpecResult = function(valid) {
