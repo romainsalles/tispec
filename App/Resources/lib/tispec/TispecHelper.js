@@ -23,6 +23,35 @@ function askConfirmation(specId, description) {
   return confirmation;
 }
 
+function compareImages(specId, specAlias, image, callback) {
+  var confirmation = null;
+
+  require('/lib/tispec/RequestManager').sendRequest({
+    action:  'checkScreenshot',
+    headers: {
+      "enctype":      "multipart/form-data",
+      "Content-Type": "image/png"
+    },
+    onload: function(e) { confirmation = e.json.valide; },
+    data: {
+      specId:      specId,
+      image:       image,
+      appName:     Ti.App.name,
+      deviceModel: Ti.Platform.model,
+      specAlias:   specAlias
+    }
+  });
+
+  waitsFor(function() {
+    if (confirmation !== null) {
+      if (callback) { callback(); }
+      expect(confirmation).toEqual(true);
+    }
+
+    return confirmation !== null;
+  }, "confirmation received", 120000);
+}
+
 function compareScreenshots(specId, specAlias, callback) {
   var confirmation = null;
 

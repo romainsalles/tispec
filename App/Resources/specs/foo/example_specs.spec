@@ -37,5 +37,13 @@
       // this spec is expected to fail
       compareScreenshots(this.id, 'unknown_image');
     });
+
+    it('should display the button properly', function() {
+      var window = Ti.UI.createWindow();
+      var button = Ti.UI.createButton({title:'Tispec', width:100, height:50});
+      window.add(button);
+      window.open();
+      compareImages(this.id, 'TispecButton', button.toImage(null, true), function() { window.close(); });
+    });
   });
 })();
