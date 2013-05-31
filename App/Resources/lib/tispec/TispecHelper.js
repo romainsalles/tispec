@@ -55,23 +55,25 @@ function compareImages(specId, specAlias, image, callback) {
 function compareScreenshots(specId, specAlias, callback) {
   var confirmation = null;
 
-  Titanium.Media.takeScreenshot(function(event) {
-    require('/lib/tispec/RequestManager').sendRequest({
-      action:  'checkScreenshot',
-      headers: {
-        "enctype":      "multipart/form-data",
-        "Content-Type": "image/png"
-      },
-      onload: function(e) { confirmation = e.json.valide; },
-      data: {
-        specId:      specId,
-        image:       event.media,
-        appName:     Ti.App.name,
-        deviceModel: Ti.Platform.model,
-        specAlias:   specAlias
-      }
+  setTimeout(function() {
+    Titanium.Media.takeScreenshot(function(event) {
+      require('/lib/tispec/RequestManager').sendRequest({
+        action:  'checkScreenshot',
+        headers: {
+          "enctype":      "multipart/form-data",
+          "Content-Type": "image/png"
+        },
+        onload: function(e) { confirmation = e.json.valide; },
+        data: {
+          specId:      specId,
+          image:       event.media,
+          appName:     Ti.App.name,
+          deviceModel: Ti.Platform.model,
+          specAlias:   specAlias
+        }
+      });
     });
-  });
+  }, 500);
 
   waitsFor(function() {
     if (confirmation !== null) {
