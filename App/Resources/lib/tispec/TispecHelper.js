@@ -23,8 +23,9 @@ function askConfirmation(specId, description) {
   return confirmation;
 }
 
-function compareImages(specId, specAlias, image, callback) {
-  var confirmation = null;
+function compareImages(specAlias, image, callback) {
+  var confirmation = null,
+      specId = this.id;
 
   require('/lib/tispec/RequestManager').sendRequest({
     action:  'checkScreenshot',
@@ -52,8 +53,9 @@ function compareImages(specId, specAlias, image, callback) {
   }, "confirmation received", 120000);
 }
 
-function compareScreenshots(specId, specAlias, callback) {
-  var confirmation = null;
+function compareScreenshots(specAlias, callback) {
+  var confirmation = null,
+      specId = this.id;
 
   setTimeout(function() {
     Titanium.Media.takeScreenshot(function(event) {

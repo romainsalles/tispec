@@ -19,7 +19,7 @@
     it('should be positionned perfectly', function() {
       var win = constructABlueWindowWithASquareAndAText(30);
       win.open();
-      compareScreenshots(this.id, 'blueWindowWithASquareAndAText_1', function() {
+      compareScreenshots('blueWindowWithASquareAndAText_1', function() {
         win.close();
       });
     });
@@ -28,14 +28,14 @@
       // this spec is expected to fail
       var win = constructABlueWindowWithASquareAndAText(31);
       win.open();
-      compareScreenshots(this.id, 'blueWindowWithASquareAndAText_2', function() {
+      compareScreenshots('blueWindowWithASquareAndAText_2', function() {
         win.close();
       });
     });
 
     it('should be positionned perfectly (3)', function() {
       // this spec is expected to fail
-      compareScreenshots(this.id, 'unknown_image');
+      compareScreenshots('unknown_image');
     });
 
     it('should display the button properly', function() {
