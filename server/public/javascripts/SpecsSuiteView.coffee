@@ -116,8 +116,9 @@ Spec.prototype.formatScreenshotError = (action) ->
   <h3>Spec images</h3>
 </div><div class=\"modal-body\" style=\"max-height: none;\"></div></div>"
     #.attr('data-remote', 'http://www.yahoo.com')
-  row = "<tr class=\"spec_row error\" id=\"tr_#{@specsSuite.id}_#{@id}\" onclick=\"$('##{modalId}').attr('data-remote', '#{url}').modal('show');\"><td><div id=\"#{id}\">#{@suiteName} #{@description}#{modal}</div></td><td>#{@passedCount}/#{@totalCount}</td></tr>"
+  row = "<tr class=\"spec_row error\" id=\"tr_#{@specsSuite.id}_#{@id}\" onclick=\"$('##{modalId}').attr('data-remote', '#{url}').modal('show');\"><td><div id=\"#{id}\">#{@suiteName} #{@description}</div></td><td>#{@passedCount}/#{@totalCount}</td></tr>"
   $(row).prependTo "#specs_results_#{@specsSuite.id}"
+  $('#specs_screenshots_errors').append modal
   return
 
 Spec.prototype.formatManualValidationError = ->
