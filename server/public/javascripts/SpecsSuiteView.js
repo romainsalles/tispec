@@ -1,28 +1,24 @@
 var SpecsSuiteView;
 
 SpecsSuiteView = (function() {
-  var currentSpec, specsSuite, updateAvancement;
-
-  specsSuite = null;
-
-  currentSpec = null;
+  var updateAvancement;
 
   function SpecsSuiteView(socket, id, appName, appVersion, deviceName, deviceModel) {
     var that;
 
     this.socket = socket;
     this.id = id;
-    specsSuite = new SpecsSuite(this.id, appName, appVersion, deviceName, deviceModel);
+    this.specsSuite = new SpecsSuite(this.id, appName, appVersion, deviceName, deviceModel);
     that = this;
     $.get("/specs_suites/" + this.id, function(html) {
       $('#specs_suites').append(html);
       return that.initializeView();
     });
-    specsSuite.onAddSpec(updateAvancement);
-    specsSuite.onAddSpecResult(function(spec) {
+    this.specsSuite.onAddSpec(updateAvancement);
+    this.specsSuite.onAddSpecResult(function(spec) {
       return spec.showResults();
     });
-    specsSuite.onAddSuite(function(suite) {
+    this.specsSuite.onAddSuite(function(suite) {
       return suite.showResults();
     });
   }
@@ -40,7 +36,7 @@ SpecsSuiteView = (function() {
   };
 
   SpecsSuiteView.prototype.getSpecsSuite = function() {
-    return specsSuite;
+    return this.specsSuite;
   };
 
   SpecsSuiteView.prototype.runSpecs = function(form) {
@@ -61,7 +57,7 @@ SpecsSuiteView = (function() {
     $("#specs_suite_avancement_success_" + this.id + " > .bar").css("width", "0%");
     $("#specs_suite_avancement_error_" + this.id + " > .bar").css("width", "0%");
     $("#specs_suite_avancement_" + this.id).val(0).trigger("change");
-    $("#specs_suite_title_" + this.id).text("" + specsSuite.appName + " (" + specsSuite.appVersion + ") / " + specsSuite.deviceName);
+    $("#specs_suite_title_" + this.id).text("" + this.specsSuite.appName + " (" + this.specsSuite.appVersion + ") / " + this.specsSuite.deviceName);
     $("#specs_suite_avancement_" + this.id).knob({
       width: 60,
       height: 60,
@@ -72,7 +68,7 @@ SpecsSuiteView = (function() {
   SpecsSuiteView.prototype.confirmManualSpec = function(behavior) {
     var confirmationDiv;
 
-    currentSpec = specsSuite.getSpec(behavior.specId);
+    this.currentSpec = this.specsSuite.getSpec(behavior.specId);
     confirmationDiv = $("#spec_confirmation_" + this.id);
     confirmationDiv.find('.confirmation_expected_message').text(behavior.description);
     confirmationDiv.show();
@@ -81,13 +77,12 @@ SpecsSuiteView = (function() {
   SpecsSuiteView.prototype.changeSpecScreenshot = function(specId) {
     var spec;
 
-    specsSuite = this.getSpecsSuite();
-    spec = specsSuite.getSpec(specId);
-    $("#modal_error_screenshot_different_" + specsSuite.id + "_" + specId).remove();
+    spec = this.specsSuite.getSpec(specId);
+    $("#modal_error_screenshot_different_" + this.specsSuite.id + "_" + specId).remove();
     $('.modal-backdrop').hide();
-    $("#tr_" + specsSuite.id + "_" + specId).toggleClass('error').toggleClass('success');
+    $("#tr_" + this.specsSuite.id + "_" + specId).toggleClass('error').toggleClass('success');
     socket.emit('changeSpecScreenshot', {
-      specsSuite: specsSuite,
+      specsSuite: this.specsSuite,
       spec: spec
     });
     return true;
@@ -95,7 +90,7 @@ SpecsSuiteView = (function() {
 
   SpecsSuiteView.prototype.setManualSpecResult = function(valid) {
     if (!valid) {
-      currentSpec.setManualError();
+      this.currentSpec.setManualError();
     }
     $("#spec_confirmation_" + this.id).hide();
     socket.emit('confirmSpecResult', {
@@ -115,14 +110,14 @@ SpecsSuiteView = (function() {
   updateAvancement = function() {
     var advancement, error, errorPercentage, passed, passedPercentage;
 
-    passed = specsSuite.passedCount;
-    error = specsSuite.errorCount;
-    advancement = (passed + error) / specsSuite.totalCount * 100;
-    passedPercentage = (passed / specsSuite.totalCount) * 100;
-    errorPercentage = (error / specsSuite.totalCount) * 100;
-    $("#specs_suite_avancement_success_" + specsSuite.id + " > .bar").css("width", "" + passedPercentage + "%");
-    $("#specs_suite_avancement_error_" + specsSuite.id + " > .bar").css("width", "" + errorPercentage + "%");
-    $("#specs_suite_avancement_" + specsSuite.id).val(advancement).trigger('change');
+    passed = this.specsSuite.passedCount;
+    error = this.specsSuite.errorCount;
+    advancement = (passed + error) / this.specsSuite.totalCount * 100;
+    passedPercentage = (passed / this.specsSuite.totalCount) * 100;
+    errorPercentage = (error / this.specsSuite.totalCount) * 100;
+    $("#specs_suite_avancement_success_" + this.specsSuite.id + " > .bar").css("width", "" + passedPercentage + "%");
+    $("#specs_suite_avancement_error_" + this.specsSuite.id + " > .bar").css("width", "" + errorPercentage + "%");
+    $("#specs_suite_avancement_" + this.specsSuite.id).val(advancement).trigger('change');
   };
 
   return SpecsSuiteView;

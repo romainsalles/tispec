@@ -1,10 +1,10 @@
 class SpecsSuite
-  specs       = []
-  suites      = []
-  passedCount: 0
-  errorCount:  0
 
   constructor: (@id, @appName, @appVersion, @deviceName, @deviceModel) ->
+    @specs                    = []
+    @suites                   = []
+    @passedCount              = 0
+    @errorCount               = 0
     @newSpecsCallbacks        = $.Callbacks()
     @newSpecsResultsCallbacks = $.Callbacks()
     @newSuiteCallbacks        = $.Callbacks()
@@ -14,7 +14,7 @@ class SpecsSuite
   # Spec
   # ----------------------------------------------------------------------------
   addSpec: (spec) ->
-    specs.push(spec)
+    @specs.push(spec)
     spec.setSpecsSuite(this)
 
     spec.onAddResult (spec) =>
@@ -29,12 +29,12 @@ class SpecsSuite
 
   getSpec: (id) ->
     _id = id.toString()
-    _.find specs, (spec) -> return spec.id.toString() is _id
+    _.find @specs, (spec) -> return spec.id.toString() is _id
 
   # Suite
   # ----------------------------------------------------------------------------
   addSuite: (suite) ->
-    suites.push(suite)
+    @suites.push(suite)
 
     @newSuiteCallbacks.fire suite
     return suite

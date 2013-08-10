@@ -1,23 +1,20 @@
 class SpecsSuiteView
-  specsSuite  = null
-  currentSpec = null
-
   constructor: (@socket, @id, appName, appVersion, deviceName, deviceModel) ->
-    specsSuite = new SpecsSuite(@id, appName, appVersion, deviceName, deviceModel)
+    @specsSuite = new SpecsSuite(@id, appName, appVersion, deviceName, deviceModel)
     that       = this
 
     $.get "/specs_suites/#{@id}", (html) ->
         $('#specs_suites').append html
         that.initializeView()
-    specsSuite.onAddSpec       updateAvancement
-    specsSuite.onAddSpecResult (spec)  -> spec.showResults()
-    specsSuite.onAddSuite      (suite) -> suite.showResults()
+    @specsSuite.onAddSpec       updateAvancement
+    @specsSuite.onAddSpecResult (spec)  -> spec.showResults()
+    @specsSuite.onAddSuite      (suite) -> suite.showResults()
 
   onAddSpec:       (callback) -> @newSpecsCallbacks.add        callback
   onAddSpecResult: (callback) -> @newSpecsResultsCallbacks.add callback
   onAddSuite:      (callback) -> @newSuiteCallbacks.add        callback
 
-  getSpecsSuite: -> specsSuite
+  getSpecsSuite: -> @specsSuite
 
   runSpecs: (form) ->
     @initializeView()
@@ -32,29 +29,28 @@ class SpecsSuiteView
     $("#specs_suite_avancement_success_#{@id} > .bar").css("width", "0%")
     $("#specs_suite_avancement_error_#{@id} > .bar").css("width", "0%")
     $("#specs_suite_avancement_#{@id}").val(0).trigger("change")
-    $("#specs_suite_title_#{@id}").text("#{specsSuite.appName} (#{specsSuite.appVersion}) / #{specsSuite.deviceName}")
+    $("#specs_suite_title_#{@id}").text("#{@specsSuite.appName} (#{@specsSuite.appVersion}) / #{@specsSuite.deviceName}")
     $("#specs_suite_avancement_#{@id}").knob width: 60, height: 60, readOnly: true
     return
 
   confirmManualSpec: (behavior) ->
-    currentSpec = specsSuite.getSpec behavior.specId
+    @currentSpec = @specsSuite.getSpec behavior.specId
     confirmationDiv = $("#spec_confirmation_#{@id}");
     confirmationDiv.find('.confirmation_expected_message').text(behavior.description)
     confirmationDiv.show()
     return
 
   changeSpecScreenshot: (specId) ->
-    specsSuite = this.getSpecsSuite()
-    spec       = specsSuite.getSpec specId
+    spec       = @specsSuite.getSpec specId
 
-    $("#modal_error_screenshot_different_#{specsSuite.id}_#{specId}").remove()
+    $("#modal_error_screenshot_different_#{@specsSuite.id}_#{specId}").remove()
     $('.modal-backdrop').hide()
-    $("#tr_#{specsSuite.id}_#{specId}").toggleClass('error').toggleClass('success')
-    socket.emit 'changeSpecScreenshot', specsSuite: specsSuite, spec: spec
+    $("#tr_#{@specsSuite.id}_#{specId}").toggleClass('error').toggleClass('success')
+    socket.emit 'changeSpecScreenshot', specsSuite: @specsSuite, spec: spec
     return true
 
   setManualSpecResult: (valid) ->
-    currentSpec.setManualError() unless valid
+    @currentSpec.setManualError() unless valid
     $("#spec_confirmation_#{@id}").hide()
     socket.emit 'confirmSpecResult', specsSuiteId: @id, valide: valid
     return
@@ -66,15 +62,15 @@ class SpecsSuiteView
   # Private functions
   # ----------------------------------------------------------------------------
   updateAvancement = () ->
-    passed           = specsSuite.passedCount
-    error            = specsSuite.errorCount
-    advancement      = (passed+error) / specsSuite.totalCount * 100
-    passedPercentage = (passed / specsSuite.totalCount) * 100
-    errorPercentage  = (error / specsSuite.totalCount) * 100
+    passed           = @specsSuite.passedCount
+    error            = @specsSuite.errorCount
+    advancement      = (passed+error) / @specsSuite.totalCount * 100
+    passedPercentage = (passed / @specsSuite.totalCount) * 100
+    errorPercentage  = (error / @specsSuite.totalCount) * 100
 
-    $("#specs_suite_avancement_success_#{specsSuite.id} > .bar").css("width", "#{passedPercentage}%")
-    $("#specs_suite_avancement_error_#{specsSuite.id} > .bar").css("width", "#{errorPercentage}%")
-    $("#specs_suite_avancement_#{specsSuite.id}").val(advancement).trigger('change')
+    $("#specs_suite_avancement_success_#{@specsSuite.id} > .bar").css("width", "#{passedPercentage}%")
+    $("#specs_suite_avancement_error_#{@specsSuite.id} > .bar").css("width", "#{errorPercentage}%")
+    $("#specs_suite_avancement_#{@specsSuite.id}").val(advancement).trigger('change')
     return
 
 

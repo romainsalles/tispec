@@ -1,22 +1,16 @@
 var SpecsSuite;
 
 SpecsSuite = (function() {
-  var specs, suites;
-
-  specs = [];
-
-  suites = [];
-
-  SpecsSuite.prototype.passedCount = 0;
-
-  SpecsSuite.prototype.errorCount = 0;
-
   function SpecsSuite(id, appName, appVersion, deviceName, deviceModel) {
     this.id = id;
     this.appName = appName;
     this.appVersion = appVersion;
     this.deviceName = deviceName;
     this.deviceModel = deviceModel;
+    this.specs = [];
+    this.suites = [];
+    this.passedCount = 0;
+    this.errorCount = 0;
     this.newSpecsCallbacks = $.Callbacks();
     this.newSpecsResultsCallbacks = $.Callbacks();
     this.newSuiteCallbacks = $.Callbacks();
@@ -29,7 +23,7 @@ SpecsSuite = (function() {
   SpecsSuite.prototype.addSpec = function(spec) {
     var _this = this;
 
-    specs.push(spec);
+    this.specs.push(spec);
     spec.setSpecsSuite(this);
     spec.onAddResult(function(spec) {
       if (spec.passed) {
@@ -47,13 +41,13 @@ SpecsSuite = (function() {
     var _id;
 
     _id = id.toString();
-    return _.find(specs, function(spec) {
+    return _.find(this.specs, function(spec) {
       return spec.id.toString() === _id;
     });
   };
 
   SpecsSuite.prototype.addSuite = function(suite) {
-    suites.push(suite);
+    this.suites.push(suite);
     this.newSuiteCallbacks.fire(suite);
     return suite;
   };
