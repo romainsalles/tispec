@@ -11,7 +11,9 @@ class Spec
   setScreenshotError: (@errorType, @expectedImage, @actualImage, @screenshotError) ->
   setManualError:     -> @errorType = @ERROR_MANUAL_VALIDATION
 
-  setResult:          (@totalCount, @passedCount, @failedCount, @passed, @subSpecs) -> @newResultCallbacks.fire this
+  setResult:          (@totalCount, @passedCount, @failedCount, @passed, @subSpecs) ->
+    @errorType = @ERROR_NORMAL if !@errorType && @failedCount > 0
+    @newResultCallbacks.fire this
 
   # Callbacks
   # ----------------------------------------------------------------------------

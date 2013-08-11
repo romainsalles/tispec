@@ -6,7 +6,7 @@ class SpecsSuiteView
     $.get "/specs_suites/#{@id}", (html) ->
         $('#specs_suites').append html
         that.initializeView()
-    @specsSuite.onAddSpec       updateAvancement
+    @specsSuite.onAddSpec       => @updateAvancement()
     @specsSuite.onAddSpecResult (spec)  -> spec.showResults()
     @specsSuite.onAddSuite      (suite) -> suite.showResults()
 
@@ -46,7 +46,7 @@ class SpecsSuiteView
     $("#modal_error_screenshot_different_#{@specsSuite.id}_#{specId}").remove()
     $('.modal-backdrop').hide()
     $("#tr_#{@specsSuite.id}_#{specId}").toggleClass('error').toggleClass('success')
-    socket.emit 'changeSpecScreenshot', specsSuite: @specsSuite, spec: spec
+    socket.emit 'changeSpecScreenshot', specsSuite: {appName: @specsSuite.appName, deviceModel: @specsSuite.deviceModel}, spec: {screenshotError: spec.screenshotError}
     return true
 
   setManualSpecResult: (valid) ->
@@ -61,7 +61,7 @@ class SpecsSuiteView
 
   # Private functions
   # ----------------------------------------------------------------------------
-  updateAvancement = () ->
+  updateAvancement: () ->
     passed           = @specsSuite.passedCount
     error            = @specsSuite.errorCount
     advancement      = (passed+error) / @specsSuite.totalCount * 100
@@ -126,7 +126,9 @@ Spec.prototype.formatResult = (errorMessage) ->
   error = if errorMessage then " data-title=\"Errors\" data-content=\"#{errorMessage}\" data-placement=\"top\" data-html=\"true\"" else ""
 
   row = "<tr class=\"spec_row #{className}\"#{error}><td>#{@suiteName} #{@description}</td><td>#{@passedCount}/#{@totalCount}</td></tr>"
-  $(row).prependTo "#specs_results_#{@specsSuite.id}"
+
+  # setTimeout avoid issues with DOM not already loaded
+  setTimeout (=> $(row).prependTo("#specs_results_#{@specsSuite.id}")), 300
   return
 
 Suite.prototype.showResults = ->

@@ -37,6 +37,9 @@ Spec = (function() {
     this.failedCount = failedCount;
     this.passed = passed;
     this.subSpecs = subSpecs;
+    if (!this.errorType && this.failedCount > 0) {
+      this.errorType = this.ERROR_NORMAL;
+    }
     return this.newResultCallbacks.fire(this);
   };
 

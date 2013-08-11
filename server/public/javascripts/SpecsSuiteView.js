@@ -1,10 +1,9 @@
 var SpecsSuiteView;
 
 SpecsSuiteView = (function() {
-  var updateAvancement;
-
   function SpecsSuiteView(socket, id, appName, appVersion, deviceName, deviceModel) {
-    var that;
+    var that,
+      _this = this;
 
     this.socket = socket;
     this.id = id;
@@ -14,7 +13,9 @@ SpecsSuiteView = (function() {
       $('#specs_suites').append(html);
       return that.initializeView();
     });
-    this.specsSuite.onAddSpec(updateAvancement);
+    this.specsSuite.onAddSpec(function() {
+      return _this.updateAvancement();
+    });
     this.specsSuite.onAddSpecResult(function(spec) {
       return spec.showResults();
     });
@@ -82,8 +83,13 @@ SpecsSuiteView = (function() {
     $('.modal-backdrop').hide();
     $("#tr_" + this.specsSuite.id + "_" + specId).toggleClass('error').toggleClass('success');
     socket.emit('changeSpecScreenshot', {
-      specsSuite: this.specsSuite,
-      spec: spec
+      specsSuite: {
+        appName: this.specsSuite.appName,
+        deviceModel: this.specsSuite.deviceModel
+      },
+      spec: {
+        screenshotError: spec.screenshotError
+      }
     });
     return true;
   };
@@ -107,7 +113,7 @@ SpecsSuiteView = (function() {
     });
   };
 
-  updateAvancement = function() {
+  SpecsSuiteView.prototype.updateAvancement = function() {
     var advancement, error, errorPercentage, passed, passedPercentage;
 
     passed = this.specsSuite.passedCount;
@@ -187,12 +193,15 @@ Spec.prototype.formatManualValidationError = function() {
 };
 
 Spec.prototype.formatResult = function(errorMessage) {
-  var className, error, row;
+  var className, error, row,
+    _this = this;
 
   className = errorMessage ? 'error' : 'success';
   error = errorMessage ? " data-title=\"Errors\" data-content=\"" + errorMessage + "\" data-placement=\"top\" data-html=\"true\"" : "";
   row = "<tr class=\"spec_row " + className + "\"" + error + "><td>" + this.suiteName + " " + this.description + "</td><td>" + this.passedCount + "/" + this.totalCount + "</td></tr>";
-  $(row).prependTo("#specs_results_" + this.specsSuite.id);
+  setTimeout((function() {
+    return $(row).prependTo("#specs_results_" + _this.specsSuite.id);
+  }), 300);
 };
 
 Suite.prototype.showResults = function() {
