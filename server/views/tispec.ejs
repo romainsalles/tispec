@@ -24,9 +24,7 @@
     <script src="js/models/TestSuite.js"></script>
     <script src="js/views/testsuite.js"></script>
 
-    <!--
     <script type="text/javascript" src="/socket.io/socket.io.js"></script>
-    -->
   </head>
 
   <body data-spy="scroll" data-target=".bs-docs-sidebar">
@@ -47,7 +45,7 @@
   </body>
 
   <script type="text/javascript">
-/*
+
     var socket, specsSuiteViews = {};
 
     // Socket
@@ -55,7 +53,7 @@
 
     socket = io.connect('http://localhost');
 
-    socket.on('confirmSpec', function (expectedBehavior) {
+    /*socket.on('confirmSpec', function (expectedBehavior) {
       getSpecsSuiteView(expectedBehavior.specsSuiteId).confirmManualSpec(expectedBehavior);
     });
 
@@ -64,45 +62,130 @@
           spec       = specsSuite.getSpec(_spec.id);
 
       spec.setScreenshotError(_spec.errorType, _spec.expectedImage, _spec.actualImage, _spec.specAlias)
-    });
+    });*/
 
     socket.on('hello', function(_specsSuite) {
-      var specSuiteView = new SpecsSuiteView(socket, _specsSuite.id, _specsSuite.appName, _specsSuite.appVersion, _specsSuite.deviceName, _specsSuite.deviceModel)
+      //var specSuiteView = new SpecsSuiteView(socket, _specsSuite.id, _specsSuite.appName, _specsSuite.appVersion, _specsSuite.deviceName, _specsSuite.deviceModel)
 
-      specsSuiteViews[specSuiteView.id] = specSuiteView
+      /*var newAttributes = {
+        idAttribute:  _specsSuite.id,
+        appName:      _specsSuite.appName,
+        appVersion:   _specsSuite.appVersion,
+        deviceName:   _specsSuite.deviceName,
+        deviceModel:  _specsSuite.deviceModel
+      };
+      console.log('attributes : ' + JSON.stringify(tispec.testSuiteView.model.attributes));
+      console.log('newAttributes : ' + JSON.stringify(newAttributes));
+      //newAttributes.socket = socket;
+      tispec.testSuiteView.model.set(newAttributes);*/
+
+      var testSuite = new tispec.TestSuite({
+        id:           _specsSuite.id,
+        appName:      _specsSuite.appName,
+        appVersion:   _specsSuite.appVersion,
+        deviceName:   _specsSuite.deviceName,
+        deviceModel:  _specsSuite.deviceModel
+      });
+      testSuite.setSocket(socket);
+      /*var suite = new tispec.Suite({idAttribute:'suiteId1', description:'#isValid function with a very long name to test table tr', totalCount:1, passedCount:0});
+      var suite2 = new tispec.Suite({idAttribute:'suiteId2', description:'#isValid function with a very long name to test table tr', totalCount:1, passedCount:0});
+      var spec = new tispec.Spec({idAttribute:'specId', suiteName:'#isValid function', description:'it should return true if valid'});
+      var subSpec1 = new tispec.SubSpec({expected:1, actual:2, passed:false});
+      var subSpec2 = new tispec.SubSpec({expected:true, actual:true, passed:true});
+      var subSpec3 = new tispec.SubSpec({expected:'yo', actual:'yo', passed:true});
+
+      spec.subSpecs.add(subSpec1);
+      spec.subSpecs.add(subSpec2);
+      spec.subSpecs.add(subSpec3);
+      suite.specs.add(spec);
+      suite2.specs.add(spec);
+      testSuite.suites.add(suite);
+      testSuite.suites.add(suite2);*/
+
+      // Since the home view never changes, we instantiate it and render it only once
+      if (!tispec.testSuiteView) {
+          tispec.testSuiteView = new tispec.TestSuiteView({model: testSuite});
+          tispec.testSuiteView.render();
+      } else {
+          console.log('reusing testSuite view');
+          tispec.testSuiteView.delegateEvents(); // delegate events when the view is recycled
+      }
+
+      $('#specs_suites').html(tispec.testSuiteView.el);
+
+      //specsSuiteViews[specSuiteView.id] = specSuiteView
     });
 
     socket.on('start', function(_specsSuite) {
-      getSpecsSuite(_specsSuite.specsSuiteId).setTotalCount(_specsSuite.totalCount);
+      //getSpecsSuite(_specsSuite.specsSuiteId).setTotalCount(_specsSuite.totalCount);
     });
 
     socket.on('specStart', function(_spec) {
-      var spec = new Spec(_spec.id, _spec.suiteName, _spec.description);
+      var currentSuite = tispec.currentSuite;
 
-      getSpecsSuite(_spec.specsSuiteId).addSpec(spec);
+      if (!currentSuite) {
+        currentSuite = new tispec.Suite();
+
+        tispec.currentSuite = currentSuite;
+        tispec.testSuiteView.model.suites.add(currentSuite);
+      }
+
+      currentSuite.specs.add(new tispec.Spec({
+        id:          _spec.id,
+        suiteName:   _spec.suiteName,
+        description: _spec.description
+      }));
+      /*var spec = new Spec(_spec.id, _spec.suiteName, _spec.description);
+
+      getSpecsSuite(_spec.specsSuiteId).addSpec(spec);*/
     });
 
     socket.on('specEnd', function(_spec) {
-      var specsSuite = getSpecsSuite(_spec.specsSuiteId),
+      var specsCount = tispec.currentSuite.specs.length,
+          spec       = tispec.currentSuite.specs.at(specsCount -1);
+
+      spec.set({
+        totalCount:   _spec.totalCount,
+        passedCount:  _spec.passedCount,
+        failedCount:  _spec.failedCount,
+        passed:       _spec.passed
+      });
+      _.each(_spec.subSpecs, function(subSpec) {
+        spec.subSpecs.add(new tispec.SubSpec({
+          expected: subSpec.expected,
+          actual:   subSpec.actual,
+          passed:   subSpec.passed_
+        }));
+      })
+
+      /*var specsSuite = getSpecsSuite(_spec.specsSuiteId),
           spec       = specsSuite.getSpec(_spec.id);
 
-      spec.setResult(_spec.totalCount, _spec.passedCount, _spec.failedCount, _spec.passed, _spec.subSpecs);
+      spec.setResult(_spec.totalCount, _spec.passedCount, _spec.failedCount, _spec.passed, _spec.subSpecs);*/
     });
 
     socket.on('suiteEnd', function(_suite) {
-      var suite = new Suite(_suite.specsSuiteId, _suite.description, _suite.totalCount, _suite.passedCount);
+      tispec.currentSuite.set({
+        id:          _suite.specsSuiteId,
+        description: _suite.description,
+        totalCount:  _suite.totalCount,
+        passedCount: _suite.passedCount
+      });
+      tispec.currentSuite = null;
+     /* var suite = new Suite(_suite.specsSuiteId, _suite.description, _suite.totalCount, _suite.passedCount);
 
-      getSpecsSuite(_suite.specsSuiteId).addSuite(suite);
+      getSpecsSuite(_suite.specsSuiteId).addSuite(suite);*/
     });
 
     socket.on('end', function(specsSuiteId) {
-      getSpecsSuiteView(specsSuiteId).end();
+      console.log('SpecSuite.end');
+      //getSpecsSuiteView(specsSuiteId).end();
     });
 
-    function getSpecsSuiteView(id)             { return specsSuiteViews[id]; }
-    function getSpecsSuite(id)                 { return getSpecsSuiteView(id).getSpecsSuite(); }
-    function runSpecs(specsSuiteId, form)      { return getSpecsSuiteView(specsSuiteId).runSpecs(form); }
-    function validateSpec(specsSuiteId, valid) { getSpecsSuiteView(specsSuiteId).setManualSpecResult(valid); }
+    /*function getSpecsSuiteView(id)             { return specsSuiteViews[id]; }
+    function getSpecsSuite(id)                 { return getSpecsSuiteView(id).getSpecsSuite(); }*/
+    function runSpecs(specsSuiteId, form)      { return tispec.testSuiteView.model.runSpecs(form); }
+    /*function validateSpec(specsSuiteId, valid) { getSpecsSuiteView(specsSuiteId).setManualSpecResult(valid); }
     function changeSpecScreenshot(specsSuiteId, specId) {
       return getSpecsSuiteView(specsSuiteId).changeSpecScreenshot(specId);
     }
@@ -110,8 +193,8 @@
     function endSpecsSuite(specsSuiteId) {
       delete specsSuiteViews[specsSuiteId];
       $('#specs_suite_' + specsSuiteId).remove();
-    }
-*/
+    }*/
+
   </script>
 
 </html>

@@ -33,9 +33,10 @@ tispec.SuiteItemView = Backbone.View.extend({
     initialize: function () {
         this.model.on("change", this.render, this);
         this.model.on("destroy", this.close, this);
+        this.model.specs.on("add", this.render, this);
     },
 
-    render:function () {
+    render: function () {
         // The clone hack here is to support parse.com which doesn't add the id to model.attributes. For all other persistence
         // layers, you can directly pass model.attributes to the template function
         this.$el.empty();
@@ -43,10 +44,9 @@ tispec.SuiteItemView = Backbone.View.extend({
         data.id = this.model.id;
         this.$el.html(this.template(data));
         this.model.specs.each(function (spec) {
-            console.log('===> SuiteItemChild.parent : ' + this.$el.parent().html());
             $('.specs', this.el).append(new tispec.SpecItemView({model:spec}).render().el);
         }, this);
-        console.log('===> SuiteItem : ' + this.$el.parent().html());
+
         return this;
     }
 
@@ -61,6 +61,7 @@ tispec.SpecItemView = Backbone.View.extend({
     initialize:function () {
         this.model.on("change", this.render, this);
         this.model.on("destroy", this.close, this);
+        this.model.subSpecs.on("add", this.render, this);
     },
 
     render:function () {

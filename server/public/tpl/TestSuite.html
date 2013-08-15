@@ -1,9 +1,9 @@
-<div class="span12 specs_container" id="specs_suite_<%= idAttribute %>"> <!-- Spec Container -->
+<div class="span12 specs_container" id="specs_suite_<%= id %>"> <!-- Spec Container -->
   <div class="span12"> <!-- App / Device -->
     <table style="width: 100%;">
       <tr>
-        <td><h3 id="specs_suite_title_<%= idAttribute %>" style="line-height: 20px; padding-left: 20px;"></h3></td>
-        <td style="width:20px; vertical-align: top;"><a class="close" data-dismiss="alert" href="#" onclick="endSpecsSuite(<%= idAttribute %>);">&times;</a></td>
+        <td><h3 id="specs_suite_title_<%= id %>" style="line-height: 20px; padding-left: 20px;"></h3></td>
+        <td style="width:20px; vertical-align: top;"><a class="close" data-dismiss="alert" href="#" onclick="endSpecsSuite(<%= id %>);">&times;</a></td>
       </tr>
     </table>
   </div>
@@ -13,17 +13,17 @@
       <table style="width: 100%;">
         <tr>
           <td rowspan="2" style="width: 70px;">
-            <input type="text" value="0" id="specs_suite_avancement_<%= idAttribute %>" class="dial" style="webkit-box-shadow:none; box-shadow: none;">
+            <input type="text" value="0" id="specs_suite_avancement_<%= id %>" class="dial" style="webkit-box-shadow:none; box-shadow: none;">
           </td>
           <td>
-            <div id="specs_suite_avancement_success_<%= idAttribute %>" class="progress progress-success progress-striped" style="margin-top: 10px; margin-bottom: 10px;">
+            <div id="specs_suite_avancement_success_<%= id %>" class="progress progress-success progress-striped" style="margin-top: 10px; margin-bottom: 10px;">
               <div class="bar" style="width: 0%"></div>
             </div>
           </td>
         </tr>
         <tr>
           <td>
-            <div id="specs_suite_avancement_error_<%= idAttribute %>" class="progress progress-danger progress-striped">
+            <div id="specs_suite_avancement_error_<%= id %>" class="progress progress-danger progress-striped">
               <div class="bar" style="width: 0%"></div>
             </div>
           </td>
@@ -31,7 +31,7 @@
       </table>
     </div>
     <div class="span7"> <!-- alerts -->
-      <form class="span10" method="GET" action="#" onsubmit="return runSpecs('<%= idAttribute %>', this);">
+      <form class="span10" method="GET" action="#" onsubmit="return runSpecs('<%= id %>', this);">
         <div class="input-append span12" style="margin-top: 20px;">
           <input type="text" class="span11" name="filter" placeholder="Filter">
           <button type="submit" class="btn">Run</button>
@@ -40,15 +40,15 @@
     </div>
   </div>
 
-  <div class="alert alert-block fade in span12" id="spec_confirmation_<%= idAttribute %>" style="display: none;">
+  <div class="alert alert-block fade in span12" id="spec_confirmation_<%= id %>" style="display: none;">
     <p class="confirmation_expected_message" style="text-align: center;"></p>
     <p>
-      <a class="btn btn-success span6" href="#" onclick="validateSpec(<%= idAttribute %>, true);">OK</a>
-      <a class="btn btn-danger span6" href="#" onclick="validateSpec(<%= idAttribute %>, false);">NOT</a>
+      <a class="btn btn-success span6" href="#" onclick="validateSpec(<%= id %>, true);">OK</a>
+      <a class="btn btn-danger span6" href="#" onclick="validateSpec(<%= id %>, false);">NOT</a>
     </p>
   </div>
 
-  <div id="testSuiteTBody" class="span12" style="height: 300px; overflow-y: scroll;"> <!-- Results -->
+  <div id="testSuiteTBody" class="span12"> <!-- Results -->
     <div class="span12">
       <div class="span6">Name</div>
       <div class="span6">Status</div>

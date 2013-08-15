@@ -5,9 +5,23 @@
 // In jasmine, it corresponds to the `describe` function.
 tispec.TestSuite = Backbone.Model.extend({
 
-    initialize: function () {
-      // list of the suites
-      this.suites   = new tispec.SuiteCollection();
+    initialize: function() {
+        // list of the suites
+        this.suites   = new tispec.SuiteCollection();
+    },
+    setSocket: function(socket) {
+        this._socket = socket;
+    },
+    runSpecs: function(form) {
+        var filter;
+
+        filter = $(form).find(':input').first().val();
+        this._socket.emit('runSpecs', {
+            specsSuiteId: this.id,
+            filter:       filter
+        });
+
+        return false;
     }
 
 });

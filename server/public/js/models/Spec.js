@@ -5,6 +5,15 @@
 // In jasmine, it corresponds to the `expect` function.
 tispec.Spec = Backbone.Model.extend({
 
+    defaults: function() {
+        return {
+            description: 'spec',
+            totalCount:  0,
+            passedCount: 0,
+            failedCount: 0,
+            passed:      true
+        };
+    },
     initialize: function() {
         // list of the specs expectations
         this.subSpecs     = new tispec.SubSpecCollection();

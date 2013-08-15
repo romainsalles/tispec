@@ -42,6 +42,7 @@ tispec.Router = Backbone.Router.extend({
     },
 
     testSuite: function () {
+        /*
         var testSuite = new tispec.TestSuite({idAttribute: 'id', appName: 'Tispec', appVersion: '1.0', deviceName: 'Romain\'s Simulator', deviceModel: 'Simulator'});
         var suite = new tispec.Suite({idAttribute:'suiteId1', description:'#isValid function with a very long name to test table tr', totalCount:1, passedCount:0});
         var suite2 = new tispec.Suite({idAttribute:'suiteId2', description:'#isValid function with a very long name to test table tr', totalCount:1, passedCount:0});
@@ -70,6 +71,7 @@ tispec.Router = Backbone.Router.extend({
         this.$content.html(tispec.testSuiteView.el);
         console.log('yes !');
         //tispec.shellView.selectMenuItem('home-menu');
+        */
     },
 
     contact: function () {

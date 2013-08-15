@@ -9,8 +9,15 @@ tispec.TestSuite = Backbone.Model.extend({
         // list of the suites
         this.suites   = new tispec.SuiteCollection();
     },
-    addSuite: function(suite) {
-        this.suites.add(suite);
+    runSpecs: function(form) {
+        var filter;
+
+        filter = $(form).find(':input').first().val();
+        this.socket.emit('runSpecs', {
+            specsSuiteId: this.id,
+            filter: filter
+        });
+        return false;
     }
 
 });
