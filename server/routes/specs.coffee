@@ -144,7 +144,27 @@ specsEnd = (request, response) ->
 exports.specsEnd = specsEnd
 
 dashboard = (request, response) ->
-  file = fs.readFileSync 'server/views/dashboard.ejs', 'ascii'
+  file = fs.readFileSync 'server/views/tispec.ejs', 'ascii'
   response.end(ejs.render(file))
 
 exports.dashboard = dashboard
+
+testSuiteView = (request, response) ->
+  response.sendfile('server/public/tpl/TestSuite.html')
+
+exports.testSuiteView = testSuiteView
+
+suiteItemView = (request, response) ->
+  response.sendfile('server/public/tpl/SuiteItem.html')
+
+exports.suiteItemView = suiteItemView
+
+specItemView = (request, response) ->
+  response.sendfile('server/public/tpl/SpecItem.html')
+
+exports.specItemView = specItemView
+
+subSpecItemView = (request, response) ->
+  response.sendfile('server/public/tpl/SubSpecItem.html')
+
+exports.subSpecItemView = subSpecItemView

@@ -34,6 +34,11 @@ class TispecServer
     app.get  '/specs/screenshotsDifferent', specs.screenshotErrorDifferent
     app.get  '/specs/screenshotsUnknown',   specs.screenshotsErrorUnknown
 
+    app.get  '/tpl/TestSuiteView',          specs.testSuiteView
+    app.get  '/tpl/SuiteItemView',          specs.suiteItemView
+    app.get  '/tpl/SpecItemView',           specs.specItemView
+    app.get  '/tpl/SubSpecItemView',        specs.subSpecItemView
+
     server = http.createServer(app).listen(app.get('port'), ->
       console.log('Server listening on port ' + app.get('port'))
     )
