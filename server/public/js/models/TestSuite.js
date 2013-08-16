@@ -5,6 +5,11 @@
 // In jasmine, it corresponds to the `describe` function.
 tispec.TestSuite = Backbone.Model.extend({
 
+    defaults: function() {
+        return {
+            totalCount: 0
+        };
+    },
     initialize: function() {
         // list of the suites
         this.suites   = new tispec.SuiteCollection();

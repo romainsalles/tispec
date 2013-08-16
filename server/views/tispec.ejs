@@ -65,20 +65,6 @@
     });*/
 
     socket.on('hello', function(_specsSuite) {
-      //var specSuiteView = new SpecsSuiteView(socket, _specsSuite.id, _specsSuite.appName, _specsSuite.appVersion, _specsSuite.deviceName, _specsSuite.deviceModel)
-
-      /*var newAttributes = {
-        idAttribute:  _specsSuite.id,
-        appName:      _specsSuite.appName,
-        appVersion:   _specsSuite.appVersion,
-        deviceName:   _specsSuite.deviceName,
-        deviceModel:  _specsSuite.deviceModel
-      };
-      console.log('attributes : ' + JSON.stringify(tispec.testSuiteView.model.attributes));
-      console.log('newAttributes : ' + JSON.stringify(newAttributes));
-      //newAttributes.socket = socket;
-      tispec.testSuiteView.model.set(newAttributes);*/
-
       var testSuite = new tispec.TestSuite({
         id:           _specsSuite.id,
         appName:      _specsSuite.appName,
@@ -87,20 +73,6 @@
         deviceModel:  _specsSuite.deviceModel
       });
       testSuite.setSocket(socket);
-      /*var suite = new tispec.Suite({idAttribute:'suiteId1', description:'#isValid function with a very long name to test table tr', totalCount:1, passedCount:0});
-      var suite2 = new tispec.Suite({idAttribute:'suiteId2', description:'#isValid function with a very long name to test table tr', totalCount:1, passedCount:0});
-      var spec = new tispec.Spec({idAttribute:'specId', suiteName:'#isValid function', description:'it should return true if valid'});
-      var subSpec1 = new tispec.SubSpec({expected:1, actual:2, passed:false});
-      var subSpec2 = new tispec.SubSpec({expected:true, actual:true, passed:true});
-      var subSpec3 = new tispec.SubSpec({expected:'yo', actual:'yo', passed:true});
-
-      spec.subSpecs.add(subSpec1);
-      spec.subSpecs.add(subSpec2);
-      spec.subSpecs.add(subSpec3);
-      suite.specs.add(spec);
-      suite2.specs.add(spec);
-      testSuite.suites.add(suite);
-      testSuite.suites.add(suite2);*/
 
       // Since the home view never changes, we instantiate it and render it only once
       if (!tispec.testSuiteView) {
@@ -112,12 +84,10 @@
       }
 
       $('#specs_suites').html(tispec.testSuiteView.el);
-
-      //specsSuiteViews[specSuiteView.id] = specSuiteView
     });
 
     socket.on('start', function(_specsSuite) {
-      //getSpecsSuite(_specsSuite.specsSuiteId).setTotalCount(_specsSuite.totalCount);
+      tispec.testSuiteView.model.set({totalCount: _specsSuite.totalCount});
     });
 
     socket.on('specStart', function(_spec) {
@@ -135,9 +105,6 @@
         suiteName:   _spec.suiteName,
         description: _spec.description
       }));
-      /*var spec = new Spec(_spec.id, _spec.suiteName, _spec.description);
-
-      getSpecsSuite(_spec.specsSuiteId).addSpec(spec);*/
     });
 
     socket.on('specEnd', function(_spec) {
@@ -150,6 +117,7 @@
         failedCount:  _spec.failedCount,
         passed:       _spec.passed
       });
+
       _.each(_spec.subSpecs, function(subSpec) {
         spec.subSpecs.add(new tispec.SubSpec({
           expected: subSpec.expected,
@@ -157,11 +125,6 @@
           passed:   subSpec.passed_
         }));
       })
-
-      /*var specsSuite = getSpecsSuite(_spec.specsSuiteId),
-          spec       = specsSuite.getSpec(_spec.id);
-
-      spec.setResult(_spec.totalCount, _spec.passedCount, _spec.failedCount, _spec.passed, _spec.subSpecs);*/
     });
 
     socket.on('suiteEnd', function(_suite) {
@@ -171,10 +134,9 @@
         totalCount:  _suite.totalCount,
         passedCount: _suite.passedCount
       });
-      tispec.currentSuite = null;
-     /* var suite = new Suite(_suite.specsSuiteId, _suite.description, _suite.totalCount, _suite.passedCount);
 
-      getSpecsSuite(_suite.specsSuiteId).addSuite(suite);*/
+      // Needed to initialize a new Suite at the next new spec
+      tispec.currentSuite = null;
     });
 
     socket.on('end', function(specsSuiteId) {
