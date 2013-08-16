@@ -70,6 +70,7 @@ tispec.SpecItemView = Backbone.View.extend({
         this.$el.empty();
         var data = _.clone(this.model.attributes);
         data.id = this.model.id;
+        data.state = (data.errorType === tispec.Spec.SUCCESS) ? 'success' : 'important';
         //this.$el.append('<td>' + this.model.description + '</td>');
         this.$el.html(this.template(data));
         this.model.subSpecs.each(function (subSpec) {
