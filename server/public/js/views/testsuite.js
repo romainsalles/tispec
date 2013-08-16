@@ -74,7 +74,7 @@ tispec.SpecItemView = Backbone.View.extend({
         //this.$el.append('<td>' + this.model.description + '</td>');
         this.$el.html(this.template(data));
         this.model.subSpecs.each(function (subSpec) {
-            this.$el.append(new tispec.SubSpecItemView({model:subSpec}).render().el);
+            $('.subspecs', this.el).append(new tispec.SubSpecItemView({model:subSpec}).render().el);
         }, this);
         return this;
     }
