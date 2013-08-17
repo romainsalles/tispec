@@ -34,6 +34,7 @@ node_modules/
 /server/*.js
 /server/routes/*.js
 /index.js
+/server/public/js/*
 
 # Specs screenshots #
 #####################
