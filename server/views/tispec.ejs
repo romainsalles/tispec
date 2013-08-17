@@ -16,15 +16,15 @@
     <script src="lib/underscore-min.js"></script>
     <script src="lib/backbone-min.js"></script>
     <script src="bootstrap/js/bootstrap.js"></script>
+    <script type="text/javascript" src="/socket.io/socket.io.js"></script>
 
     <script src="js/app.js"></script>
+    <script src="js/SocketManager.js"></script>
     <script src="js/models/SubSpec.js"></script>
     <script src="js/models/Spec.js"></script>
     <script src="js/models/Suite.js"></script>
     <script src="js/models/TestSuite.js"></script>
     <script src="js/views/testsuite.js"></script>
-
-    <script type="text/javascript" src="/socket.io/socket.io.js"></script>
   </head>
 
   <body data-spy="scroll" data-target=".bs-docs-sidebar">
@@ -45,13 +45,10 @@
   </body>
 
   <script type="text/javascript">
-
-    var socket, specsSuiteViews = {};
-
-    // Socket
-    // =========================================================================
-
-    socket = io.connect('http://localhost');
+    // -------------------------------- /!\ ------------------------------------
+    //                      Functions not refactored yet
+    //       Keep it in comments until the end of backbone refactoring
+    // -------------------------------- /!\ ------------------------------------
 
     /*socket.on('confirmSpec', function (expectedBehavior) {
       getSpecsSuiteView(expectedBehavior.specsSuiteId).confirmManualSpec(expectedBehavior);
@@ -62,92 +59,11 @@
           spec       = specsSuite.getSpec(_spec.id);
 
       spec.setScreenshotError(_spec.errorType, _spec.expectedImage, _spec.actualImage, _spec.specAlias)
-    });*/
-
-    socket.on('hello', function(_specsSuite) {
-      var testSuite = new tispec.TestSuite({
-        id:           _specsSuite.id,
-        appName:      _specsSuite.appName,
-        appVersion:   _specsSuite.appVersion,
-        deviceName:   _specsSuite.deviceName,
-        deviceModel:  _specsSuite.deviceModel
-      });
-      testSuite.setSocket(socket);
-
-      // Since the home view never changes, we instantiate it and render it only once
-      if (!tispec.testSuiteView) {
-          tispec.testSuiteView = new tispec.TestSuiteView({model: testSuite});
-          tispec.testSuiteView.render();
-      } else {
-          console.log('reusing testSuite view');
-          tispec.testSuiteView.delegateEvents(); // delegate events when the view is recycled
-      }
-
-      $('#specs_suites').html(tispec.testSuiteView.el);
     });
 
-    socket.on('start', function(_specsSuite) {
-      tispec.testSuiteView.model.set({totalCount: _specsSuite.totalCount});
-    });
-
-    socket.on('specStart', function(_spec) {
-      var currentSuite = tispec.currentSuite;
-
-      if (!currentSuite) {
-        currentSuite = new tispec.Suite();
-
-        tispec.currentSuite = currentSuite;
-        tispec.testSuiteView.model.suites.add(currentSuite);
-      }
-
-      currentSuite.specs.add(new tispec.Spec({
-        id:          _spec.id,
-        suiteName:   _spec.suiteName,
-        description: _spec.description
-      }));
-    });
-
-    socket.on('specEnd', function(_spec) {
-      var specsCount = tispec.currentSuite.specs.length,
-          spec       = tispec.currentSuite.specs.at(specsCount -1);
-
-      spec.set({
-        totalCount:   _spec.totalCount,
-        passedCount:  _spec.passedCount,
-        failedCount:  _spec.failedCount,
-        passed:       _spec.passed
-      });
-
-      _.each(_spec.subSpecs, function(subSpec) {
-        spec.subSpecs.add(new tispec.SubSpec({
-          expected: subSpec.expected,
-          actual:   subSpec.actual,
-          passed:   subSpec.passed_
-        }));
-      })
-    });
-
-    socket.on('suiteEnd', function(_suite) {
-      tispec.currentSuite.set({
-        id:          _suite.specsSuiteId,
-        description: _suite.description,
-        totalCount:  _suite.totalCount,
-        passedCount: _suite.passedCount
-      });
-
-      // Needed to initialize a new Suite at the next new spec
-      tispec.currentSuite = null;
-    });
-
-    socket.on('end', function(specsSuiteId) {
-      console.log('SpecSuite.end');
-      //getSpecsSuiteView(specsSuiteId).end();
-    });
-
-    /*function getSpecsSuiteView(id)             { return specsSuiteViews[id]; }
-    function getSpecsSuite(id)                 { return getSpecsSuiteView(id).getSpecsSuite(); }*/
-    function runSpecs(specsSuiteId, form)      { return tispec.testSuiteView.model.runSpecs(form); }
-    /*function validateSpec(specsSuiteId, valid) { getSpecsSuiteView(specsSuiteId).setManualSpecResult(valid); }
+    function getSpecsSuiteView(id)             { return specsSuiteViews[id]; }
+    function getSpecsSuite(id)                 { return getSpecsSuiteView(id).getSpecsSuite(); }
+    function validateSpec(specsSuiteId, valid) { getSpecsSuiteView(specsSuiteId).setManualSpecResult(valid); }
     function changeSpecScreenshot(specsSuiteId, specId) {
       return getSpecsSuiteView(specsSuiteId).changeSpecScreenshot(specId);
     }
@@ -156,7 +72,6 @@
       delete specsSuiteViews[specsSuiteId];
       $('#specs_suite_' + specsSuiteId).remove();
     }*/
-
   </script>
 
 </html>

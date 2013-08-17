@@ -31,7 +31,7 @@
       </table>
     </div>
     <div class="span7"> <!-- alerts -->
-      <form class="span10" method="GET" action="#" onsubmit="return runSpecs('<%= id %>', this);">
+      <form class="span10" method="GET" action="#" onsubmit="return tispec.testSuiteView.model.runSpecs(this);">
         <div class="input-append span12" style="margin-top: 20px;">
           <input type="text" class="span11" name="filter" placeholder="Filter">
           <button type="submit" class="btn">Run</button>

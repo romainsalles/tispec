@@ -35,5 +35,6 @@ $(document).on 'ready', () ->
     ['TestSuiteView', 'SuiteItemView', 'SpecItemView', 'SubSpecItemView'],
     () ->
       tispec.router = new tispec.Router()
-      Backbone.history.start()
+      # initialize socket manager
+      tispec.SocketManager.get()
   )

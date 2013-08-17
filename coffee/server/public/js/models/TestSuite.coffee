@@ -9,13 +9,11 @@ class tispec.TestSuite extends Backbone.Model
     initialize: () ->
         # list of the suites
         @suites = new tispec.SuiteCollection();
-    setSocket: (socket) ->
-        @_socket = socket
     runSpecs: (form) ->
         filter = $(form).find(':input').first().val()
-        @_socket.emit 'runSpecs', specsSuiteId: this.id, filter: filter
+        tispec.SocketManager.get().runSpecs(@id, filter)
 
-        false
+        return false
 
 # Collection of TestSuites
 # ------------------------
