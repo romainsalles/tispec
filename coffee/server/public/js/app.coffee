@@ -22,18 +22,18 @@ root.tispec =
 
 
 class tispec.Router extends Backbone.Router
-    routes:
-        "": "testSuite"
+  routes:
+    "": "testSuite"
 
-    initialize: () ->
-        @$content = $ '#specs_suites'
+  initialize: () ->
+    @$content = $ '#specs_suites'
 
-    testSuite: () ->
+  testSuite: () ->
 
 $(document).on 'ready', () ->
-    tispec.loadTemplates(
-      ['TestSuiteView', 'SuiteItemView', 'SpecItemView', 'SubSpecItemView'],
-      () ->
-        tispec.router = new tispec.Router()
-        Backbone.history.start()
-    )
+  tispec.loadTemplates(
+    ['TestSuiteView', 'SuiteItemView', 'SpecItemView', 'SubSpecItemView'],
+    () ->
+      tispec.router = new tispec.Router()
+      Backbone.history.start()
+  )
