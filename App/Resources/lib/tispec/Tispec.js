@@ -48,7 +48,7 @@ exports.initialize = function(host, nowPort, serverPort) {
     require('/lib/tispec/RequestManager').get(host, serverPort, specsSuiteId);
     now.hello(specsSuiteId, Ti.App.name, Ti.App.version, Ti.Platform.username, Ti.Platform.model);
 
-    var Reporter       = require('/lib/tispec/TispecReporter').TispecReporter;
+    var Reporter = require('/lib/tispec/TispecReporter').TispecReporter;
 
     now.execute = function (options) {
       (function() {
@@ -56,8 +56,6 @@ exports.initialize = function(host, nowPort, serverPort) {
 
         var reporter   = new Reporter(now),
             jasmineEnv = initializeJasmine(reporter);
-
-        Ti.include('/lib/tispec/TispecHelper.js');
 
         var specs = retrieveSpecs();
         for (var i=0, l=specs.length; i < l; i += 1) {
