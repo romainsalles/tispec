@@ -44,7 +44,8 @@ exports.initialize = function(host, nowPort, serverPort) {
 
   now.ready(function () {
     var specsSuiteId = (new Date()).getTime();
-    require('/lib/tispec/RequestManager').initialize(host, serverPort, specsSuiteId);
+    // Initialize RequestManager
+    require('/lib/tispec/RequestManager').get(host, serverPort, specsSuiteId);
     now.hello(specsSuiteId, Ti.App.name, Ti.App.version, Ti.Platform.username, Ti.Platform.model);
 
     var Reporter       = require('/lib/tispec/TispecReporter').TispecReporter;

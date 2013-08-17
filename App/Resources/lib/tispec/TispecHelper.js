@@ -1,7 +1,7 @@
 function askConfirmation(specId, description) {
   var confirmation = null;
 
-  require('/lib/tispec/RequestManager').sendRequest({
+  require('/lib/tispec/RequestManager').get().sendRequest({
     action: 'askConfirmation',
     onload: function(e) { confirmation = e.json.valide; },
     data: {
@@ -26,7 +26,7 @@ function askConfirmation(specId, description) {
 function compareImages(specId, specAlias, image, callback) {
   var confirmation = null;
 
-  require('/lib/tispec/RequestManager').sendRequest({
+  require('/lib/tispec/RequestManager').get().sendRequest({
     action:  'checkScreenshot',
     headers: {
       "enctype":      "multipart/form-data",
@@ -57,7 +57,7 @@ function compareScreenshots(specId, specAlias, callback) {
 
   setTimeout(function() {
     Titanium.Media.takeScreenshot(function(event) {
-      require('/lib/tispec/RequestManager').sendRequest({
+      require('/lib/tispec/RequestManager').get().sendRequest({
         action:  'checkScreenshot',
         headers: {
           "enctype":      "multipart/form-data",

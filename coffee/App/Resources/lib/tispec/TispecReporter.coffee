@@ -16,7 +16,7 @@ class TispecReporter
     for spec in runner.specs()
       totalCount += 1 if @specFilter spec
 
-    RequestManager.sendRequest(
+    RequestManager.get().sendRequest(
       action: 'startSpecs',
       data:
         specsSuite: JSON.stringify(
@@ -29,7 +29,7 @@ class TispecReporter
 
   # When spec start, send informations on it to the tispec server.
   onSpecStart: (spec) ->
-    RequestManager.sendRequest(
+    RequestManager.get().sendRequest(
       action: 'specStart',
       data:
         spec: JSON.stringify(
@@ -46,7 +46,7 @@ class TispecReporter
     results = spec.results()
     return if results.totalCount is 0
 
-    RequestManager.sendRequest(
+    RequestManager.get().sendRequest(
       action: 'specEnd',
       data:
         spec: JSON.stringify(
@@ -68,7 +68,7 @@ class TispecReporter
     results = suite.results()
     return if results.totalCount is 0
 
-    RequestManager.sendRequest(
+    RequestManager.get().sendRequest(
       action: 'suiteEnd',
       data:
         suite: JSON.stringify(
@@ -79,7 +79,7 @@ class TispecReporter
         )
     )
 
-  endSpecs: () -> RequestManager.sendRequest action: 'end'
+  endSpecs: () -> RequestManager.get().sendRequest action: 'end'
 
 
   #Filters
