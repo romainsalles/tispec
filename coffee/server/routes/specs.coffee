@@ -24,15 +24,13 @@ copyFileSync = (srcFile, destFile) ->
   fs.closeSync(fdw)
 
 
-askConfirmation = (request, response) ->
+exports.askConfirmation = (request, response) ->
   expectedBehavior = JSON.parse(request.body.expectedBehavior)
   expectedBehavior.specId       = request.body.specId
   expectedBehavior.specsSuiteId = request.query["specsSuiteId"]
 
   SpecsSocketManager.onConfirmSpec expectedBehavior, (valide) =>
     response.end(JSON.stringify({valide: valide}))
-
-exports.askConfirmation = askConfirmation
 
 SCREENSHOT_ERROR_UNKNOWN_IMAGE   = 1
 SCREENSHOT_ERROR_DIFFERENT_IMAGE = 2
@@ -42,7 +40,7 @@ EXPECTED_IMAGE_ABSOLUTE_FOLDER = "#{__dirname}/../public/#{EXPECTED_IMAGE_RELATI
 ACTUAL_IMAGE_RELATIVE_FOLDER   = "images/spec_images_temp"
 ACTUAL_IMAGE_ABSOLUTE_FOLDER   = "#{__dirname}/../public/#{ACTUAL_IMAGE_RELATIVE_FOLDER}"
 
-checkScreenshot = (request, response) ->
+exports.checkScreenshot = (request, response) ->
   appName      = request.body.appName
   deviceModel  = request.body.deviceModel
   specAlias    = request.body.specAlias
@@ -84,87 +82,55 @@ checkScreenshot = (request, response) ->
       response.end(JSON.stringify(valide: isEqual))
       return
 
-exports.checkScreenshot = checkScreenshot
-
 screenshotError = (request, response, partial) ->
-  response.render partial, specsSuiteId: request.query["specsSuiteId"], specId: request.query["specId"], expectedImage: request.query["expectedImage"], actualImage: request.query["actualImage"]
+  response.render partial,
+      specsSuiteId:  request.query["specsSuiteId"],
+      specId:        request.query["specId"],
+      expectedImage: request.query["expectedImage"],
+      actualImage:   request.query["actualImage"]
 
-screenshotErrorDifferent = (request, response) ->
-  screenshotError request, response, 'specs_screenshots_different'
+exports.screenshotErrorDifferent = (request, response) -> screenshotError request, response, 'specs_screenshots_different'
+exports.screenshotsErrorUnknown  = (request, response) -> screenshotError request, response, 'specs_screenshots_unknown'
 
-exports.screenshotErrorDifferent = screenshotErrorDifferent
-
-screenshotsErrorUnknown = (request, response) ->
-  screenshotError request, response, 'specs_screenshots_unknown'
-
-exports.screenshotsErrorUnknown = screenshotsErrorUnknown
-
-startSpecs = (request, response) ->
+exports.startSpecs = (request, response) ->
   specsSuite              = JSON.parse(request.body.specsSuite)
   specsSuite.specsSuiteId = request.query["specsSuiteId"]
 
   SpecsSocketManager.onStartSpecs specsSuite
-  endResponse(response)
+  endResponse response
 
-exports.startSpecs = startSpecs
-
-specStart = (request, response) ->
+exports.specStart = (request, response) ->
   spec              = JSON.parse(request.body.spec)
   spec.specsSuiteId = request.query["specsSuiteId"]
 
   SpecsSocketManager.onSpecStart spec
-  endResponse(response)
+  endResponse response
 
-exports.specStart = specStart
-
-specEnd = (request, response) ->
+exports.specEnd = (request, response) ->
   spec              = JSON.parse(request.body.spec)
   spec.specsSuiteId = request.query["specsSuiteId"]
 
   SpecsSocketManager.onSpecEnd spec
-  endResponse(response)
+  endResponse response
 
-exports.specEnd = specEnd
-
-suiteEnd = (request, response) ->
+exports.suiteEnd = (request, response) ->
   suite              = JSON.parse(request.body.suite)
   suite.specsSuiteId = request.query["specsSuiteId"]
 
   SpecsSocketManager.onSuiteEnd suite
-  endResponse(response)
+  endResponse response
 
-exports.suiteEnd = suiteEnd
-
-specsEnd = (request, response) ->
+exports.specsEnd = (request, response) ->
   specsSuiteId = request.query["specsSuiteId"]
 
   SpecsSocketManager.onEnd specsSuiteId
-  endResponse(response)
+  endResponse response
 
-exports.specsEnd = specsEnd
-
-dashboard = (request, response) ->
+exports.dashboard = (request, response) ->
   file = fs.readFileSync 'server/views/tispec.ejs', 'ascii'
-  response.end(ejs.render(file))
+  response.end ejs.render(file)
 
-exports.dashboard = dashboard
-
-testSuiteView = (request, response) ->
-  response.sendfile('server/public/tpl/TestSuite.html')
-
-exports.testSuiteView = testSuiteView
-
-suiteItemView = (request, response) ->
-  response.sendfile('server/public/tpl/SuiteItem.html')
-
-exports.suiteItemView = suiteItemView
-
-specItemView = (request, response) ->
-  response.sendfile('server/public/tpl/SpecItem.html')
-
-exports.specItemView = specItemView
-
-subSpecItemView = (request, response) ->
-  response.sendfile('server/public/tpl/SubSpecItem.html')
-
-exports.subSpecItemView = subSpecItemView
+exports.testSuiteView   = (request, response) -> response.sendfile 'server/public/tpl/TestSuite.html'
+exports.suiteItemView   = (request, response) -> response.sendfile 'server/public/tpl/SuiteItem.html'
+exports.specItemView    = (request, response) -> response.sendfile 'server/public/tpl/SpecItem.html'
+exports.subSpecItemView = (request, response) -> response.sendfile 'server/public/tpl/SubSpecItem.html'
