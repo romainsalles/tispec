@@ -6,9 +6,15 @@
 class tispec.TestSuite extends Backbone.Model
     defaults: () ->
         totalCount: 0
+        appName:     '',
+        appVersion:  '',
+        deviceName:  '',
+        deviceModel: ''
+
     initialize: () ->
         # list of the suites
-        @suites = new tispec.SuiteCollection();
+        @suites = new tispec.SuiteCollection()
+
     runSpecs: (form) ->
         filter = $(form).find(':input').first().val()
         tispec.SocketManager.get().runSpecs(@id, filter)
