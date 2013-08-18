@@ -21,20 +21,10 @@ root.tispec =
     $.when.apply(null, deferreds).done(callback)
 
 
-class tispec.Router extends Backbone.Router
-  routes:
-    "": "testSuite"
-
-  initialize: () ->
-    @$content = $ '#specs_suites'
-
-  testSuite: () ->
-
 $(document).on 'ready', () ->
   tispec.loadTemplates(
     ['TestSuiteView', 'SuiteItemView', 'SpecItemView', 'SubSpecItemView'],
     () ->
-      tispec.router = new tispec.Router()
       # initialize socket manager
       tispec.SocketManager.get()
   )
