@@ -37,6 +37,9 @@ class PrivateSocketManager
   # Incoming sockets
   # ============================================================================
 
+  # Test suite
+  # ----------------------------------------------------------------------------
+
   # Handshake with the device which will run the specs
   #
   # @_specsSuite {Object} test suite
@@ -68,6 +71,36 @@ class PrivateSocketManager
     tispec.testSuiteView.model.set(totalCount: _specsSuite.totalCount)
     return
 
+
+  # Inform of the test suite end
+  #
+  # @specsSuiteId {Integer} the test suit id
+  onTestSuiteEnd: (specsSuiteId) ->
+    console.log 'SpecSuite.end'
+    #getSpecsSuiteView(specsSuiteId).end()
+
+
+  # Suite
+  # ----------------------------------------------------------------------------
+
+  # Inform of the the suite end
+  #
+  # _suite {Object} the suite
+  onSuiteEnd: (_suite) ->
+    tispec.currentSuite.set(
+      id:          _suite.specsSuiteId,
+      description: _suite.description,
+      totalCount:  _suite.totalCount,
+      passedCount: _suite.passedCount
+    )
+
+    # Needed to initialize a new Suite at the next new spec
+    tispec.currentSuite = null
+    return
+
+
+  # Spec
+  # ----------------------------------------------------------------------------
 
   # Inform of the the spec beginning
   #
@@ -111,27 +144,3 @@ class PrivateSocketManager
         passed:   subSpec.passed_
       ))
     return
-
-
-  # Inform of the the suite end
-  #
-  # _suite {Object} the suite
-  onSuiteEnd: (_suite) ->
-    tispec.currentSuite.set(
-      id:          _suite.specsSuiteId,
-      description: _suite.description,
-      totalCount:  _suite.totalCount,
-      passedCount: _suite.passedCount
-    )
-
-    # Needed to initialize a new Suite at the next new spec
-    tispec.currentSuite = null
-    return
-
-
-  # Inform of the test suite end
-  #
-  # @specsSuiteId {Integer} the test suit id
-  onTestSuiteEnd: (specsSuiteId) ->
-    console.log 'SpecSuite.end'
-    #getSpecsSuiteView(specsSuiteId).end()
