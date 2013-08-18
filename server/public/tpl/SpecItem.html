@@ -4,6 +4,12 @@
     <h6>(spec) <%= description %></h6>
   </div>
 
+<% } else if (errorType === tispec.Spec.ERROR_NORMAL) { %>
+<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ NORMAL ERROR ~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+  <div class="spec_description span12 label label-<%= state %>">
+    <h6>(spec) <%= description %></h6>
+  </div>
+
   <div class="span12 subspecs" style="display:none;"></div>
 
 <% } else if (errorType === tispec.Spec.ERROR_SCREENSHOT_UNKNOWN_IMAGE) { %>

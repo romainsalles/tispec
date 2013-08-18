@@ -72,14 +72,17 @@ class tispec.SpecItemView extends Backbone.View
     data.state = if (data.errorType is tispec.Spec.SUCCESS) then 'success' else 'important'
 
     @$el.html @template(data)
-    @model.subSpecs.each (subSpec) ->
-        $('.subspecs', this.el).append(new tispec.SubSpecItemView({model:subSpec}).render().el)
-      , this
+
+    if @model.get('errorType') is tispec.Spec.ERROR_NORMAL
+      @model.subSpecs.each (subSpec) ->
+          $('.subspecs', this.el).append(new tispec.SubSpecItemView({model:subSpec}).render().el)
+        , this
 
     this
 
   toggleSpecsDetails: () ->
-    $('.subspecs'          , this.el).toggle()
+    if @model.get('errorType') is tispec.Spec.ERROR_NORMAL
+      $('.subspecs'          , this.el).toggle()
 
   saveScreenshot: () ->
     tispec.SocketManager.get().changeScreenshot(
