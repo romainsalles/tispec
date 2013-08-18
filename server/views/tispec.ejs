@@ -54,13 +54,6 @@
       getSpecsSuiteView(expectedBehavior.specsSuiteId).confirmManualSpec(expectedBehavior);
     });
 
-    socket.on('screenshotError', function(_spec) {
-      var specsSuite = getSpecsSuite(_spec.specsSuiteId),
-          spec       = specsSuite.getSpec(_spec.id);
-
-      spec.setScreenshotError(_spec.errorType, _spec.expectedImage, _spec.actualImage, _spec.specAlias)
-    });
-
     function getSpecsSuiteView(id)             { return specsSuiteViews[id]; }
     function getSpecsSuite(id)                 { return getSpecsSuiteView(id).getSpecsSuite(); }
     function validateSpec(specsSuiteId, valid) { getSpecsSuiteView(specsSuiteId).setManualSpecResult(valid); }

@@ -14,12 +14,14 @@ class PrivateSocketManager
   constructor: () ->
     @socket = io.connect 'http://localhost'
 
-    @socket.on 'hello',     @onHello
-    @socket.on 'start',     @onTestSuiteStart
-    @socket.on 'specStart', @onSpecStart
-    @socket.on 'specEnd',   @onSpecEnd
-    @socket.on 'suiteEnd',  @onSuiteEnd
-    @socket.on 'end',       @onTestSuiteEnd
+    @socket.on 'hello'          , @onHello
+    @socket.on 'start'          , @onTestSuiteStart
+    @socket.on 'specStart'      , @onSpecStart
+    @socket.on 'specEnd'        , @onSpecEnd
+    @socket.on 'suiteEnd'       , @onSuiteEnd
+    @socket.on 'end'            , @onTestSuiteEnd
+
+    @socket.on 'screenshotError', @onScreenshotError
 
 
   # Outgoing sockets
@@ -144,3 +146,9 @@ class PrivateSocketManager
         passed:   subSpec.passed_
       ))
     return
+
+  onScreenshotError: (_spec) ->
+    specsSuite = tispec.currentSuite
+    spec       = specsSuite.specs.get _spec.id
+
+    spec.setScreenshotError _spec.errorType, _spec.expectedImage, _spec.actualImage, _spec.specAlias

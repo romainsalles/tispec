@@ -24,12 +24,16 @@ class tispec.Spec extends Backbone.Model
     failedCount: 0,
     passed:      true,
     errorType:   @constructor.SUCCESS
+
   initialize: ->
     # list of the specs expectations
     @subSpecs = new tispec.SubSpecCollection()
     @on 'change:failedCount', @setErrorType, this
+
   setErrorType: ->
     @set errorType: @constructor.ERROR_NORMAL if @get('failedCount') > 0
+
+  setScreenshotError: (@errorType, @expectedImage, @actualImage, @screenshotError) ->
 
 
 # Collection of Specs
