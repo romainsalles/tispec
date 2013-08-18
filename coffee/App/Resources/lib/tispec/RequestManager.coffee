@@ -45,7 +45,7 @@ class PrivateRequestManager
           e = this
           if e.status in [200, 201, 422]
             if onload
-              e.json = @_parseResponse e
+              e.json = self._parseResponse e
               onload e
 
             self._sendRequests()
