@@ -11,9 +11,12 @@ class tispec.TestSuiteView extends Backbone.View
       , this
 
   render: () ->
+    filter = $('#spec_filter')?.val()
+
     @$el.empty();
-    data    = _.clone @model.attributes
-    data.id = @model.id
+    data        = _.clone @model.attributes
+    data.id     = @model.id
+    data.filter = filter || ''
     @$el.html @template(data)
     @model.suites.each (suite) ->
         $('#testSuiteTBody', this.el).append(new tispec.SuiteItemView({model:suite}).render().el)
