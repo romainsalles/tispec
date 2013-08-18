@@ -53,6 +53,9 @@ class tispec.SpecItemView extends Backbone.View
 
   className: 'span12 specs_container'
 
+  events:
+    'click': 'toggleSubspecs'
+
   initialize: () ->
     @model.on          'change',  @render, this
     @model.on          'destroy', @close,  this
@@ -73,6 +76,9 @@ class tispec.SpecItemView extends Backbone.View
       , this
 
     this
+
+  toggleSubspecs: () ->
+    $('.subspecs', this.el).toggle()
 
 
 class tispec.SubSpecItemView extends Backbone.View
