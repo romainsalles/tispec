@@ -1,2 +1,22 @@
 <div class="span12 label label-<%= state %>"><h6>(spec) <%= description %></h6></div>
 <div class="span12 subspecs" style="display:none;"></div>
+
+<!-- Button to trigger modal -->
+<a href="#unknown_screenshot_<%= id %>" role="button" class="btn" data-toggle="modal">Launch demo modal</a>
+
+<!-- Unknown screenshot modal -->
+<div id="unknown_screenshot_<%= id %>" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+  <div class="modal-header">
+    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+    <h3 id="myModalLabel">Unknown reference image</h3>
+  </div>
+  <div class="modal-body">
+    <p>There is no expected image defined. If you consider that the new one should be the reference, click on "Define as reference image"</p>
+    <p class="lead">expected : <%= description %></p>
+    <img src="<%= actualImage %>" title="Actual image" style="max-height: 80%; max-width: 45%;">
+  </div>
+  <div class="modal-footer">
+    <button class="btn" data-dismiss="modal" aria-hidden="true">Cancel</button>
+    <button class="save_screenshot btn btn-primary">Define as reference image</button>
+  </div>
+</div>

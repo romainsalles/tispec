@@ -35,6 +35,15 @@ class PrivateSocketManager
     @socket.emit 'runSpecs', specsSuiteId: specsSuiteId, filter: filter
     return true
 
+  changeScreenshot: (appName, deviceModel, screenshotError) ->
+    @socket.emit(
+      'changeSpecScreenshot',
+      specsSuite:
+        appName:     appName,
+        deviceModel: deviceModel,
+      spec:
+        screenshotError: screenshotError
+    )
 
   # Incoming sockets
   # ============================================================================

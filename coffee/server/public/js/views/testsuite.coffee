@@ -54,7 +54,8 @@ class tispec.SpecItemView extends Backbone.View
   className: 'span12 specs_container'
 
   events:
-    'click': 'toggleSubspecs'
+    'click':                  'toggleSubspecs',
+    'click .save_screenshot': 'saveScreenshot'
 
   initialize: () ->
     @model.on          'change',  @render, this
@@ -79,6 +80,16 @@ class tispec.SpecItemView extends Backbone.View
 
   toggleSubspecs: () ->
     $('.subspecs', this.el).toggle()
+
+  saveScreenshot: () ->
+    tispec.SocketManager.get().changeScreenshot(
+      tispec.testSuiteView.model.get('appName'),
+      tispec.testSuiteView.model.get('deviceModel'),
+      @model.get('screenshotError')
+    )
+    @model.set errorType: tispec.Spec.SUCCESS
+    $('.modal-backdrop').hide()
+    true
 
 
 class tispec.SubSpecItemView extends Backbone.View
