@@ -8,7 +8,7 @@ RequestManager = require './RequestManager'
 
 class TispecReporter
 
-  constructor: (@now) ->
+  constructor: () ->
 
   startSpecs: (runner) ->
     totalCount = 0

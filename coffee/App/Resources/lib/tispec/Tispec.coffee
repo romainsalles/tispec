@@ -63,7 +63,7 @@ class PrivateTispec
         (() ->
           return if options.specsSuiteId isnt specsSuiteId
 
-          reporter   = new Reporter(now)
+          reporter   = new Reporter()
           jasmineEnv = initializeJasmine reporter
 
           for spec in retrieveSpecs()
