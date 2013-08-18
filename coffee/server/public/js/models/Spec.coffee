@@ -34,7 +34,7 @@ class tispec.Spec extends Backbone.Model
     @on 'change:failedCount', @setErrorType, this
 
   setErrorType: ->
-    @set errorType: @constructor.ERROR_NORMAL if @get('failedCount') > 0
+    @set errorType: @constructor.ERROR_NORMAL if @get('errorType') is @constructor.SUCCESS
 
   setScreenshotError: (errorType, expectedImage, actualImage, screenshotError) ->
     @set errorType: errorType, expectedImage: expectedImage, actualImage: actualImage, screenshotError: screenshotError
