@@ -19,11 +19,14 @@ class tispec.Spec extends Backbone.Model
 
   defaults: ->
     description: 'spec',
-    totalCount:  0,
-    passedCount: 0,
-    failedCount: 0,
-    passed:      true,
-    errorType:   @constructor.SUCCESS
+    totalCount:       0,
+    passedCount:      0,
+    failedCount:      0,
+    passed:           true,
+    errorType:        @constructor.SUCCESS,
+    actualImage:      null,
+    expectedImage:    null,
+    screenshotError:  null
 
   initialize: ->
     # list of the specs expectations
