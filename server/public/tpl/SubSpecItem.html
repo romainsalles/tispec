@@ -1,4 +1,12 @@
-<span>(subspec)</span>
-<span>expected : <%= expected %></span>
-<span>actual : <%= actual %></span>
-<span>passed : <%= passed %></span>
+<% if (errorType === tispec.Spec.ERROR_NORMAL) { %>
+<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ NORMAL ERROR ~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+  <span>(subspec)</span>
+  <span>expected : <%= expected %></span>
+  <span>actual : <%= actual %></span>
+  <span>passed : <%= passed %></span>
+
+<% } else if (errorType === tispec.Spec.ERROR_MANUAL_VALIDATION) { %>
+<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ MANUAL ERROR ~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+  <span>You have manually rejected this spec</span>
+
+<% } %>

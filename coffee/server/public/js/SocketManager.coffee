@@ -22,6 +22,7 @@ class PrivateSocketManager
     @socket.on 'end'            , @onTestSuiteEnd
 
     @socket.on 'screenshotError', @onScreenshotError
+    @socket.on 'confirmSpec'    , @onConfirmManualSpec
 
 
   # Outgoing sockets
@@ -43,6 +44,13 @@ class PrivateSocketManager
         deviceModel: deviceModel,
       spec:
         screenshotError: screenshotError
+    )
+
+  confirmSpecResult: (testSuiteId, valid) ->
+    @socket.emit(
+      'confirmSpecResult',
+      specsSuiteId: testSuiteId,
+      valide:       valid
     )
 
   # Incoming sockets
@@ -161,3 +169,6 @@ class PrivateSocketManager
     spec       = specsSuite.specs.get _spec.id
 
     spec.setScreenshotError _spec.errorType, _spec.expectedImage, _spec.actualImage, _spec.specAlias
+
+  onConfirmManualSpec: (expectedBehavior) ->
+    tispec.testSuiteView.confirmManualSpec expectedBehavior

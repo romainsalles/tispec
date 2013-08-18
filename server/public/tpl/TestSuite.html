@@ -40,11 +40,11 @@
     </div>
   </div>
 
-  <div class="alert alert-block fade in span12" id="spec_confirmation_<%= id %>" style="display: none;">
+  <div class="alert alert-block fade in span12" id="spec_confirmation" style="display: none;">
     <p class="confirmation_expected_message" style="text-align: center;"></p>
     <p>
-      <a class="btn btn-success span6" href="#" onclick="validateSpec(<%= id %>, true);">OK</a>
-      <a class="btn btn-danger span6" href="#" onclick="validateSpec(<%= id %>, false);">NOT</a>
+      <a class="btn btn-success span6" href="#" onclick="tispec.testSuiteView.validateSpec(true);">OK</a>
+      <a class="btn btn-danger span6" href="#" onclick="tispec.testSuiteView.validateSpec(false);">NOT</a>
     </p>
   </div>
 

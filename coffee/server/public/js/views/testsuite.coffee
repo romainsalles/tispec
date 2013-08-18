@@ -20,6 +20,20 @@ class tispec.TestSuiteView extends Backbone.View
       , this
     this
 
+  confirmManualSpec: (expectedBehavior) ->
+    confirmationDiv = $("#spec_confirmation")
+    confirmationDiv.find('.confirmation_expected_message').text expectedBehavior.description
+    confirmationDiv.show()
+    return
+
+  validateSpec: (valid) ->
+    unless valid
+      specs = tispec.currentSuite.specs
+      spec  = specs.at(specs.length - 1)
+      spec.set errorType: tispec.Spec.ERROR_MANUAL_VALIDATION
+    $('#spec_confirmation').hide()
+    tispec.SocketManager.get().confirmSpecResult @model.id, valid
+
 
 class tispec.SuiteItemView extends Backbone.View
 
@@ -74,16 +88,17 @@ class tispec.SpecItemView extends Backbone.View
 
     @$el.html @template(data)
 
-    if @model.get('errorType') is tispec.Spec.ERROR_NORMAL
+    if @model.get('errorType') in [tispec.Spec.ERROR_NORMAL, tispec.Spec.ERROR_MANUAL_VALIDATION]
       @model.subSpecs.each (subSpec) ->
-          $('.subspecs', this.el).append(new tispec.SubSpecItemView({model:subSpec}).render().el)
+          subSpec.errorType = @model.get 'errorType'
+          $('.subspecs', this.el).append(new tispec.SubSpecItemView({model: subSpec}).render().el)
         , this
 
     this
 
   toggleSpecsDetails: () ->
-    if @model.get('errorType') is tispec.Spec.ERROR_NORMAL
-      $('.subspecs'          , this.el).toggle()
+    if @model.get('errorType') in [tispec.Spec.ERROR_NORMAL, tispec.Spec.ERROR_MANUAL_VALIDATION]
+      $('.subspecs', this.el).toggle()
 
   saveScreenshot: () ->
     tispec.SocketManager.get().changeScreenshot(
@@ -109,8 +124,9 @@ class tispec.SubSpecItemView extends Backbone.View
   render: () ->
     # The clone hack here is to support parse.com which doesn't add the id to model.attributes. For all other persistence
     # layers, you can directly pass model.attributes to the template function
-    data    =  _.clone @model.attributes
-    data.id = @model.id
+    data           =  _.clone @model.attributes
+    data.id        = @model.id
+    data.errorType = @model.errorType
 
     @$el.html @template(data)
 

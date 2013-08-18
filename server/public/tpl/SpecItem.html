@@ -68,5 +68,14 @@
       <button class="save_screenshot btn btn-primary">Define as reference image</button>
     </div>
   </div>
+  </div>
+
+<% } else if (errorType === tispec.Spec.ERROR_MANUAL_VALIDATION) { %>
+<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ MANUAL ERROR ~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+  <div class="spec_description span12 label label-<%= state %>">
+    <h6>(spec) <%= description %></h6>
+  </div>
+
+  <div class="span12 subspecs" style="display:none;"></div>
 
 <% } %>
