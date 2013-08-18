@@ -16,6 +16,7 @@ class tispec.TestSuite extends Backbone.Model
         @suites = new tispec.SuiteCollection()
 
     runSpecs: (form) ->
+        @suites.reset()
         filter = $(form).find(':input').first().val()
         tispec.SocketManager.get().runSpecs(@id, filter)
 

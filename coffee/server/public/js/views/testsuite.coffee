@@ -4,7 +4,8 @@ class tispec.TestSuiteView extends Backbone.View
   className: 'span12 specs_container'
 
   initialize: () ->
-    @model.on 'reset', @render, this
+    @model.on        'reset', @render, this
+    @model.suites.on 'reset', @render, this
     @model.suites.on 'add', (suite) ->
         @$el.append(new tispec.SuiteItemView({model:suite}).render().el)
       , this
