@@ -32,8 +32,8 @@ exports.askConfirmation = (request, response) ->
   SpecsSocketManager.onConfirmSpec expectedBehavior, (valide) =>
     response.end(JSON.stringify({valide: valide}))
 
-SCREENSHOT_ERROR_UNKNOWN_IMAGE   = 1
-SCREENSHOT_ERROR_DIFFERENT_IMAGE = 2
+SCREENSHOT_ERROR_UNKNOWN_IMAGE   = 2
+SCREENSHOT_ERROR_DIFFERENT_IMAGE = 3
 
 EXPECTED_IMAGE_RELATIVE_FOLDER = "images/spec_images"
 EXPECTED_IMAGE_ABSOLUTE_FOLDER = "#{__dirname}/../public/#{EXPECTED_IMAGE_RELATIVE_FOLDER}"
