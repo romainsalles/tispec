@@ -54,8 +54,8 @@ class tispec.SpecItemView extends Backbone.View
   className: 'span12 specs_container'
 
   events:
-    'click':                  'toggleSubspecs',
-    'click .save_screenshot': 'saveScreenshot'
+    'click .spec_description': 'toggleSpecsDetails',
+    'click .save_screenshot':  'saveScreenshot'
 
   initialize: () ->
     @model.on          'change',  @render, this
@@ -78,8 +78,8 @@ class tispec.SpecItemView extends Backbone.View
 
     this
 
-  toggleSubspecs: () ->
-    $('.subspecs', this.el).toggle()
+  toggleSpecsDetails: () ->
+    $('.subspecs'          , this.el).toggle()
 
   saveScreenshot: () ->
     tispec.SocketManager.get().changeScreenshot(
