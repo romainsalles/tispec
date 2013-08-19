@@ -87,7 +87,7 @@ class tispec.SpecItemView extends Backbone.View
 
     data       = _.clone @model.attributes
     data.id    = @model.id
-    data.state = if (data.errorType is tispec.Spec.SUCCESS) then 'success' else 'important'
+    data.state = if (data.errorType is tispec.Spec.SUCCESS) then 'success' else 'error'
 
     @$el.html @template(data)
 

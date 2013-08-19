@@ -1,24 +1,24 @@
 <% if (errorType === tispec.Spec.SUCCESS) { %>
 <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ SUCCESS ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
-  <div class="spec_description span12 label label-<%= state %>">
-    <h6>(spec) <%= description %></h6>
+  <div class="spec_description span12 text-success">
+    <h6><%= description %></h6>
   </div>
 
 <% } else if (errorType === tispec.Spec.ERROR_NORMAL) { %>
 <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ NORMAL ERROR ~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
-  <div class="spec_description span12 label label-<%= state %>">
-    <h6>(spec) <%= description %></h6>
+  <div class="spec_description span12 text-error">
+    <h6>(error) <%= description %></h6>
   </div>
 
   <div class="span12 subspecs" style="display:none;"></div>
 
 <% } else if (errorType === tispec.Spec.ERROR_SCREENSHOT_UNKNOWN_IMAGE) { %>
 <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~ UNKNOWN SCREENSHOT ~~~~~~~~~~~~~~~~~~~~~~~~~ -->
-  <div class="spec_description span12 label label-<%= state %>">
-    <h6 class="span8">(spec) <%= description %></h6>
+  <div class="spec_description span12 text-error">
+    <h6 class="span6">(unknown reference image) <%= description %></h6>
 
     <!-- Button to trigger modal -->
-    <a href="#unknown_screenshot_<%= id %>" role="button" class="span4 btn pull-right" data-toggle="modal">Define reference image</a>
+    <a href="#unknown_screenshot_<%= id %>" role="button" class="btn span6" data-toggle="modal">Define&nbsp;reference&nbsp;image</a>
   </div>
 
   <div class="span12 subspecs" style="display:none;"></div>
@@ -42,11 +42,11 @@
 
 <% } else if (errorType === tispec.Spec.ERROR_SCREENSHOT_DIFFERENT_IMAGE) { %>
 <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~ DIFFERENT SCREENSHOT ~~~~~~~~~~~~~~~~~~~~~~~~ -->
-  <div class="spec_description span12 label label-<%= state %>">
-    <h6 class="span8">(spec) <%= description %></h6>
+  <div class="spec_description span12 text-error">
+    <h6 class="span6">(different from reference image) <%= description %></h6>
 
     <!-- Button to trigger modal -->
-    <a href="#different_screenshot_<%= id %>" role="button" class="span4 btn pull-right" data-toggle="modal">Check new image</a>
+    <a href="#different_screenshot_<%= id %>" role="button" class="btn span6" data-toggle="modal">Check new image</a>
   </div>
 
   <div class="span12 subspecs" style="display:none;"></div>
@@ -72,8 +72,8 @@
 
 <% } else if (errorType === tispec.Spec.ERROR_MANUAL_VALIDATION) { %>
 <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ MANUAL ERROR ~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
-  <div class="spec_description span12 label label-<%= state %>">
-    <h6>(spec) <%= description %></h6>
+  <div class="spec_description span12 text-error">
+    <h6>(manually rejected) <%= description %></h6>
   </div>
 
   <div class="span12 subspecs" style="display:none;"></div>
