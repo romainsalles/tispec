@@ -82,16 +82,6 @@ exports.checkScreenshot = (request, response) ->
       response.end(JSON.stringify(valide: isEqual))
       return
 
-screenshotError = (request, response, partial) ->
-  response.render partial,
-      specsSuiteId:  request.query["specsSuiteId"],
-      specId:        request.query["specId"],
-      expectedImage: request.query["expectedImage"],
-      actualImage:   request.query["actualImage"]
-
-exports.screenshotErrorDifferent = (request, response) -> screenshotError request, response, 'specs_screenshots_different'
-exports.screenshotsErrorUnknown  = (request, response) -> screenshotError request, response, 'specs_screenshots_unknown'
-
 exports.startSpecs = (request, response) ->
   specsSuite              = JSON.parse(request.body.specsSuite)
   specsSuite.specsSuiteId = request.query["specsSuiteId"]
