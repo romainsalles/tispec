@@ -2,6 +2,7 @@ fs      = require 'fs'
 path    = require 'path'
 {print} = require 'sys'
 {spawn} = require 'child_process'
+Zip     = require 'adm-zip'
 
 COFFEE_DIR = 'coffee/'
 OUTPUT_DIR = ''
@@ -29,4 +30,4 @@ readFileSystemRecursively = (dir) ->
 build = ->
   readFileSystemRecursively COFFEE_DIR
 
-task 'build',         'compile coffeescript files', -> build()
+task 'build'        , 'compile coffeescript files'      , -> build()
