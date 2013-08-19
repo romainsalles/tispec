@@ -7,7 +7,7 @@ Zip     = require 'adm-zip'
 COFFEE_DIR = 'coffee/'
 OUTPUT_DIR = ''
 
-readFileSystemRecursively = (dir) ->
+readFileSystemRecursively = (dir, callback) ->
 
   # Get all files/directories and their path from dir param, store them in array
   files = fs.readdirSync dir
@@ -21,13 +21,29 @@ readFileSystemRecursively = (dir) ->
       stats       = fs.statSync currentFile
 
       if stats.isFile()
-        outputDir =  path.dirname(currentFile.replace(COFFEE_DIR, OUTPUT_DIR))
-        spawn 'coffee', ['-c', '-o', outputDir, currentFile] unless path.extname(currentFile) isnt '.coffee'
+        callback currentFile
       else
-        readFileSystemRecursively currentFile
+        readFileSystemRecursively currentFile, callback
+      return
   )
 
 build = ->
-  readFileSystemRecursively COFFEE_DIR
+  readFileSystemRecursively(
+    COFFEE_DIR,
+    (file) ->
+      outputDir =  path.dirname(file.replace(COFFEE_DIR, OUTPUT_DIR))
+      spawn 'coffee', ['-c', '-o', outputDir, file] unless path.extname(file) isnt '.coffee'
+  )
+
+build_app_lib = ->
+  # compile coffee files into js
+  build
+
+  # zip app library folder
+  zip = new Zip()
+  zip.addLocalFolder './App/Resources/lib/tispec'
+  zip.writeZip       './tispec_app_lib.zip'
+
 
 task 'build'        , 'compile coffeescript files'      , -> build()
+task 'build_app_lib', 'build and zip tispec app library', -> build_app_lib()
