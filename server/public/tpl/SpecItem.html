@@ -1,0 +1,81 @@
+<% if (errorType === tispec.Spec.SUCCESS) { %>
+<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ SUCCESS ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+  <div class="spec_description span12 text-success">
+    <h6><%= description %></h6>
+  </div>
+
+<% } else if (errorType === tispec.Spec.ERROR_NORMAL) { %>
+<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ NORMAL ERROR ~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+  <div class="spec_description span12 text-error">
+    <h6>(error) <%= description %></h6>
+  </div>
+
+  <div class="span12 subspecs" style="display:none;"></div>
+
+<% } else if (errorType === tispec.Spec.ERROR_SCREENSHOT_UNKNOWN_IMAGE) { %>
+<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~ UNKNOWN SCREENSHOT ~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+  <div class="spec_description span12 text-error">
+    <h6 class="span6">(unknown reference image) <%= description %></h6>
+
+    <!-- Button to trigger modal -->
+    <a href="#unknown_screenshot_<%= id %>" role="button" class="btn span6" data-toggle="modal">Define&nbsp;reference&nbsp;image</a>
+  </div>
+
+  <div class="span12 subspecs" style="display:none;"></div>
+
+  <!-- Unknown screenshot modal -->
+  <div id="unknown_screenshot_<%= id %>" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-header">
+      <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+      <h3 id="myModalLabel">Unknown reference image</h3>
+    </div>
+    <div class="modal-body">
+      <p>There is no expected image defined. If you consider that the new one should be the reference, click on "Define as reference image"</p>
+      <p class="lead">expected : <%= description %></p>
+      <img src="<%= actualImage %>" title="Actual image" style="max-height: 80%; max-width: 45%;">
+    </div>
+    <div class="modal-footer">
+      <button class="btn" data-dismiss="modal" aria-hidden="true">Cancel</button>
+      <button class="save_screenshot btn btn-primary">Define as reference image</button>
+    </div>
+  </div>
+
+<% } else if (errorType === tispec.Spec.ERROR_SCREENSHOT_DIFFERENT_IMAGE) { %>
+<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~ DIFFERENT SCREENSHOT ~~~~~~~~~~~~~~~~~~~~~~~~ -->
+  <div class="spec_description span12 text-error">
+    <h6 class="span6">(different from reference image) <%= description %></h6>
+
+    <!-- Button to trigger modal -->
+    <a href="#different_screenshot_<%= id %>" role="button" class="btn span6" data-toggle="modal">Check new image</a>
+  </div>
+
+  <div class="span12 subspecs" style="display:none;"></div>
+
+  <!-- Different screenshot modal -->
+  <div id="different_screenshot_<%= id %>" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-header">
+      <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+      <h3 id="myModalLabel">Different reference image</h3>
+    </div>
+    <div class="modal-body">
+      <p>The spec screenshot didn't match the reference one. If you consider that the new one should be the reference, click on "Change reference image"</p>
+      <p class="lead">expected : <%= description %></p>
+      <img src="<%= expectedImage %>" title="Reference image" style="max-height: 80%; max-width: 45%;">
+      <img src="<%= actualImage %>" title="Actual image" style="max-height: 80%; max-width: 45%;">
+    </div>
+    <div class="modal-footer">
+      <button class="btn" data-dismiss="modal" aria-hidden="true">Cancel</button>
+      <button class="save_screenshot btn btn-primary">Define as reference image</button>
+    </div>
+  </div>
+  </div>
+
+<% } else if (errorType === tispec.Spec.ERROR_MANUAL_VALIDATION) { %>
+<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ MANUAL ERROR ~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+  <div class="spec_description span12 text-error">
+    <h6>(manually rejected) <%= description %></h6>
+  </div>
+
+  <div class="span12 subspecs" style="display:none;"></div>
+
+<% } %>

@@ -1,0 +1,26 @@
+<div class="span12 specs_container" id="specs_suite_<%= id %>"> <!-- Spec Container -->
+  <div class="span12"> <!-- App / Device -->
+    <h3 id="specs_suite_title" style="line-height: 20px; padding-left: 20px;"><%= appName + ' ' + appVersion + ' / ' + deviceName %></h3></td>
+  </div>
+
+  <div class="span12"> <!-- alerts -->
+    <form class="span6" method="GET" action="#" onsubmit="return tispec.testSuiteView.model.runSpecs(this);">
+      <div class="input-append span12" style="margin-top: 20px;">
+        <input id="spec_filter" type="text" class="span11" name="filter" placeholder="Filter" value="<%- filter %>" />
+        <button type="submit" class="btn">Run</button>
+      </div>
+    </form>
+  </div>
+
+  <div class="alert alert-block fade in span12" id="spec_confirmation" style="display: none;">
+    <p class="confirmation_expected_message" style="text-align: center;"></p>
+    <p>
+      <a class="btn btn-success span6" href="#" onclick="tispec.testSuiteView.validateSpec(true);">OK</a>
+      <a class="btn btn-danger span6" href="#" onclick="tispec.testSuiteView.validateSpec(false);">NOT</a>
+    </p>
+  </div>
+
+  <div id="testSuiteTBody" class="span12"> <!-- Results -->
+  </div>
+
+</div>
