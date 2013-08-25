@@ -32,6 +32,7 @@ node_modules/
 ######################################
 /lib/*.js
 /server/*.js
+/server/controllers/*.js
 /server/routes/*.js
 /index.js
 /server/public/js/*
