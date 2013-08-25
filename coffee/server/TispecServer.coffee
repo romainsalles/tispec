@@ -1,5 +1,4 @@
 express      = require 'express'
-specs        = require './routes/specs'
 http         = require 'http'
 path         = require 'path'
 
@@ -15,6 +14,7 @@ work that well.
 class TispecServer
   constructor: () ->
     app = express()
+    module.exports.app = app
 
     # all environments
     app.set('port', process.env.PORT || 8666)
@@ -30,21 +30,8 @@ class TispecServer
     # development only
     app.use(express.errorHandler()) if 'development' is app.get('env')
 
-    # Routes used by the server
-    app.get  '/',                           specs.dashboard
-    app.get  '/tpl/TestSuiteView',          specs.testSuiteView
-    app.get  '/tpl/SuiteItemView',          specs.suiteItemView
-    app.get  '/tpl/SpecItemView',           specs.specItemView
-    app.get  '/tpl/SubSpecItemView',        specs.subSpecItemView
-
-    # Routes used by the app
-    app.post '/specs/startSpecs',           specs.startSpecs
-    app.post '/specs/specStart',            specs.specStart
-    app.post '/specs/specEnd',              specs.specEnd
-    app.post '/specs/suiteEnd',             specs.suiteEnd
-    app.post '/specs/end',                  specs.specsEnd
-    app.post '/specs/askConfirmation',      specs.askConfirmation
-    app.post '/specs/checkScreenshot',      specs.checkScreenshot
+    # routes
+    routes = require './routes'
 
     server = http.createServer(app).listen(app.get('port'), ->
       console.log('Server listening on port ' + app.get('port'))
