@@ -34,7 +34,10 @@ node_modules/
 /server/*.js
 /server/routes/*.js
 /index.js
+/server/public/js/*
+App/Resources/lib/*
 
 # Specs screenshots #
 #####################
+/server/public/images/spec_images/*
 /server/public/images/spec_images_temp/*

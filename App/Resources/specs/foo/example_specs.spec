@@ -1,6 +1,8 @@
 // @see https://github.com/pivotal/jasmine/wiki
 
 (function(){
+  var TispecHelper = require('/lib/tispec/TispecHelper');
+
   // Awesome function name
   function constructABlueWindowWithASquareAndAText(left) {
     var win = Ti.UI.createWindow({backgroundColor: '#123456'});
@@ -19,7 +21,7 @@
     it('should be positionned perfectly', function() {
       var win = constructABlueWindowWithASquareAndAText(30);
       win.open();
-      compareScreenshots(this.id, 'blueWindowWithASquareAndAText_1', function() {
+      TispecHelper.compareScreenshots(this.id, 'blueWindowWithASquareAndAText_1', function() {
         win.close();
       });
     });
@@ -28,14 +30,14 @@
       // this spec is expected to fail
       var win = constructABlueWindowWithASquareAndAText(31);
       win.open();
-      compareScreenshots(this.id, 'blueWindowWithASquareAndAText_2', function() {
+      TispecHelper.compareScreenshots(this.id, 'blueWindowWithASquareAndAText_2', function() {
         win.close();
       });
     });
 
     it('should be positionned perfectly (3)', function() {
       // this spec is expected to fail
-      compareScreenshots(this.id, 'unknown_image');
+      TispecHelper.compareScreenshots(this.id, 'unknown_image');
     });
 
     it('should display the button properly', function() {
@@ -43,7 +45,7 @@
       var button = Ti.UI.createButton({title:'Tispec', width:100, height:50});
       window.add(button);
       window.open();
-      compareImages(this.id, 'TispecButton', button.toImage(null, true), function() { window.close(); });
+      TispecHelper.compareImages(this.id, 'TispecButton', button.toImage(null, true), function() { window.close(); });
     });
   });
 })();

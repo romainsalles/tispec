@@ -7,4 +7,5 @@ Ti.UI.createTabGroup().addTab(Ti.UI.createTab({
 
 // Connect the app to the tispec server
 // -----------------------------------------------------------------------------
-require('./lib/tispec/Tispec').initialize('localhost', 8128, 8666);
+var Tispec = require('./lib/tispec/Tispec'),
+    tispec = Tispec.get('localhost', 8128, 8666);

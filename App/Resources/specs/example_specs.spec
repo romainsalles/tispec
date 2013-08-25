@@ -1,6 +1,8 @@
 // @see https://github.com/pivotal/jasmine/wiki
 
 (function(){
+  var TispecHelper = require('/lib/tispec/TispecHelper');
+
   function isNumber(o) {
     return ! isNaN (o-0) && o !== null && o !== "" && o !== false && o !== true;
   }
@@ -76,11 +78,11 @@
   describe('#visual tests', function() {
     it('should open a yellow window', function() {
       Ti.UI.createWindow({backgroundColor: '#FFFF00'}).open();
-      askConfirmation(this.id, 'You should see a yellow window');
+      TispecHelper.askConfirmation(this.id, 'You should see a yellow window');
     });
     it('should open a green window', function() {
       Ti.UI.createWindow({backgroundColor: '#00FF00'}).open();
-      askConfirmation(this.id, 'You should see a green window');
+      TispecHelper.askConfirmation(this.id, 'You should see a green window');
     });
   });
 })();
