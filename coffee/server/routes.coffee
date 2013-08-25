@@ -2,17 +2,19 @@ specs = require './routes/specs'
 app   = module.parent.exports.app
 
 # Routes used by the server
-app.get  '/',                           specs.dashboard
-app.get  '/tpl/TestSuiteView',          specs.testSuiteView
-app.get  '/tpl/SuiteItemView',          specs.suiteItemView
-app.get  '/tpl/SpecItemView',           specs.specItemView
-app.get  '/tpl/SubSpecItemView',        specs.subSpecItemView
+serverController = require './controllers/serverController'
+app.get  '/',                           serverController.dashboard
+app.get  '/tpl/TestSuiteView',          serverController.testSuiteView
+app.get  '/tpl/SuiteItemView',          serverController.suiteItemView
+app.get  '/tpl/SpecItemView',           serverController.specItemView
+app.get  '/tpl/SubSpecItemView',        serverController.subSpecItemView
 
 # Routes used by the app
-app.post '/specs/startSpecs',           specs.startSpecs
-app.post '/specs/specStart',            specs.specStart
-app.post '/specs/specEnd',              specs.specEnd
-app.post '/specs/suiteEnd',             specs.suiteEnd
-app.post '/specs/end',                  specs.specsEnd
-app.post '/specs/askConfirmation',      specs.askConfirmation
-app.post '/specs/checkScreenshot',      specs.checkScreenshot
+appController = require './controllers/appController'
+app.post '/specs/startSpecs',           appController.startSpecs
+app.post '/specs/specStart',            appController.specStart
+app.post '/specs/specEnd',              appController.specEnd
+app.post '/specs/suiteEnd',             appController.suiteEnd
+app.post '/specs/end',                  appController.specsEnd
+app.post '/specs/askConfirmation',      appController.askConfirmation
+app.post '/specs/checkScreenshot',      appController.checkScreenshot
