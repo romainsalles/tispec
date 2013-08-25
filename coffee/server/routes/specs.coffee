@@ -23,7 +23,13 @@ copyFileSync = (srcFile, destFile) ->
   fs.closeSync(fdr)
   fs.closeSync(fdw)
 
+###
+Used by manual test.
 
+The tester has to confirm that the spec is valid with a visual confirmation :
+a button will be displayed in the tispec web page with a description of what he
+should see in the app.
+###
 exports.askConfirmation = (request, response) ->
   expectedBehavior = JSON.parse(request.body.expectedBehavior)
   expectedBehavior.specId       = request.body.specId
@@ -40,6 +46,19 @@ EXPECTED_IMAGE_ABSOLUTE_FOLDER = "#{__dirname}/../public/#{EXPECTED_IMAGE_RELATI
 ACTUAL_IMAGE_RELATIVE_FOLDER   = "images/spec_images_temp"
 ACTUAL_IMAGE_ABSOLUTE_FOLDER   = "#{__dirname}/../public/#{ACTUAL_IMAGE_RELATIVE_FOLDER}"
 
+###
+Used by screenshot specs.
+
+When a spec use a screenshot confirmation, this method compare the expected
+screenshot with the actual one. Function of the result, a different message will be
+displayed to the tester :
+  * if the 2 images match        : the spec will be marked as valid
+  * if the 2 images mismatch     : the spec will be mark as invalid and the tester
+                                   will be asked to confirm the spec has failed
+                                   (otherwise, he can choose the new image as the reference one)
+  * if no reference image exists : the tester will be able to define the screenshot
+                                   as the reference one
+###
 exports.checkScreenshot = (request, response) ->
   appName      = request.body.appName
   deviceModel  = request.body.deviceModel
@@ -82,6 +101,9 @@ exports.checkScreenshot = (request, response) ->
       response.end(JSON.stringify(valide: isEqual))
       return
 
+###
+When the tested app starts its specs, it informs the server via this route.
+###
 exports.startSpecs = (request, response) ->
   specsSuite              = JSON.parse(request.body.specsSuite)
   specsSuite.specsSuiteId = request.query["specsSuiteId"]
@@ -89,6 +111,9 @@ exports.startSpecs = (request, response) ->
   SpecsSocketManager.onStartSpecs specsSuite
   endResponse response
 
+###
+When the tested app starts a new spec, it informs the server via this route.
+###
 exports.specStart = (request, response) ->
   spec              = JSON.parse(request.body.spec)
   spec.specsSuiteId = request.query["specsSuiteId"]
@@ -96,6 +121,9 @@ exports.specStart = (request, response) ->
   SpecsSocketManager.onSpecStart spec
   endResponse response
 
+###
+When the tested app terminates a spec, it informs the server via this route.
+###
 exports.specEnd = (request, response) ->
   spec              = JSON.parse(request.body.spec)
   spec.specsSuiteId = request.query["specsSuiteId"]
@@ -103,6 +131,10 @@ exports.specEnd = (request, response) ->
   SpecsSocketManager.onSpecEnd spec
   endResponse response
 
+
+###
+When the tested app terminates a suite, it informs the server via this route.
+###
 exports.suiteEnd = (request, response) ->
   suite              = JSON.parse(request.body.suite)
   suite.specsSuiteId = request.query["specsSuiteId"]
@@ -110,16 +142,25 @@ exports.suiteEnd = (request, response) ->
   SpecsSocketManager.onSuiteEnd suite
   endResponse response
 
+###
+When the tested app terminates the test suite, it informs the server via this route.
+###
 exports.specsEnd = (request, response) ->
   specsSuiteId = request.query["specsSuiteId"]
 
   SpecsSocketManager.onEnd specsSuiteId
   endResponse response
 
+###
+Result page
+###
 exports.dashboard = (request, response) ->
   file = fs.readFileSync 'server/views/tispec.ejs', 'ascii'
   response.end ejs.render(file)
 
+###
+Views templates used by the result page
+###
 exports.testSuiteView   = (request, response) -> response.sendfile 'server/public/tpl/TestSuite.html'
 exports.suiteItemView   = (request, response) -> response.sendfile 'server/public/tpl/SuiteItem.html'
 exports.specItemView    = (request, response) -> response.sendfile 'server/public/tpl/SpecItem.html'

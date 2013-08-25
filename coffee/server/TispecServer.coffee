@@ -3,6 +3,15 @@ specs        = require './routes/specs'
 http         = require 'http'
 path         = require 'path'
 
+###
+Web server for Tispec.
+
+It's used by the app tested to communicate its results and by the tispec page to show
+the results of a test suite.
+
+We don't use sockets for now because the Titanium implementation of *now* doesn't
+work that well.
+###
 class TispecServer
   constructor: () ->
     app = express()

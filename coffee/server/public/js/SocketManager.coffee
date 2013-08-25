@@ -1,5 +1,8 @@
 root = exports ? this
 
+###
+Socket manager used by the result page to communicate with the app through the server
+###
 class tispec.SocketManager
   instance = null
   # Static method used to either retrieve the

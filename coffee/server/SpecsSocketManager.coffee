@@ -1,5 +1,10 @@
 fs = require 'fs'
 
+###
+Manage communications between the tispec webpage and the server with sockets.
+
+It can only be used as a singleton.
+###
 class SpecsSocketManager
   instance = null
 

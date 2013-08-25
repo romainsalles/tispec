@@ -1,5 +1,6 @@
 root = exports ? this
 
+# Code executed on the result page
 root.tispec =
   views:  {},
   models: {},
@@ -7,6 +8,7 @@ root.tispec =
     deferreds = []
 
     $.each views, (index, view) ->
+      # Initialize views templates
       if tispec[view]
         deferreds.push(
           $.get(
