@@ -11,7 +11,7 @@ exports.dashboard = (request, response) ->
 ###
 Views templates used by the result page
 ###
-exports.testSuiteView   = (request, response) -> response.sendfile 'server/public/tpl/TestSuite.html'
-exports.suiteItemView   = (request, response) -> response.sendfile 'server/public/tpl/SuiteItem.html'
-exports.specItemView    = (request, response) -> response.sendfile 'server/public/tpl/SpecItem.html'
-exports.subSpecItemView = (request, response) -> response.sendfile 'server/public/tpl/SubSpecItem.html'
+exports.testSuiteView   = (request, response) -> response.sendfile 'server/views/TestSuite.html'
+exports.suiteItemView   = (request, response) -> response.sendfile 'server/views/SuiteItem.html'
+exports.specItemView    = (request, response) -> response.sendfile 'server/views/SpecItem.html'
+exports.subSpecItemView = (request, response) -> response.sendfile 'server/views/SubSpecItem.html'

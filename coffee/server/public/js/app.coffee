@@ -12,7 +12,7 @@ root.tispec =
       if tispec[view]
         deferreds.push(
           $.get(
-            "tpl/#{view}",
+            "views/#{view}",
             (data) -> (tispec[view].prototype.template = _.template(data)),
             'html'
           )
