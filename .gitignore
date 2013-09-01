@@ -37,6 +37,7 @@ node_modules/
 /index.js
 /server/public/js/*
 App/Resources/lib/*
+App/Resources/specs/*
 
 # Specs screenshots #
 #####################
