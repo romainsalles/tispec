@@ -22,7 +22,7 @@ class PrivateTispec
 
     for path in listing
       splitPath = path.split '.'
-      isFile    = splitPath.length > 1 && splitPath[splitPath.length - 1] is 'js'
+      isFile    = splitPath.length > 1 && splitPath[splitPath.length - 1] is 'spec'
 
       if isFile
         specs.push "#{folder}/#{path}"

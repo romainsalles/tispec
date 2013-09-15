@@ -32,7 +32,10 @@ build = ->
     COFFEE_DIR,
     (file) ->
       outputDir =  path.dirname(file.replace(COFFEE_DIR, OUTPUT_DIR))
-      spawn 'coffee', ['-c', '-o', outputDir, file] unless path.extname(file) isnt '.coffee'
+      coffeeBuild = spawn 'coffee', ['-c', '-o', outputDir, file] if path.extname(file) in ['.coffee', '.spec']
+      if path.extname(file) == '.spec'
+        coffeeBuild.on 'close', () ->
+          spawn 'mv', ["#{outputDir}/#{path.basename(file.replace('.spec', '.js'))}", "#{outputDir}/#{path.basename(file)}"]
   )
 
 build_app_lib = ->
