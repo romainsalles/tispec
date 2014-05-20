@@ -109,6 +109,7 @@ class PrivateSocketManager
   #
   # _suite {Object} the suite
   onSuiteEnd: (_suite) ->
+    return unless tispec.currentSuite
     tispec.currentSuite.set(
       id:          _suite.specsSuiteId,
       description: _suite.description,
