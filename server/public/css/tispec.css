@@ -1,3 +1,17 @@
 .spec_description h6, .spec_description {
-  margin: 0px;
+  margin: 0;
+}
+
+.tispec-modal {
+  width: 80%;
+  left: 30%;
+}
+
+.tispec-image {
+  max-width: 45%;
+  max-height: 1136px;
+}
+
+.tispec-modal-body {
+  max-height: 500px;
 }
